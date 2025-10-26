@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيقات هرم بلوم الرقمية: تقرير تفاعلي</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+body {
+  box-sizing: border-box;
+  font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+* {
+  font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.chart-container {
+position: relative;
+width: 100%;
+max-width: 800px;
+margin-left: auto;
+margin-right: auto;
+height: 350px;
+max-height: 400px;
+}
+@media (min-width: 768px) {
+.chart-container {
+height: 400px;
+}
+}
+::-webkit-scrollbar {
+width: 8px;
+}
+::-webkit-scrollbar-track {
+background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+background: #cbd5e1;
+border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+background: #94a3b8;
+}
+.objective-item {
+transition: all 0.3s ease;
+}
+.objective-item:hover {
+transform: translateX(-5px);
+}
+.bloom-level {
+transition: all 0.3s ease;
+cursor: pointer;
+}
+.bloom-level:hover {
+transform: scale(1.05);
+box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.tool-card {
+transition: all 0.3s ease;
+}
+.tool-card:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.fade-in {
+animation: fadeIn 0.5s ease-in;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+/* إضافة تنسيق للروابط داخل النص */
+a.inline-link {
+    color: #2563eb; /* text-blue-600 */
+    text-decoration: none;
+    transition: text-decoration 0.2s ease-in-out;
+}
+a.inline-link:hover {
+    text-decoration: underline;
+}
+/* التأكد من أن الفيديوهات المضمنة تستجيب للعرض */
+iframe {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 8px; /* إضافة حواف مستديرة للفيديو */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* إضافة ظل خفيف */
+    margin-top: 12px; /* إضافة هامش علوي */
+}
+</style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-full">
+
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <!-- إضافة الشعار والعنوان -->
+        <div class="flex items-center gap-3">
+            <img src="logo.jpg" alt="شعار" class="h-12 w-12 rounded-full object-contain">
+            <h1 class="text-2xl font-bold text-blue-600">هرم بلوم الرقمي: التقرير التفاعلي</h1>
+        </div>
+        <nav>
+            <ul class="flex space-x-4 space-x-reverse text-sm sm:text-base">
+                <li><a href="#summary" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">ملخص</a></li>
+                <li><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">خريطة بلوم</a></li>
+                <li><a href="#flow" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الهيكلة</a></li>
+                <li><a href="#foundation" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الأساس العلمي</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <section id="summary" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">ملخص تنفيذي وأهداف الدورة</h2>
+        <p class="text-gray-600 mb-8">يقدم هذا القسم نظرة عامة سريعة على أهداف الدورة وأبعادها. تهدف الدورة إلى ربط الأهداف التعليمية (هرم بلوم) بالتطبيقات التكنولوجية الحديثة، مما يمكن المعلمين من تصميم مهام تحفز مهارات التفكير العليا (HOTS).</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="p-4 bg-blue-50 border-b-4 border-blue-600 rounded-lg shadow-sm text-center">
+                <p class="text-sm text-blue-800 font-semibold">الهدف العام</p>
+                <p class="text-xl font-bold text-blue-900 mt-1">تطوير مهارات HOTS</p>
+            </div>
+            <div class="p-4 bg-gray-100 border-b-4 border-gray-400 rounded-lg shadow-sm text-center">
+                <p class="text-sm text-gray-600 font-semibold">الفئة المستهدفة</p>
+                <p class="text-xl font-bold text-gray-800 mt-1">معلمو التعليم العام</p>
+            </div>
+            <div class="p-4 bg-gray-100 border-b-4 border-gray-400 rounded-lg shadow-sm text-center">
+                <p class="text-sm text-gray-600 font-semibold">المدة الزمنية</p>
+                <p class="text-xl font-bold text-gray-800 mt-1">10 ساعات (يومان)</p>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-bold text-gray-700 mb-4">الأهداف السلوكية (7 أهداف)</h3>
+        <div id="objectives-accordion" class="space-y-3">
+            <div class="objective-item bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-r-4 border-purple-500 cursor-pointer" onclick="toggleObjective(1)">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-purple-900">1. تحليل مستويات هرم بلوم المعرفية</h4>
+                    <span id="icon-1" class="text-purple-600 text-xl">▼</span>
+                </div>
+                <div id="content-1" class="mt-3 text-gray-700 hidden">
+                    يتمكن المتدرب من تحليل المستويات الستة لهرم بلوم (التذكر، الفهم، التطبيق، التحليل، التقييم، الإبداع) وتحديد خصائص كل مستوى بدقة.
+                </div>
+            </div>
+
+            <div class="objective-item bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-r-4 border-blue-500 cursor-pointer" onclick="toggleObjective(2)">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-blue-900">2. ربط الأدوات الرقمية بمستويات التفكير</h4>
+                    <span id="icon-2" class="text-blue-600 text-xl">▼</span>
+                </div>
+                <div id="content-2" class="mt-3 text-gray-700 hidden">
+                    يربط المتدرب بين التطبيقات الرقمية المختلفة ومستويات التفكير المناسبة لها، مع تقديم أمثلة عملية.
+                </div>
+            </div>
+
+            <div class="objective-item bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-r-4 border-green-500 cursor-pointer" onclick="toggleObjective(3)">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-green-900">3. تصميم مهام تعليمية تحفز HOTS</h4>
+                    <span id="icon-3" class="text-green-600 text-xl">▼</span>
+                </div>
+                <div id="content-3" class="mt-3 text-gray-700 hidden">
+                    يصمم المتدرب مهام تعليمية تستهدف مهارات التفكير العليا باستخدام أدوات رقمية مناسبة.
+                </div>
+            </div>
+
+            <div class="objective-item bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-r-4 border-yellow-500 cursor-pointer" onclick="toggleObjective(4)">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-yellow-900">4. تقييم فعالية الأدوات الرقمية</h4>
+                    <span id="icon-4" class="text-yellow-600 text-xl">▼</span>
+                </div>
+                <div id="content-4" class="mt-3 text-gray-700 hidden">
+                    يقيّم المتدرب مدى ملاءمة الأدوات الرقمية المختلفة لتحقيق أهداف تعليمية محددة.
+                </div>
+            </div>
+
+            <div class="objective-item bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border-r-4 border-red-500 cursor-pointer" onclick="toggleObjective(5)">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-red-900">5. إنشاء محتوى تعليمي رقمي إبداعي</h4>
+                    <span id="icon-5" class="text-red-600 text-xl">▼</span>
+                </div>
+                <div id="content-5" class="mt-3 text-gray-700 hidden">
+                    ينشئ المتدرب محتوى تعليمي رقمي يعكس مستويات التفكير العليا باستخدام أدوات مثل <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="inline-link">Canva</a> و <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Padlet</a>.
+                </div>
+            </div>
+
+            <div class="objective-item bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border-r-4 border-indigo-500 cursor-pointer" onclick="toggleObjective(6)">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-indigo-900">6. تطبيق استراتيجيات التعلم النشط</h4>
+                    <span id="icon-6" class="text-indigo-600 text-xl">▼</span>
+                </div>
+                <div id="content-6" class="mt-3 text-gray-700 hidden">
+                    يطبق المتدرب استراتيجيات التعلم النشط الرقمية التي تعزز مشاركة الطلاب وتفاعلهم.
+                </div>
+            </div>
+
+            <div class="objective-item bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border-r-4 border-pink-500 cursor-pointer" onclick="toggleObjective(7)">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-pink-900">7. تطوير خطة تنفيذية للدمج الرقمي</h4>
+                    <span id="icon-7" class="text-pink-600 text-xl">▼</span>
+                </div>
+                <div id="content-7" class="mt-3 text-gray-700 hidden">
+                    يطور المتدرب خطة عمل لدمج الأدوات الرقمية في ممارساته التدريسية اليومية بشكل فعال.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="map" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">خريطة بلوم الرقمية التفاعلية</h2>
+
+        <p class="text-gray-600 mb-6">اكتشف العلاقة بين مستويات التفكير والأدوات الرقمية المناسبة لها. انقر على أي مستوى لاستكشاف الأدوات المرتبطة به.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bloom-level bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('create')">
+                <div class="text-4xl mb-3">🎨</div>
+                <h3 class="text-2xl font-bold mb-2">الإبداع</h3>
+                <p class="text-sm opacity-90">تصميم، إنتاج، ابتكار</p>
+            </div>
+            <div class="bloom-level bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('evaluate')">
+                <div class="text-4xl mb-3">⚖️</div>
+                <h3 class="text-2xl font-bold mb-2">التقييم</h3>
+                <p class="text-sm opacity-90">نقد، حكم، تقدير</p>
+            </div>
+            <div class="bloom-level bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('analyze')">
+                <div class="text-4xl mb-3">🔍</div>
+                <h3 class="text-2xl font-bold mb-2">التحليل</h3>
+                <p class="text-sm opacity-90">مقارنة، تفكيك، استنتاج</p>
+            </div>
+            <div class="bloom-level bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('apply')">
+                <div class="text-4xl mb-3">🛠️</div>
+                <h3 class="text-2xl font-bold mb-2">التطبيق</h3>
+                <p class="text-sm opacity-90">تنفيذ، استخدام، حل</p>
+            </div>
+            <div class="bloom-level bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('understand')">
+                <div class="text-4xl mb-3">💡</div>
+                <h3 class="text-2xl font-bold mb-2">الفهم</h3>
+                <p class="text-sm opacity-90">شرح، تفسير، تلخيص</p>
+            </div>
+            <div class="bloom-level bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('remember')">
+                <div class="text-4xl mb-3">📚</div>
+                <h3 class="text-2xl font-bold mb-2">التذكر</h3>
+                <p class="text-sm opacity-90">حفظ، تعريف، سرد</p>
+            </div>
+        </div>
+
+        <div id="tools-display" class="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 hidden">
+            <h3 class="text-2xl font-bold mb-4 text-gray-800" id="tools-title"></h3>
+            <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            </div>
+        </div>
+    </section>
+
+    <section id="flow" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">هيكلة الدورة التدريبية</h2>
+
+        <p class="text-gray-600 mb-6">تتكون الدورة من يومين تدريبيين، كل يوم يحتوي على جلسات متنوعة تغطي جوانب مختلفة من هرم بلوم الرقمي.</p>
+
+        <div class="space-y-6">
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-xl border-r-4 border-blue-500">
+                <h3 class="text-2xl font-bold text-blue-900 mb-4">📅 اليوم الأول: الأساسيات والتطبيق</h3>
+                <div class="space-y-3">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">الجلسة الأولى (2 ساعة)</h4>
+                        <p class="text-gray-600">• مقدمة عن هرم بلوم المعرفي — <a href="https://www.youtube.com/watch?v=ayefSTAnCR8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/ayefSTAnCR8" title="Bloom’s Taxonomy: Structuring The Learning Journey" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• شرح المستويات الستة بالتفصيل — <a href="https://www.youtube.com/watch?v=xDW2eLDy1Qg" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/xDW2eLDy1Qg" title="شرح تصنيف بلوم لتحديد الأهداف التعليمية Bloom's" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• أمثلة عملية من الواقع التعليمي — <a href="https://www.youtube.com/watch?v=RgYC9Lde6FI" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/RgYC9Lde6FI" title="Bloom's Taxonomy: Why, How, and Practical Examples" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">الجلسة الثانية (1.5 ساعة)</h4>
+                        <p class="text-gray-600">• التعرف على الأدوات الرقمية الأساسية — <a href="https://www.youtube.com/watch?v=n_A-Yv-x-PE" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/n_A-Yv-x-PE" title="Top 10 Digital Tools for Teachers 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• ربط الأدوات بمستويات التفكير الدنيا — <a href="https://www.youtube.com/watch?v=oK3ly4ftgK4" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/oK3ly4ftgK4" title="Bloom's Digital Taxonomy - Explaining the Verbs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• تطبيق عملي: <a href="https://quizlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Quizlet</a> و <a href="https://kahoot.com" target="_blank" rel="noopener noreferrer" class="inline-link">Kahoot</a> — <a href="https://www.youtube.com/watch?v=I-R3Q4fQWDE" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Quizlet)</a> — <a href="https://www.youtube.com/watch?v=g2N01-3gTf8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Kahoot)</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/I-R3Q4fQWDE" title="The ULTIMATE Quizlet Tutorial for Teachers 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/g2N01-3gTf8" title="How to create a Kahoot! - 2024 Beginner's Guide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">الجلسة الثالثة (1.5 ساعة)</h4>
+                        <p class="text-gray-600">• ورشة عمل: تصميم نشاط تفاعلي — <a href="https://www.youtube.com/watch?v=5-9fWY-a-Oo" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/5-9fWY-a-Oo" title="7 Interactive Teaching Strategies" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• استخدام <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Padlet</a> و <a href="https://www.mentimeter.com" target="_blank" rel="noopener noreferrer" class="inline-link">Mentimeter</a> — <a href="https://www.youtube.com/watch?v=XY2k4kk_BAw" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Padlet)</a> — <a href="https://www.youtube.com/watch?v=rf-x_i-Y1cM" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Mentimeter)</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/XY2k4kk_BAw" title="Padlet Tutorial 2024 for Teachers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/rf-x_i-Y1cM" title="How to use Mentimeter | 2024 Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• مشاركة الأعمال ومناقشتها — <a href="https://www.youtube.com/watch?v=MwSNG6-d-gE" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/MwSNG6-d-gE" title="Strategies for Effective Peer Feedback" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl border-r-4 border-purple-500">
+                <h3 class="text-2xl font-bold text-purple-900 mb-4">📅 اليوم الثاني: مهارات التفكير العليا</h3>
+                <div class="space-y-3">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">الجلسة الأولى (2 ساعة)</h4>
+                        <p class="text-gray-600">• التركيز على مستويات HOTS — <a href="https://www.youtube.com/watch?v=kO-jG6a-0d8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/kO-jG6a-0d8" title="What is Higher Order Thinking?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• أدوات التحليل والتقييم الرقمية — <a href="https://www.youtube.com/watch?v=Gc-s-b-1bA8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/Gc-s-b-1bA8" title="Top 5 FREE Digital Assessment Tools for Teachers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• تطبيق عملي: <a href="https://coggle.it" target="_blank" rel="noopener noreferrer" class="inline-link">Coggle</a> و <a href="https://www.mindmeister.com" target="_blank" rel="noopener noreferrer" class="inline-link">MindMeister</a> — <a href="https://www.youtube.com/watch?v=yvH63j5gI-I" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Coggle)</a> — <a href="https://www.youtube.com/watch?v=K84g-QxD__Q" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (MindMeister)</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/yvH63j5gI-I" title="Coggle Tutorial - Simple Mind Mapping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/K84g-QxD__Q" title="MindMeister Tutorial 2024 - Complete Guide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">الجلسة الثانية (2 ساعة)</h4>
+                        <p class="text-gray-600">• مستوى الإبداع والابتكار — <a href="https://www.youtube.com/watch?v=x-g-3a7-wMA" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/x-g-3a7-wMA" title="How to Foster Creativity in Your Classroom" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• أدوات الإنتاج الرقمي: <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="inline-link">Canva</a> و <a href="https://www.adobe.com/express/" target="_blank" rel="noopener noreferrer" class="inline-link">Adobe Express</a> — <a href="https://www.youtube.com/watch?v=40nN2D-98-E" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Canva)</a> — <a href="https://www.youtube.com/watch?v=P-P04Nl1n2M" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Adobe Express)</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/40nN2D-98-E" title="Canva for Teachers 2024 - Full Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/P-P04Nl1n2M" title="Adobe Express for Education - Full Tutorial 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• مشروع نهائي: تصميم درس متكامل — <a href="https://www.youtube.com/watch?v=8I-LFX-mCak" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/8I-LFX-mCak" title="Project Based Learning: How to Create a Lesson Plan" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">الجلسة الختامية (1 ساعة)</h4>
+                        <p class="text-gray-600">• عرض المشاريع النهائية — <a href="https://www.youtube.com/watch?v=Y0rLwDRlq9Q" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/Y0rLwDRlq9Q" title="Creative Ways to Showcase Student Work" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• تقييم الدورة وجمع التغذية الراجعة — <a href="https://www.youtube.com/watch?v=rG-4f-e21sY" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/rG-4f-e21sY" title="How to use Google Forms for Feedback" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <p class="text-gray-600 mt-4">• خطة العمل المستقبلية — <a href="https://www.youtube.com/watch?v=YT-HFhZy4jQ" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
+                        <div class="mt-2">
+                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/YT-HFhZy4jQ" title="The Future of Education: Digital Transformation in Schools" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 chart-container">
+            <canvas id="scheduleChart"></canvas>
+        </div>
+    </section>
+
+    <section id="foundation" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">الأساس العلمي والمراجع</h2>
+
+        <div class="space-y-6">
+            <div class="bg-blue-50 p-6 rounded-xl">
+                <h3 class="text-xl font-bold text-blue-900 mb-3">📖 نظرية بلوم الأصلية (1956)</h3>
+                <p class="text-gray-700 mb-3">طور بنجامين بلوم وزملاؤه تصنيفاً هرمياً للأهداف التعليمية في المجال المعرفي، يتكون من ستة مستويات متدرجة من البسيط إلى المعقد.</p>
+                <p class="text-gray-600 text-sm italic">Bloom, B. S. (1956). Taxonomy of Educational Objectives: The Classification of Educational Goals.</p>
+            </div>
+            <div class="bg-green-50 p-6 rounded-xl">
+                <h3 class="text-xl font-bold text-green-900 mb-3">🔄 التصنيف المعدل (2001)</h3>
+                <p class="text-gray-700 mb-3">قام أندرسون وكراثوول بمراجعة التصنيف الأصلي، حيث تم تغيير الأسماء من صيغ الأسماء إلى صيغ الأفعال (مثل "المعرفة" إلى "التذكر")، وتم تبديل المستويين الأخيرين ليصبح "الإبداع" هو قمة الهرم.</p>
+                <p class="text-gray-600 text-sm italic">Anderson, L. W., & Krathwohl, D. R. (2001). A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives.</p>
+            </div>
+            <div class="bg-purple-50 p-6 rounded-xl">
+                <h3 class="text-xl font-bold text-purple-900 mb-3">📱 هرم بلوم الرقمي (2008)</h3>
+                <p class="text-gray-700 mb-3">طور آلان كارينغتون "هرم بلوم الرقمي" لربط المستويات المعرفية بالأدوات والأنشطة التكنولوجية الحديثة. هذا النموذج هو محور دورتنا التدريبية، حيث يوضح كيف يمكن استخدام التكنولوجيا لتعزيز مهارات التفكير العليا (HOTS) بدلاً من الاقتصار على المهارات الدنيا (LOTS).</p>
+                <p class="text-gray-600 text-sm italic">Carrington, A. (2008). Bloom's Digital Taxonomy. (Based on work from multiple sources, popularized online).</p>
+            </div>
+
+            <!-- مراجع أكاديمية حديثة -->
+            <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">مراجعات أكاديمية حديثة (ما بعد 2017)</h3>
+            
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4">
+                <div class="pb-4 border-b border-gray-200">
+                    <h4 class="text-lg font-bold text-gray-800 mb-2">تطبيق التصنيف في عصر الأجيال الرقمية (2017)</h4>
+                    <p class="text-gray-700 mb-3">دراسة تستعرض تطور هرم بلوم وتطبيقه على "الأجيال الرقمية"، مؤكدة على ضرورة ربط الفصول الدراسية بالواقع التكنولوجي لبناء مهارات التفكير العليا.</p>
+                    <p class="text-gray-600 text-sm italic">O’Rourke, M., & Stick, S. (2017). The Technology Driven Student: How to Apply Bloom's Revised Taxonomy to the Digital Generations. Journal of Education & Social Policy, 4(1).</p>
+                </div>
+            
+                <div class="pb-4 border-b border-gray-200">
+                    <h4 class="text-lg font-bold text-gray-800 mb-2">هرم بلوم الرقمي ومهارات القرن 21 (2020)</h4>
+                    <p class="text-gray-700 mb-3">بحث أكاديمي باللغة العربية يحلل العلاقة العميقة بين مستويات هرم بلوم الرقمي (BDT) ومتطلبات مهارات القرن الحادي والعشرين، وكيفية استخدام التكنولوجيا كجسر بينهما.</p>
+                    <p class="text-gray-600 text-sm italic">عبدالرحمن، محمود. (2020). تصنيف بلوم الرقمي وعالقته بمهارات القرن الحادي والعشرين. مجلة تكنولوجيا التعليم - دراسات وبحوث.</p>
+                </div>
+            
+                <div>
+                    <h4 class="text-lg font-bold text-gray-800 mb-2">دراسة مقارنة لاستخدام هرم بلوم الرقمي (2020)</h4>
+                    <p class="text-gray-700 mb-3">دراسة تجريبية قارنت بين معرفة واستخدام المعلمين والطلاب لهرم بلوم الرقمي في بيئات التعلم الافتراضية والتقليدية، وأوصت بتبني التصنيف الرقمي في تصميم المناهج والتقييم.</p>
+                    <p class="text-gray-600 text-sm italic">Amin, H., & Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. Asian Association of Open Universities Journal, 15(2).</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-gray-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-sm">تم اعداد التقرير التفاعلي لغرض التعلم والمعرفة</p>
+        <p class="text-xs text-gray-400 mt-2">© بندر الأسمري 2025 جميع الحقوق محفوظة</p>
+    </div>
+</footer>
+
+<script>
+// دالة لفتح وإغلاق الأهداف السلوكية
+function toggleObjective(id) {
+    const content = document.getElementById(`content-${id}`);
+    const icon = document.getElementById(`icon-${id}`);
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        content.classList.add('fade-in');
+        icon.textContent = '▲';
+    } else {
+        content.classList.add('hidden');
+        content.classList.remove('fade-in');
+        icon.textContent = '▼';
+    }
+}
+
+// بيانات الأدوات الرقمية لكل مستوى
+const digitalTools = {
+    create: {
+        title: "🎨 أدوات الإبداع (Create)",
+        tools: [
+            { name: "Canva", desc: "تصميم انفوجرافيك وعروض تقديمية", url: "https://www.canva.com/" },
+            { name: "Adobe Express", desc: "إنشاء مقاطع فيديو ورسومات", url: "https://www.adobe.com/express/" },
+            { name: "Book Creator", desc: "تأليف كتب رقمية تفاعلية", url: "https://bookcreator.com/" },
+            { name: "Scratch", desc: "برمجة قصص وألعاب تفاعلية", url: "https://scratch.mit.edu/" },
+            { name: "Anchor.fm", desc: "إنشاء وتسجيل بودكاست", url: "https://anchor.fm/" }
+        ],
+        color: "bg-red-100",
+        borderColor: "border-red-500"
+    },
+    evaluate: {
+        title: "⚖️ أدوات التقييم (Evaluate)",
+        tools: [
+            { name: "Padlet", desc: "جدارية للنقد البناء وتقييم الأقران", url: "https://padlet.com/" },
+            { name: "Google Forms", desc: "تصميم استبيانات ومعايير تقييم", url: "https://forms.google.com/" },
+            { name: "Tricider", desc: "أداة لاتخاذ القرارات والتصويت", url: "https://www.tricider.com/" },
+            { name: "Flip (Flipgrid)", desc: "مناقشات فيديو لتقديم تغذية راجعة", url: "https://info.flip.com/" }
+        ],
+        color: "bg-orange-100",
+        borderColor: "border-orange-500"
+    },
+    analyze: {
+        title: "🔍 أدوات التحليل (Analyze)",
+        tools: [
+            { name: "MindMeister", desc: "إنشاء خرائط ذهنية لتحليل الأفكار", url: "https://www.mindmeister.com/" },
+            { name: "Coggle", desc: "تصميم خرائط مفاهيمية لربط المعلومات", url: "https://coggle.it/" },
+            { name: "Google Sheets", desc: "تحليل البيانات وإنشاء رسوم بيانية", url: "https://sheets.google.com/" },
+            { name: "SurveyMonkey", desc: "تحليل نتائج الاستبيانات", url: "https://www.surveymonkey.com/" }
+        ],
+        color: "bg-yellow-100",
+        borderColor: "border-yellow-500"
+    },
+    apply: {
+        title: "🛠️ أدوات التطبيق (Apply)",
+        tools: [
+            { name: "Google Docs", desc: "تحرير المستندات بشكل تعاوني", url: "https://docs.google.com/" },
+            { name: "Microsoft PowerPoint", desc: "تطبيق المعرفة في عروض تقديمية", url: "https://www.microsoft.com/powerpoint" },
+            { name: "GeoGebra", desc: "تطبيق المفاهيم الرياضية بشكل تفاعلي", url: "https://www.geogebra.org/" },
+            { name: "Tinkercad", desc: "تطبيق مهارات التصميم ثلاثي الأبعاد", url: "https://www.tinkercad.com/" }
+        ],
+        color: "bg-green-100",
+        borderColor: "border-green-500"
+    },
+    understand: {
+        title: "💡 أدوات الفهم (Understand)",
+        tools: [
+            { name: "Explain Everything", desc: "لوحة بيضاء تفاعلية لشرح المفاهيم", url: "https://explaineverything.com/" },
+            { name: "Padlet", desc: "تلخيص الأفكار الرئيسية ومشاركتها", url: "https://padlet.com/" },
+            { name: "Popplet", desc: "تنظيم الأفكار والمفاهيم بصرياً", url: "http://popplet.com/" },
+            { name: "YouTube", desc: "البحث عن شروحات مرئية للمفاهيم", url: "https://www.youtube.com/" }
+        ],
+        color: "bg-blue-100",
+        borderColor: "border-blue-500"
+    },
+    remember: {
+        title: "📚 أدوات التذكر (Remember)",
+        tools: [
+            { name: "Quizlet", desc: "إنشاء بطاقات تعليمية للمراجعة", url: "https://quizlet.com/" },
+            { name: "Kahoot!", desc: "ألعاب واختبارات سريعة لاسترجاع المعلومات", url: "https://kahoot.com/" },
+            { name: "Anki", desc: "نظام بطاقات تعليمية متباعدة", url: "https://apps.ankiweb.net/" },
+            { name: "Google Search", desc: "البحث عن تعريفات وحقائق أساسية", url: "https://google.com/" }
+        ],
+        color: "bg-purple-100",
+        borderColor: "border-purple-500"
+    }
+};
+
+// دالة لإظهار الأدوات عند النقر على مستوى
+function showTools(level) {
+    const toolsData = digitalTools[level];
+    const display = document.getElementById('tools-display');
+    const title = document.getElementById('tools-title');
+    const grid = document.getElementById('tools-grid');
+
+    // إعداد العنوان والألوان
+    title.textContent = toolsData.title;
+    display.className = `p-6 rounded-xl border-t-4 fade-in ${toolsData.color} ${toolsData.borderColor}`; // إعادة تعيين الفئات
+    
+    // مسح الشبكة القديمة
+    grid.innerHTML = '';
+
+    // ملء الشبكة بالأدوات الجديدة
+    toolsData.tools.forEach(tool => {
+        const card = `
+            <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="tool-card block bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <h4 class="font-bold text-blue-700">${tool.name}</h4>
+                <p class="text-sm text-gray-600">${tool.desc}</p>
+            </a>
+        `;
+        grid.innerHTML += card;
+    });
+
+    // إظهار القسم
+    display.classList.remove('hidden');
+    // التمرير إلى قسم الأدوات
+    display.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// إعداد الرسم البياني
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('scheduleChart').getContext('2d');
+    
+    // تخصيص الخطوط العربية
+    Chart.defaults.font.family = "'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    Chart.defaults.font.size = 14;
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [
+                'اليوم 1: الجلسة 1 (الأساسيات)',
+                'اليوم 1: الجلسة 2 (الأدوات)',
+                'اليوم 1: الجلسة 3 (ورشة عمل)',
+                'اليوم 2: الجلسة 1 (HOTS)',
+                'اليوم 2: الجلسة 2 (الإبداع)',
+                'اليوم 2: الجلسة 3 (الختام)'
+            ],
+            datasets: [{
+                label: 'مدة الجلسة (ساعة)',
+                data: [2, 1.5, 1.5, 2, 2, 1],
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.7)', // أزرق
+                    'rgba(34, 197, 94, 0.7)', // أخضر
+                    'rgba(245, 158, 11, 0.7)', // أصفر
+                    'rgba(168, 85, 247, 0.7)', // بنفسجي
+                    'rgba(239, 68, 68, 0.7)', // أحمر
+                    'rgba(107, 114, 128, 0.7)' // رمادي
+                ],
+                borderColor: [
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(168, 85, 247, 1)',
+                    'rgba(239, 68, 68, 1)',
+                    'rgba(107, 114, 128, 1)'
+                ],
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y', // جعل الرسم البياني أفقيًا لتسهيل القراءة
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'المدة بالساعات'
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'توزيع ساعات الدورة التدريبية (10 ساعات)',
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 20
+                    }
+                },
+                legend: {
+                    display: false // إخفاء التسمية (label) لأنها واضحة
+                },
+                tooltip: {
+                    rtl: true, // تفعيل دعم الـ RTL للـ Tooltip
+                    callbacks: {
+                        label: function(context) {
+                            return ` المدة: ${context.raw} ساعات`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // التمرير السلس للروابط الداخلية
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+});
+</script>
+
+</body>
+</html>
+
