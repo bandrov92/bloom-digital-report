@@ -12,7 +12,6 @@ body {
   box-sizing: border-box;
   font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   scroll-behavior: smooth;
-  padding-top: 50px; /* Add padding for fixed progress bar */
 }
 * {
   font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -112,6 +111,49 @@ a.inline-link:hover {
 .lesson-template button:hover {
     background-color: #2563eb; /* bg-blue-700 */
 }
+/* Gemini AI Button Style */
+.gemini-button {
+    background: linear-gradient(to right, #4f46e5, #7c3aed); /* indigo-600 to purple-600 */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-top: 10px;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.gemini-button:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.gemini-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loader for Gemini Button */
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #7c3aed;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.gemini-error {
+    color: #ef4444; /* red-500 */
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
 .saved-message {
     color: #16a34a; /* green-600 */
     font-size: 0.875rem;
@@ -163,42 +205,13 @@ a.inline-link:hover {
   border-radius: 0.5rem; /* rounded-lg */
 }
 
-/* Progress Indicator */
-#progress-container {
-  position: fixed;
-  top: 0;
-  right: 0; /* Adjusted for RTL */
-  left: 0;
-  width: 100%;
-  height: 50px; /* Height of the bar container */
-  background-color: #e5e7eb; /* gray-200 */
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.progress-segment {
-  height: 30px; /* Height of the colored segment */
-  line-height: 30px; /* Center text vertically */
-  text-align: center;
-  color: white;
-  font-size: 0.75rem; /* Smaller text */
-  overflow: hidden;
-  white-space: nowrap;
-  border-left: 1px solid #f9fafb; /* gray-50 separator */
-}
-.progress-segment:first-child {
-  border-left: none;
-}
-
 /* Print Styles */
 @media print {
   body {
     padding-top: 0;
     font-size: 10pt;
   }
-  header, footer, #progress-container, nav, button, #tools-display, #video-modal, .bloom-level, .tool-card {
+  header, footer, nav, button, #tools-display, #video-modal, .bloom-level, .tool-card {
     display: none !important; /* Hide non-essential elements */
   }
   main {
@@ -251,18 +264,8 @@ a.inline-link:hover {
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-full">
 
-<!-- Progress Indicator -->
-<div id="progress-container">
-  <div class="progress-segment bg-blue-500" style="width: 20%;">الجلسة 1</div>
-  <div class="progress-segment bg-blue-600" style="width: 15%;">الجلسة 2</div>
-  <div class="progress-segment bg-blue-700" style="width: 15%;">الجلسة 3</div>
-  <div class="progress-segment bg-purple-500" style="width: 20%;">الجلسة 4</div>
-  <div class="progress-segment bg-purple-600" style="width: 20%;">الجلسة 5</div>
-  <div class="progress-segment bg-purple-700" style="width: 10%;">الجلسة 6</div>
-</div>
-
 <!-- Header -->
-<header class="bg-white shadow-md sticky top-[50px] z-50"> <!-- Adjusted top for progress bar -->
+<header class="bg-white shadow-md sticky top-0 z-50">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
     <div class="flex items-center space-x-3 space-x-reverse">
       <img src="logo.jpg" alt="شعار" class="h-10 w-10 object-contain rounded-full border-2 border-blue-500 p-0.5" onerror="this.alt='شعار'; this.src='https://placehold.co/40x40/3B82F6/FFFFFF?text=BA';">
@@ -326,7 +329,6 @@ a.inline-link:hover {
           يتمكن المتدرب من تحليل المستويات الستة لهرم بلوم (التذكر، الفهم، التطبيق، التحليل، التقييم، الإبداع) وتحديد خصائص كل مستوى بدقة.
         </div>
       </div>
-      <!-- Add other objectives similarly -->
        <!-- Objective 2 -->
       <div class="objective-item bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-blue-500 cursor-pointer" onclick="toggleObjective(2)">
         <div class="flex justify-between items-center">
@@ -691,17 +693,93 @@ a.inline-link:hover {
               <tbody> <tr> <td><textarea id="lt-justification" placeholder="لماذا اخترت هذه الأدوات لهذه المستويات؟..."></textarea></td> </tr> </tbody>
             </table>
           </div>
+          <!-- Gemini AI Button -->
+          <button type="button" id="gemini-suggest-button" onclick="suggestLessonIdeas()" class="gemini-button">
+              ✨ اقتراح خطة درس بالذكاء الاصطناعي
+              <div id="gemini-loader" class="loader hidden"></div>
+          </button>
+          
           <button type="button" onclick="saveLessonTemplate()">💾 حفظ المسودة</button>
           <button type="button" onclick="loadLessonTemplate()">🔄 استعادة المسودة</button>
           <span id="save-status" class="saved-message"></span>
+          <div id="gemini-error" class="gemini-error"></div> <!-- For API Errors -->
         </form>
        </div>
     </div>
     
-    <!-- Resource 3: Scientific Foundation -->
+    <!-- Resource 3: Case Studies -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-case-studies')">
+        <h3 class="text-xl font-bold text-gray-700">🌟 ملحق (ج): دراسات حالة (أمثلة واقعية)</h3>
+        <span id="icon-res-case-studies" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-case-studies" class="mt-3 text-gray-700 hidden space-y-3">
+        <div class="bg-white p-3 rounded-lg border">
+            <h4 class="font-bold text-green-700">مثال 1: استخدام Padlet للتقييم (مستوى التقييم)</h4>
+            <p class="text-sm">معلمة لغة عربية طلبت من طلابها نشر مسوداتهم لمقالة نقدية على Padlet. ثم قام كل طالب بتقديم تغذية راجعة بناءة (باستخدام معايير محددة) لزميلين آخرين. المعلمة استخدمت Padlet لمتابعة النقاش وتقييم قدرة الطلاب على النقد وإصدار الأحكام.</p>
+        </div>
+        <div class="bg-white p-3 rounded-lg border">
+            <h4 class="font-bold text-red-700">مثال 2: استخدام Canva للإبداع (مستوى الإبداع)</h4>
+            <p class="text-sm">معلم دراسات اجتماعية طلب من الطلاب تصميم "إنفوجرافيك" (Infographic) باستخدام Canva يشرح أحد مشاريع رؤية 2030 (مثل نيوم أو ذا لاين)، مع التركيز على الأهداف المستقبلية وجاذبية العرض البصري.</p>
+        </div>
+         <!-- Add more case studies as needed -->
+      </div>
+    </div>
+
+     <!-- Resource 4: Assessment Strategies -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-assessment')">
+        <h3 class="text-xl font-bold text-gray-700">📊 ملحق (د): استراتيجيات التقييم الرقمي</h3>
+        <span id="icon-res-assessment" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-assessment" class="mt-3 text-gray-700 hidden space-y-3">
+        <p>عند تقييم مخرجات الطلاب باستخدام الأدوات الرقمية، خاصة في مستويات HOTS، ركز على:</p>
+        <ul class="list-disc list-inside space-y-1">
+            <li><strong>مقاييس التقييم (Rubrics):</strong> استخدم مقاييس تقييم واضحة تحدد معايير النجاح للمهام الإبداعية أو التحليلية (مثل تصميم فيديو أو تحليل بيانات).</li>
+            <li><strong>تقييم الأقران المنظم:</strong> وجه الطلاب لتقديم تغذية راجعة بناءة باستخدام نماذج أو أسئلة محددة (كما في مثال Padlet).</li>
+            <li><strong>الملف الرقمي (ePortfolio):</strong> شجع الطلاب على جمع أفضل أعمالهم الرقمية في ملف إلكتروني يعكس تطور مهاراتهم.</li>
+            <li><strong>التأمل الذاتي:</strong> اطلب من الطلاب تقييم عملهم وشرح عملية تفكيرهم (يمكن استخدام Flip أو مدونة بسيطة).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Resource 5: Common Challenges -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-challenges')">
+        <h3 class="text-xl font-bold text-gray-700">🚧 ملحق (هـ): معالجة التحديات الشائعة</h3>
+        <span id="icon-res-challenges" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-challenges" class="mt-3 text-gray-700 hidden space-y-3">
+         <ul class="list-disc list-inside space-y-2">
+            <li><strong>ضعف البنية التحتية (الإنترنت/الأجهزة):</strong> خطط لأنشطة يمكن تنفيذها جزئياً دون اتصال بالإنترنت، وشجع على استخدام الهواتف الذكية كبديل، وفكر في استراتيجيات العمل الجماعي لتقليل الحاجة للأجهزة.</li>
+            <li><strong>مقاومة التغيير (طلاب/معلمين):</strong> ابدأ بدمج أدوات بسيطة ومألوفة، وركز على القيمة المضافة، واعرض نماذج ناجحة، وقدم الدعم الفني والبيداغوجي المستمر.</li>
+            <li><strong>نقص التدريب:</strong> شجع على التعلم المستمر وتبادل الخبرات بين الزملاء، واستفد من الموارد المجانية المتاحة عبر الإنترنت (مثل فيديوهات الشرح).</li>
+            <li><strong>إدارة الوقت:</strong> ابدأ بدمج التكنولوجيا في جزء صغير من الدرس، وركز على الأدوات التي توفر الوقت على المدى الطويل (مثل التقييم التلقائي).</li>
+        </ul>
+      </div>
+    </div>
+
+     <!-- Resource 6: Further Learning -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-further-learning')">
+        <h3 class="text-xl font-bold text-gray-700">🔗 ملحق (و): مجتمعات مهنية ومتابعة التعلم</h3>
+        <span id="icon-res-further-learning" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-further-learning" class="mt-3 text-gray-700 hidden space-y-3">
+        <p>استمر في تطوير مهاراتك من خلال:</p>
+         <ul class="list-disc list-inside space-y-2">
+            <li><strong>تويتر (X):</strong> متابعة الهاشتاجات التعليمية مثل #التعليم_الرقمي، #تقنيات_التعليم والمختصين في المجال.</li>
+            <li><strong>مجموعات فيسبوك/واتساب:</strong> الانضمام إلى مجموعات المعلمين المهتمين بدمج التكنولوجيا.</li>
+            <li><strong>مواقع متخصصة:</strong> زيارة مواقع مثل "تعليم جديد"، "Edutopia" (باللغة الإنجليزية مع ترجمة).</li>
+            <li><strong>دورات عبر الإنترنت:</strong> منصات مثل Coursera, Edraak تقدم دورات متخصصة في تكنولوجيا التعليم.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Resource 7: Scientific Foundation -->
     <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
       <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('foundation')">
-        <h3 class="text-xl font-bold text-gray-700">📜 ملحق (ج): الأساس العلمي والمراجع</h3>
+        <h3 class="text-xl font-bold text-gray-700">📜 ملحق (ز): الأساس العلمي والمراجع</h3>
         <span id="icon-foundation" class="text-gray-600 text-xl">▼</span>
       </div>
       <div id="content-foundation" class="mt-3 text-gray-700 hidden">
@@ -729,76 +807,6 @@ a.inline-link:hover {
         </div>
       </div>
     </div>
-
-    <!-- Resource 4: Case Studies -->
-    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
-      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-case-studies')">
-        <h3 class="text-xl font-bold text-gray-700">🌟 ملحق (د): دراسات حالة (أمثلة واقعية)</h3>
-        <span id="icon-res-case-studies" class="text-gray-600 text-xl">▼</span>
-      </div>
-      <div id="content-res-case-studies" class="mt-3 text-gray-700 hidden space-y-3">
-        <div class="bg-white p-3 rounded-lg border">
-            <h4 class="font-bold text-green-700">مثال 1: استخدام Padlet للتقييم (مستوى التقييم)</h4>
-            <p class="text-sm">معلمة لغة عربية طلبت من طلابها نشر مسوداتهم لمقالة نقدية على Padlet. ثم قام كل طالب بتقديم تغذية راجعة بناءة (باستخدام معايير محددة) لزميلين آخرين. المعلمة استخدمت Padlet لمتابعة النقاش وتقييم قدرة الطلاب على النقد وإصدار الأحكام.</p>
-        </div>
-        <div class="bg-white p-3 rounded-lg border">
-            <h4 class="font-bold text-red-700">مثال 2: استخدام Canva للإبداع (مستوى الإبداع)</h4>
-            <p class="text-sm">معلم تاريخ طلب من الطلاب تصميم "ملصق إعلاني" (Poster) باستخدام Canva للترويج لحدث تاريخي مهم (مثل افتتاح قناة السويس)، مع مراعاة دقة المعلومات التاريخية وجاذبية التصميم.</p>
-        </div>
-         <!-- Add more case studies as needed -->
-      </div>
-    </div>
-
-     <!-- Resource 5: Assessment Strategies -->
-    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
-      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-assessment')">
-        <h3 class="text-xl font-bold text-gray-700">📊 ملحق (هـ): استراتيجيات التقييم الرقمي</h3>
-        <span id="icon-res-assessment" class="text-gray-600 text-xl">▼</span>
-      </div>
-      <div id="content-res-assessment" class="mt-3 text-gray-700 hidden space-y-3">
-        <p>عند تقييم مخرجات الطلاب باستخدام الأدوات الرقمية، خاصة في مستويات HOTS، ركز على:</p>
-        <ul class="list-disc list-inside space-y-1">
-            <li><strong>مقاييس التقييم (Rubrics):</strong> استخدم مقاييس تقييم واضحة تحدد معايير النجاح للمهام الإبداعية أو التحليلية (مثل تصميم فيديو أو تحليل بيانات).</li>
-            <li><strong>تقييم الأقران المنظم:</strong> وجه الطلاب لتقديم تغذية راجعة بناءة باستخدام نماذج أو أسئلة محددة (كما في مثال Padlet).</li>
-            <li><strong>الملف الرقمي (ePortfolio):</strong> شجع الطلاب على جمع أفضل أعمالهم الرقمية في ملف إلكتروني يعكس تطور مهاراتهم.</li>
-            <li><strong>التأمل الذاتي:</strong> اطلب من الطلاب تقييم عملهم وشرح عملية تفكيرهم (يمكن استخدام Flip أو مدونة بسيطة).</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Resource 6: Common Challenges -->
-    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
-      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-challenges')">
-        <h3 class="text-xl font-bold text-gray-700">🚧 ملحق (و): معالجة التحديات الشائعة</h3>
-        <span id="icon-res-challenges" class="text-gray-600 text-xl">▼</span>
-      </div>
-      <div id="content-res-challenges" class="mt-3 text-gray-700 hidden space-y-3">
-         <ul class="list-disc list-inside space-y-2">
-            <li><strong>ضعف البنية التحتية (الإنترنت/الأجهزة):</strong> خطط لأنشطة يمكن تنفيذها جزئياً دون اتصال بالإنترنت، وشجع على استخدام الهواتف الذكية كبديل، وفكر في استراتيجيات العمل الجماعي لتقليل الحاجة للأجهزة.</li>
-            <li><strong>مقاومة التغيير (طلاب/معلمين):</strong> ابدأ بدمج أدوات بسيطة ومألوفة، وركز على القيمة المضافة، واعرض نماذج ناجحة، وقدم الدعم الفني والبيداغوجي المستمر.</li>
-            <li><strong>نقص التدريب:</strong> شجع على التعلم المستمر وتبادل الخبرات بين الزملاء، واستفد من الموارد المجانية المتاحة عبر الإنترنت (مثل فيديوهات الشرح).</li>
-            <li><strong>إدارة الوقت:</strong> ابدأ بدمج التكنولوجيا في جزء صغير من الدرس، وركز على الأدوات التي توفر الوقت على المدى الطويل (مثل التقييم التلقائي).</li>
-        </ul>
-      </div>
-    </div>
-
-     <!-- Resource 7: Further Learning -->
-    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
-      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-further-learning')">
-        <h3 class="text-xl font-bold text-gray-700">🔗 ملحق (ز): مجتمعات مهنية ومتابعة التعلم</h3>
-        <span id="icon-res-further-learning" class="text-gray-600 text-xl">▼</span>
-      </div>
-      <div id="content-res-further-learning" class="mt-3 text-gray-700 hidden space-y-3">
-        <p>استمر في تطوير مهاراتك من خلال:</p>
-         <ul class="list-disc list-inside space-y-2">
-            <li><strong>تويتر (X):</strong> متابعة الهاشتاجات التعليمية مثل #التعليم_الرقمي، #تقنيات_التعليم والمختصين في المجال.</li>
-            <li><strong>مجموعات فيسبوك/واتساب:</strong> الانضمام إلى مجموعات المعلمين المهتمين بدمج التكنولوجيا.</li>
-            <li><strong>مواقع متخصصة:</strong> زيارة مواقع مثل "تعليم جديد"، "Edutopia" (باللغة الإنجليزية مع ترجمة).</li>
-            <li><strong>دورات عبر الإنترنت:</strong> منصات مثل Coursera, Edraak تقدم دورات متخصصة في تكنولوجيا التعليم.</li>
-        </ul>
-      </div>
-    </div>
-
   </section>
 
 </main>
@@ -827,6 +835,10 @@ const modal = document.getElementById('video-modal');
 const iframe = document.getElementById('video-iframe');
 const lessonTemplateForm = document.getElementById('lesson-template-form');
 const saveStatus = document.getElementById('save-status');
+const geminiErrorEl = document.getElementById('gemini-error');
+const geminiLoader = document.getElementById('gemini-loader');
+const geminiButton = document.getElementById('gemini-suggest-button');
+
 const templateFields = [ // IDs for lesson template textareas
     'lt-teacher-name', 'lt-subject', 'lt-lesson-title', 'lt-original-goal',
     'lt-level1', 'lt-task1', 'lt-tool1',
@@ -960,6 +972,127 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Reset save status message on initial load
     if(saveStatus) saveStatus.textContent = '';
 });
+
+// --- Gemini AI Functions ---
+
+// 1. Set API Key and URL
+const apiKey = ""; // Leave as-is, Canvas will provide it.
+const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+// 2. Main function to call the API
+async function callGeminiApi(prompt, schema, retries = 3, delay = 1000) {
+    const systemInstruction = "أنت خبير في التصميم التعليمي وتطبيقات هرم بلوم الرقمي. مهمتك هي مساعدة المعلمين على إنشاء خطط دروس مبتكرة. قدم إجابات باللغة العربية.";
+    
+    const payload = {
+      contents: [{ parts: [{ text: prompt }] }],
+      systemInstruction: {
+        parts: [{ text: systemInstruction }]
+      },
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: schema,
+        temperature: 0.8,
+      }
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            if (response.status === 429 && retries > 0) { // Handle throttling
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return callGeminiApi(prompt, schema, retries - 1, delay * 2); // Exponential backoff
+            }
+            throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.json();
+
+        if (result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            const jsonText = result.candidates[0].content.parts[0].text;
+            return JSON.parse(jsonText); // Return the parsed JSON object/array
+        } else {
+            console.error("Unexpected API response structure:", result);
+            throw new Error("لم يتمكن الذكاء الاصطناعي من توليد استجابة صالحة.");
+        }
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        throw error;
+    }
+}
+
+// 3. Function to handle the "Suggest" button click
+async function suggestLessonIdeas() {
+    if (geminiLoader) geminiLoader.classList.remove('hidden');
+    if (geminiButton) geminiButton.disabled = true;
+    if (geminiErrorEl) geminiErrorEl.textContent = '';
+    if (saveStatus) saveStatus.textContent = '';
+
+    try {
+        const lessonTitleEl = document.getElementById('lt-lesson-title');
+        const originalGoalEl = document.getElementById('lt-original-goal');
+
+        const lessonTitle = lessonTitleEl ? lessonTitleEl.value : '';
+        const originalGoal = originalGoalEl ? originalGoalEl.value : '';
+
+        if (!lessonTitle || !originalGoal) {
+            throw new Error("الرجاء إدخال (عنوان الدرس) و (الهدف التقليدي) أولاً.");
+        }
+
+        // Define the prompt and schema for the API
+        const userQuery = `بالنسبة لدرس بعنوان "${lessonTitle}" وهدفه التقليدي هو "${originalGoal}"، قم بإنشاء خطة درس من 3 أنشطة تغطي المستويات التالية: 1. التذكر (Remembering)، 2. التطبيق (Applying)، 3. الإبداع (Creating). لكل نشاط، قدم وصفاً للمهمة من جملة واحدة، واقترح أداة رقمية مناسبة.`;
+
+        const schema = {
+          type: "ARRAY",
+          maxItems: 3,
+          items: {
+            type: "OBJECT",
+            properties: {
+              level: { type: "STRING" },
+              task: { type: "STRING" },
+              tool: { type: "STRING" }
+            },
+            required: ["level", "task", "tool"]
+          }
+        };
+        
+        // Call the API
+        const activities = await callGeminiApi(userQuery, schema);
+
+        // Populate the form with the response
+        if (activities && activities.length === 3) {
+            // Activity 1
+            document.getElementById('lt-level1').value = activities[0].level;
+            document.getElementById('lt-task1').value = activities[0].task;
+            document.getElementById('lt-tool1').value = activities[0].tool;
+            // Activity 2
+            document.getElementById('lt-level2').value = activities[1].level;
+            document.getElementById('lt-task2').value = activities[1].task;
+            document.getElementById('lt-tool2').value = activities[1].tool;
+            // Activity 3
+            document.getElementById('lt-level3').value = activities[2].level;
+            document.getElementById('lt-task3').value = activities[2].task;
+            document.getElementById('lt-tool3').value = activities[2].tool;
+            
+            // Clear justification field
+            document.getElementById('lt-justification').value = 'تم إنشاء هذه الخطة بواسطة Gemini. الرجاء مراجعتها وتبرير الاختيارات.';
+        } else {
+            throw new Error("الاستجابة المستلمة من الذكاء الاصطناعي غير مكتملة.");
+        }
+
+    } catch (error) {
+        if (geminiErrorEl) geminiErrorEl.textContent = `خطأ: ${error.message}`;
+    } finally {
+        if (geminiLoader) geminiLoader.classList.add('hidden');
+        if (geminiButton) geminiButton.disabled = false;
+    }
+}
 
 </script>
 
