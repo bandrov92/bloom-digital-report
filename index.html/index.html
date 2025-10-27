@@ -7,10 +7,12 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <style>
+/* --- General Styles --- */
 body {
   box-sizing: border-box;
   font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   scroll-behavior: smooth;
+  padding-top: 50px; /* Add padding for fixed progress bar */
 }
 * {
   font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,55 +30,40 @@ border-radius: 10px;
 ::-webkit-scrollbar-thumb:hover {
 background: #94a3b8;
 }
-.objective-item {
-transition: all 0.3s ease;
+
+/* --- Interactive Elements & Animations --- */
+.objective-item, .activity-item, .resource-item { /* Unified class for collapsible items */
+  transition: all 0.3s ease;
+  border-left-width: 4px; /* Use left border for consistency */
+  border-right-width: 0;
 }
-.objective-item:hover {
-transform: translateX(-5px);
+.objective-item:hover, .activity-item:hover, .resource-item:hover {
+  transform: translateX(5px); /* Changed direction for RTL */
 }
 .bloom-level {
-transition: all 0.3s ease;
-cursor: pointer;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 .bloom-level:hover {
-transform: scale(1.05);
-box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 .tool-card {
-transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
 .tool-card:hover {
-transform: translateY(-5px);
-box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 .fade-in {
-animation: fadeIn 0.5s ease-in;
+  animation: fadeIn 0.5s ease-in;
 }
 @keyframes fadeIn {
-from { opacity: 0; transform: translateY(20px); }
-to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-/* أيقونة يوتيوب المخصصة */
-.youtube-icon {
-  width: 28px;
-  height: 20px;
-  background-color: #FF0000;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 8px;
-  transition: transform 0.2s ease;
-}
-.youtube-icon:hover {
-  transform: scale(1.1);
-}
-.youtube-icon::after {
-  content: '';
-  border-left: 6px solid white;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-}
+
+/* --- Specific Elements --- */
 a.inline-link {
   color: #2563eb; /* text-blue-600 */
   text-decoration: none;
@@ -85,12 +72,13 @@ a.inline-link {
 a.inline-link:hover {
   text-decoration: underline;
 }
-/* تنسيق قالب الدرس */
+/* Lesson Template Styling */
 .lesson-template th {
   background-color: #f3f4f6; /* bg-gray-100 */
   border: 1px solid #d1d5db; /* border-gray-300 */
   padding: 10px;
   text-align: right;
+  font-weight: bold;
 }
 .lesson-template td {
   border: 1px solid #d1d5db; /* border-gray-300 */
@@ -104,80 +92,177 @@ a.inline-link:hover {
   padding: 8px;
   font-size: 14px;
   min-height: 80px;
+  resize: vertical; /* Allow vertical resizing */
 }
 .lesson-template th:first-child, .lesson-template td:first-child {
   background-color: #f9fafb; /* bg-gray-50 */
   font-weight: bold;
+  width: 150px; /* Fixed width for labels */
+}
+.lesson-template button {
+    background-color: #3b82f6; /* bg-blue-600 */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-top: 10px;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.lesson-template button:hover {
+    background-color: #2563eb; /* bg-blue-700 */
+}
+.saved-message {
+    color: #16a34a; /* green-600 */
+    font-size: 0.875rem;
+    margin-top: 5px;
 }
 
-/* 1. تنسيقات نافذة الفيديو المنبثقة (Modal) */
+/* Video Modal Styles */
 .video-modal {
-  display: none; /* مخفي افتراضياً */
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.7); /* خلفية سوداء شبه شفافة */
-  animation: fadeIn 0.3s ease;
+  display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.7); animation: fadeIn 0.3s ease;
 }
 .video-modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: 5% auto; /* توسيط عمودي وأفقي */
-  padding: 0;
-  border: 1px solid #888;
-  width: 90%;
-  max-width: 800px; /* عرض أقصى 800px */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  border-radius: 8px;
-  overflow: hidden; /* لإخفاء زوايا iframe المدورة */
+  position: relative; background-color: #fefefe; margin: 5% auto; padding: 0; border: 1px solid #888; width: 90%; max-width: 800px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19); border-radius: 8px; overflow: hidden;
 }
 .video-modal-close {
-  color: white;
-  background-color: #ef4444; /* red-500 */
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  font-size: 20px;
-  font-weight: bold;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1001;
-  border: 2px solid white;
+  color: white; background-color: #ef4444; position: absolute; top: -10px; left: -10px; /* Adjusted for RTL */ font-size: 20px; font-weight: bold; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1001; border: 2px solid white;
 }
-.video-modal-close:hover,
-.video-modal-close:focus {
-  background-color: #dc2626; /* red-600 */
-  text-decoration: none;
-  cursor: pointer;
+.video-modal-close:hover, .video-modal-close:focus {
+  background-color: #dc2626; text-decoration: none; cursor: pointer;
 }
 .video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-  height: 0;
-  overflow: hidden;
+  position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
 }
 .video-wrapper iframe {
-  position: absolute;
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+}
+
+/* Trainer Notes Styling */
+.trainer-notes summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #1d4ed8; /* blue-700 */
+  margin-top: 10px;
+  display: inline-block;
+}
+.trainer-notes div {
+  background-color: #eff6ff; /* blue-50 */
+  border-left: 4px solid #3b82f6; /* blue-500 */
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 4px;
+}
+
+/* Workshop Highlighting */
+.workshop-section {
+  background-color: #f0f9ff; /* sky-50 */
+  border-left-color: #0ea5e9 !important; /* sky-500 */
+  padding: 1.5rem; /* p-6 */
+  margin-bottom: 1rem; /* mb-4 */
+  border-radius: 0.5rem; /* rounded-lg */
+}
+
+/* Progress Indicator */
+#progress-container {
+  position: fixed;
   top: 0;
+  right: 0; /* Adjusted for RTL */
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 50px; /* Height of the bar container */
+  background-color: #e5e7eb; /* gray-200 */
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.progress-segment {
+  height: 30px; /* Height of the colored segment */
+  line-height: 30px; /* Center text vertically */
+  text-align: center;
+  color: white;
+  font-size: 0.75rem; /* Smaller text */
+  overflow: hidden;
+  white-space: nowrap;
+  border-left: 1px solid #f9fafb; /* gray-50 separator */
+}
+.progress-segment:first-child {
+  border-left: none;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    padding-top: 0;
+    font-size: 10pt;
+  }
+  header, footer, #progress-container, nav, button, #tools-display, #video-modal, .bloom-level, .tool-card {
+    display: none !important; /* Hide non-essential elements */
+  }
+  main {
+    padding: 0;
+    margin: 0;
+  }
+  section {
+    box-shadow: none;
+    border: none;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    page-break-inside: avoid; /* Try to keep sections together */
+  }
+  h2, h3, h4 {
+    color: black !important;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 2px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  a.inline-link::after {
+    content: " (" attr(href) ")"; /* Show URLs in print */
+    font-size: 8pt;
+    color: #555;
+  }
+  .objective-item, .activity-item, .resource-item {
+    border: 1px solid #eee;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  /* Ensure collapsible content is visible */
+  .objective-item div[id^="content-"], .activity-item div[id^="content-"], .resource-item div[id^="content-"] {
+    display: block !important;
+    max-height: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .lesson-template textarea {
+      border: 1px dashed #ccc;
+      min-height: 50px;
+      background-color: #f9f9f9;
+      padding: 5px;
+  }
+  .lesson-template th, .lesson-template td {
+      padding: 5px;
+  }
+  .trainer-notes { display: none; } /* Hide trainer notes in print */
 }
 </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-full">
 
+<!-- Progress Indicator -->
+<div id="progress-container">
+  <div class="progress-segment bg-blue-500" style="width: 20%;">الجلسة 1</div>
+  <div class="progress-segment bg-blue-600" style="width: 15%;">الجلسة 2</div>
+  <div class="progress-segment bg-blue-700" style="width: 15%;">الجلسة 3</div>
+  <div class="progress-segment bg-purple-500" style="width: 20%;">الجلسة 4</div>
+  <div class="progress-segment bg-purple-600" style="width: 20%;">الجلسة 5</div>
+  <div class="progress-segment bg-purple-700" style="width: 10%;">الجلسة 6</div>
+</div>
+
 <!-- Header -->
-<header class="bg-white shadow-md sticky top-0 z-50">
+<header class="bg-white shadow-md sticky top-[50px] z-50"> <!-- Adjusted top for progress bar -->
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
     <div class="flex items-center space-x-3 space-x-reverse">
       <img src="logo.jpg" alt="شعار" class="h-10 w-10 object-contain rounded-full border-2 border-blue-500 p-0.5" onerror="this.alt='شعار'; this.src='https://placehold.co/40x40/3B82F6/FFFFFF?text=BA';">
@@ -186,8 +271,8 @@ a.inline-link:hover {
     <nav class="hidden sm:flex">
       <ul class="flex space-x-4 space-x-reverse text-sm sm:text-base">
         <li><a href="#intro" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">المقدمة</a></li>
-        <li><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخريطة التفاعلية</a></li>
-        <li><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">خطة الدورة</a></li>
+        <li><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخريطة</a></li>
+        <li><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخطة</a></li>
         <li><a href="#activities" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الأنشطة</a></li>
         <li><a href="#resources" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الموارد</a></li>
       </ul>
@@ -198,13 +283,13 @@ a.inline-link:hover {
   </div>
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden sm:hidden bg-white shadow-lg pb-4">
-    <ul class="flex flex-col items-center space-y-3 text-base">
-      <li><a href="#intro" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">المقدمة</a></li>
-      <li><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">الخريطة التفاعلية</a></li>
-      <li><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">خطة الدورة</a></li>
-      <li><a href="#activities" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">الأنشطة</a></li>
-      <li><a href="#resources" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">الموارد</a></li>
-    </ul>
+     <ul class="flex flex-col items-center space-y-3 text-base">
+        <li><a href="#intro" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">المقدمة</a></li>
+        <li><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">الخريطة</a></li>
+        <li><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">الخطة</a></li>
+        <li><a href="#activities" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">الأنشطة</a></li>
+        <li><a href="#resources" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium" onclick="toggleMenu()">الموارد</a></li>
+      </ul>
   </div>
 </header>
 
@@ -214,23 +299,25 @@ a.inline-link:hover {
   <section id="intro" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
     <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">👋 1. مقدمة الحقيبة وأهدافها</h2>
     <p class="text-gray-600 mb-6">هذه الحقيبة الرقمية مصممة لتمكين المدربين والمعلمين من تقديم ورشة عمل تفاعلية حول "تطبيقات هرم بلوم الرقمية". 🎯 الهدف هو تزويد المتدربين بالأساس النظري والمهارات العملية لدمج الأدوات الرقمية بفاعلية في فصولهم الدراسية، بما يتوافق مع مستويات التفكير العليا (HOTS).</p>
+    <p class="text-gray-600 mb-6">💡 **مراعاة التمايز:** تم تصميم الأنشطة لتكون مرنة. شجع المعلمين الأكثر خبرة على استكشاف أدوات متقدمة، وقدم دعماً إضافياً للمبتدئين.</p>
+    <p class="text-gray-600 mb-6">🤸 **كسر الجمود:** ابدأ كل يوم بنشاط قصير وممتع (مثل سؤال طريف عبر Mentimeter أو لعبة سريعة) لتنشيط المجموعة.</p>
 
     <h3 class="text-xl font-bold text-gray-700 mb-4">📦 مكونات الحقيبة الرقمية:</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-      <div class="p-4 bg-blue-50 border-r-4 border-blue-500 rounded-lg">
+      <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
         <h4 class="font-bold text-blue-900">1. الدليل التفاعلي (هذه الصفحة)</h4>
         <p class="text-sm text-gray-700">تحتوي على خطة الجلسات، الأنشطة، والخريطة التفاعلية والموارد.</p>
       </div>
-      <div class="p-4 bg-gray-100 border-r-4 border-gray-500 rounded-lg">
+      <div class="p-4 bg-gray-100 border-l-4 border-gray-500 rounded-lg">
         <h4 class="font-bold text-gray-800">2. الموارد المرفقة</h4>
-        <p class="text-sm text-gray-700">قوالب جاهزة للنسخ وقائمة أدوات مقترحة لكل مستوى.</p>
+        <p class="text-sm text-gray-700">قوالب تفاعلية وقائمة أدوات مقترحة لكل مستوى.</p>
       </div>
     </div>
 
     <h3 class="text-xl font-bold text-gray-700 mb-4">🎯 الأهداف السلوكية (7 أهداف)</h3>
     <div id="objectives-accordion" class="space-y-3">
       <!-- Objective 1 -->
-      <div class="objective-item bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-r-4 border-purple-500 cursor-pointer" onclick="toggleObjective(1)">
+      <div class="objective-item bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-purple-500 cursor-pointer" onclick="toggleObjective(1)">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-purple-900">1. تحليل مستويات هرم بلوم المعرفية</h4>
           <span id="icon-1" class="text-purple-600 text-xl">▼</span>
@@ -239,8 +326,9 @@ a.inline-link:hover {
           يتمكن المتدرب من تحليل المستويات الستة لهرم بلوم (التذكر، الفهم، التطبيق، التحليل، التقييم، الإبداع) وتحديد خصائص كل مستوى بدقة.
         </div>
       </div>
-      <!-- Objective 2 -->
-      <div class="objective-item bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-r-4 border-blue-500 cursor-pointer" onclick="toggleObjective(2)">
+      <!-- Add other objectives similarly -->
+       <!-- Objective 2 -->
+      <div class="objective-item bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-blue-500 cursor-pointer" onclick="toggleObjective(2)">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-blue-900">2. ربط الأدوات الرقمية بمستويات التفكير</h4>
           <span id="icon-2" class="text-blue-600 text-xl">▼</span>
@@ -250,7 +338,7 @@ a.inline-link:hover {
         </div>
       </div>
       <!-- Objective 3 -->
-      <div class="objective-item bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-r-4 border-green-500 cursor-pointer" onclick="toggleObjective(3)">
+      <div class="objective-item bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-green-500 cursor-pointer" onclick="toggleObjective(3)">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-green-900">3. تصميم مهام تعليمية تحفز HOTS</h4>
           <span id="icon-3" class="text-green-600 text-xl">▼</span>
@@ -260,7 +348,7 @@ a.inline-link:hover {
         </div>
       </div>
       <!-- Objective 4 -->
-      <div class="objective-item bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-r-4 border-yellow-500 cursor-pointer" onclick="toggleObjective(4)">
+      <div class="objective-item bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-yellow-500 cursor-pointer" onclick="toggleObjective(4)">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-yellow-900">4. تقييم فعالية الأدوات الرقمية</h4>
           <span id="icon-4" class="text-yellow-600 text-xl">▼</span>
@@ -270,7 +358,7 @@ a.inline-link:hover {
         </div>
       </div>
       <!-- Objective 5 -->
-      <div class="objective-item bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border-r-4 border-red-500 cursor-pointer" onclick="toggleObjective(5)">
+      <div class="objective-item bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border-red-500 cursor-pointer" onclick="toggleObjective(5)">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-red-900">5. إنشاء محتوى تعليمي رقمي إبداعي</h4>
           <span id="icon-5" class="text-red-600 text-xl">▼</span>
@@ -280,7 +368,7 @@ a.inline-link:hover {
         </div>
       </div>
       <!-- Objective 6 -->
-      <div class="objective-item bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border-r-4 border-indigo-500 cursor-pointer" onclick="toggleObjective(6)">
+      <div class="objective-item bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border-indigo-500 cursor-pointer" onclick="toggleObjective(6)">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-indigo-900">6. تطبيق استراتيجيات التعلم النشط</h4>
           <span id="icon-6" class="text-indigo-600 text-xl">▼</span>
@@ -290,7 +378,7 @@ a.inline-link:hover {
         </div>
       </div>
       <!-- Objective 7 -->
-      <div class="objective-item bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border-r-4 border-pink-500 cursor-pointer" onclick="toggleObjective(7)">
+      <div class="objective-item bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border-pink-500 cursor-pointer" onclick="toggleObjective(7)">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-pink-900">7. تطوير خطة تنفيذية للدمج الرقمي</h4>
           <span id="icon-7" class="text-pink-600 text-xl">▼</span>
@@ -306,108 +394,72 @@ a.inline-link:hover {
   <section id="map" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
     <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">🔎 2. خريطة بلوم الرقمية التفاعلية</h2>
     <p class="text-gray-600 mb-6">اكتشف العلاقة بين مستويات التفكير والأدوات الرقمية المناسبة لها. انقر على أي مستوى لاستكشاف الأدوات المرتبطة به.</p>
-
-    <!-- Bloom Levels Grid -->
+     <!-- Bloom Levels Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       <div class="bloom-level bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('create')">
-        <div class="text-4xl mb-3">🎨</div>
-        <h3 class="text-2xl font-bold mb-2">الإبداع</h3>
-        <p class="text-sm opacity-90">تصميم، إنتاج، ابتكار</p>
+        <div class="text-4xl mb-3">🎨</div> <h3 class="text-2xl font-bold mb-2">الإبداع</h3> <p class="text-sm opacity-90">تصميم، إنتاج، ابتكار</p>
       </div>
       <div class="bloom-level bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('evaluate')">
-        <div class="text-4xl mb-3">⚖️</div>
-        <h3 class="text-2xl font-bold mb-2">التقييم</h3>
-        <p class="text-sm opacity-90">نقد، حكم، تقدير</p>
+        <div class="text-4xl mb-3">⚖️</div> <h3 class="text-2xl font-bold mb-2">التقييم</h3> <p class="text-sm opacity-90">نقد، حكم، تقدير</p>
       </div>
       <div class="bloom-level bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('analyze')">
-        <div class="text-4xl mb-3">🔍</div>
-        <h3 class="text-2xl font-bold mb-2">التحليل</h3>
-        <p class="text-sm opacity-90">مقارنة، تفكيك، استنتاج</p>
+        <div class="text-4xl mb-3">🔍</div> <h3 class="text-2xl font-bold mb-2">التحليل</h3> <p class="text-sm opacity-90">مقارنة، تفكيك، استنتاج</p>
       </div>
       <div class="bloom-level bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('apply')">
-        <div class="text-4xl mb-3">🛠️</div>
-        <h3 class="text-2xl font-bold mb-2">التطبيق</h3>
-        <p class="text-sm opacity-90">تنفيذ، استخدام، حل</p>
+        <div class="text-4xl mb-3">🛠️</div> <h3 class="text-2xl font-bold mb-2">التطبيق</h3> <p class="text-sm opacity-90">تنفيذ، استخدام، حل</p>
       </div>
       <div class="bloom-level bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('understand')">
-        <div class="text-4xl mb-3">💡</div>
-        <h3 class="text-2xl font-bold mb-2">الفهم</h3>
-        <p class="text-sm opacity-90">شرح، تفسير، تلخيص</p>
+        <div class="text-4xl mb-3">💡</div> <h3 class="text-2xl font-bold mb-2">الفهم</h3> <p class="text-sm opacity-90">شرح، تفسير، تلخيص</p>
       </div>
       <div class="bloom-level bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl text-white shadow-lg" onclick="showTools('remember')">
-        <div class="text-4xl mb-3">📚</div>
-        <h3 class="text-2xl font-bold mb-2">التذكر</h3>
-        <p class="text-sm opacity-90">حفظ، تعريف، سرد</p>
+        <div class="text-4xl mb-3">📚</div> <h3 class="text-2xl font-bold mb-2">التذكر</h3> <p class="text-sm opacity-90">حفظ، تعريف، سرد</p>
       </div>
     </div>
-
     <!-- Tools Display Area -->
     <div id="tools-display" class="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 hidden">
       <h3 class="text-2xl font-bold mb-4 text-gray-800" id="tools-title"></h3>
-      <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- JS will populate this -->
-      </div>
+      <div id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
   </section>
   
   <!-- Section 3: Training Plan -->
   <section id="plan" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
-    <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">📅 3. خطة الدورة التدريبية (10 ساعات)</h2>
+     <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">📅 3. خطة الدورة التدريبية (10 ساعات)</h2>
     <p class="text-gray-600 mb-6">تنقسم الدورة إلى يومين تدريبيين، يركز اليوم الأول على الأساسيات وتطبيقها، بينما يركز اليوم الثاني على مهارات التفكير العليا والمشاريع العملية.</p>
-    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Day 1 -->
-      <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-xl border-r-4 border-blue-500">
+      <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-xl border-l-4 border-blue-500">
         <h3 class="text-2xl font-bold text-blue-900 mb-4">1️⃣ اليوم الأول: الأساسيات والتطبيق (5 ساعات)</h3>
         <ul class="space-y-3 list-inside">
-          <li class="p-3 bg-white rounded-lg shadow-sm flex items-center">
-            <span class="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center ml-3 text-sm font-bold flex-shrink-0">1</span>
-            <div>
-              <h4 class="font-bold text-gray-800">الجلسة 1 (2 ساعة)</h4>
-              <p class="text-sm text-gray-600">الأساس النظري لهرم بلوم (التقليدي والمعدل).</p>
-            </div>
+          <li class="p-3 bg-white rounded-lg shadow-sm flex items-start">
+            <span class="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 text-sm font-bold flex-shrink-0 mt-1">1</span>
+            <div><h4 class="font-bold text-gray-800">الجلسة 1 (2 ساعة)</h4><p class="text-sm text-gray-600">الأساس النظري لهرم بلوم (التقليدي والمعدل).</p></div>
           </li>
-          <li class="p-3 bg-white rounded-lg shadow-sm flex items-center">
-            <span class="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center ml-3 text-sm font-bold flex-shrink-0">2</span>
-            <div>
-              <h4 class="font-bold text-gray-800">الجلسة 2 (1.5 ساعة)</h4>
-              <p class="text-sm text-gray-600">هرم بلوم الرقمي (HOTS/LOTS) والتعرف على الأدوات.</p>
-            </div>
+           <li class="p-3 bg-white rounded-lg shadow-sm flex items-start">
+            <span class="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 text-sm font-bold flex-shrink-0 mt-1">2</span>
+            <div><h4 class="font-bold text-gray-800">الجلسة 2 (1.5 ساعة)</h4><p class="text-sm text-gray-600">هرم بلوم الرقمي (HOTS/LOTS) والتعرف على الأدوات.</p></div>
           </li>
-          <li class="p-3 bg-white rounded-lg shadow-sm flex items-center">
-            <span class="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center ml-3 text-sm font-bold flex-shrink-0">3</span>
-            <div>
-              <h4 class="font-bold text-gray-800">الجلسة 3 (1.5 ساعة)</h4>
-              <p class="text-sm text-gray-600">ورشة عمل (1): تطبيق المستويات الدنيا.</p>
-            </div>
+           <li class="p-3 bg-white rounded-lg shadow-sm flex items-start">
+            <span class="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 text-sm font-bold flex-shrink-0 mt-1">3</span>
+            <div><h4 class="font-bold text-gray-800">الجلسة 3 (1.5 ساعة)</h4><p class="text-sm text-gray-600">ورشة عمل (1): تطبيق المستويات الدنيا.</p></div>
           </li>
         </ul>
       </div>
-      
       <!-- Day 2 -->
-      <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl border-r-4 border-purple-500">
+      <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl border-l-4 border-purple-500">
         <h3 class="text-2xl font-bold text-purple-900 mb-4">2️⃣ اليوم الثاني: مهارات التفكير العليا (5 ساعات)</h3>
         <ul class="space-y-3 list-inside">
-          <li class="p-3 bg-white rounded-lg shadow-sm flex items-center">
-            <span class="bg-purple-600 text-white rounded-full h-8 w-8 flex items-center justify-center ml-3 text-sm font-bold flex-shrink-0">1</span>
-            <div>
-              <h4 class="font-bold text-gray-800">الجلسة 1 (2 ساعة)</h4>
-              <p class="text-sm text-gray-600">ورشة عمل (2): تصميم مهام (التحليل والتقييم).</p>
-            </div>
+          <li class="p-3 bg-white rounded-lg shadow-sm flex items-start">
+            <span class="bg-purple-600 text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 text-sm font-bold flex-shrink-0 mt-1">1</span>
+            <div><h4 class="font-bold text-gray-800">الجلسة 1 (2 ساعة)</h4><p class="text-sm text-gray-600">ورشة عمل (2): تصميم مهام (التحليل والتقييم).</p></div>
           </li>
-          <li class="p-3 bg-white rounded-lg shadow-sm flex items-center">
-            <span class="bg-purple-600 text-white rounded-full h-8 w-8 flex items-center justify-center ml-3 text-sm font-bold flex-shrink-0">2</span>
-            <div>
-              <h4 class="font-bold text-gray-800">الجلسة 2 (2 ساعة)</h4>
-              <p class="text-sm text-gray-600">ورشة عمل (3): الإبداع والمشروع النهائي.</p>
-            </div>
+          <li class="p-3 bg-white rounded-lg shadow-sm flex items-start">
+            <span class="bg-purple-600 text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 text-sm font-bold flex-shrink-0 mt-1">2</span>
+            <div><h4 class="font-bold text-gray-800">الجلسة 2 (2 ساعة)</h4><p class="text-sm text-gray-600">ورشة عمل (3): الإبداع والمشروع النهائي.</p></div>
           </li>
-          <li class="p-3 bg-white rounded-lg shadow-sm flex items-center">
-            <span class="bg-purple-600 text-white rounded-full h-8 w-8 flex items-center justify-center ml-3 text-sm font-bold flex-shrink-0">3</span>
-            <div>
-              <h4 class="font-bold text-gray-800">الجلسة 3 (1 ساعة)</h4>
-              <p class="text-sm text-gray-600">عرض المشاريع الختامية والتقييم.</p>
-            </div>
+           <li class="p-3 bg-white rounded-lg shadow-sm flex items-start">
+            <span class="bg-purple-600 text-white rounded-full h-8 w-8 flex items-center justify-center mr-3 text-sm font-bold flex-shrink-0 mt-1">3</span>
+            <div><h4 class="font-bold text-gray-800">الجلسة 3 (1 ساعة)</h4><p class="text-sm text-gray-600">عرض المشاريع الختامية والتقييم.</p></div>
           </li>
         </ul>
       </div>
@@ -421,7 +473,7 @@ a.inline-link:hover {
 
     <div class="space-y-4">
       <!-- Activity 1: Pre-assessment -->
-      <div class="objective-item bg-gray-50 p-4 rounded-lg border-r-4 border-gray-400">
+      <div class="activity-item bg-gray-50 p-4 rounded-lg border-gray-400">
         <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('activity-1')">
           <h4 class="font-bold text-gray-800">✏️ نشاط (1): استبيان قبلي (10 دقائق) - (الجلسة 1)</h4>
           <span id="icon-activity-1" class="text-gray-600 text-xl">▼</span>
@@ -434,11 +486,20 @@ a.inline-link:hover {
             <li>ما هي أكثر أداة رقمية تستخدمها في فصلك حالياً؟</li>
             <li>ما هو التحدي الأكبر الذي يواجهك في دمج التكنولوجيا؟</li>
           </ul>
+           <!-- Trainer Notes -->
+          <details class="trainer-notes">
+            <summary>📝 ملاحظات للمدرب</summary>
+            <div>
+              <p><strong>التوقيت:</strong> 5 دقائق للإجابة، 5 دقائق لمناقشة النتائج.</p>
+              <p><strong>الهدف:</strong> قياس مستوى معرفة وخبرة المجموعة قبل البدء.</p>
+              <p><strong>نصيحة:</strong> استخدم النتائج لتوجيه تركيزك خلال الدورة.</p>
+            </div>
+          </details>
         </div>
       </div>
       
       <!-- Activity 2: LOTS Workshop -->
-      <div class="objective-item bg-blue-50 p-4 rounded-lg border-r-4 border-blue-400">
+      <div class="activity-item bg-blue-50 p-4 rounded-lg border-blue-400 workshop-section"> <!-- Added workshop-section -->
         <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('activity-2')">
           <h4 class="font-bold text-blue-900">🛠️ ورشة عمل (1): تمرين الأدوات - المستويات الدنيا (الجلسة 3)</h4>
           <span id="icon-activity-2" class="text-blue-600 text-xl">▼</span>
@@ -451,53 +512,83 @@ a.inline-link:hover {
             <li>**الفهم:** (....) -> (الأداة المقترحة: Coggle لربط الدولة بالقارة والمناخ).</li>
             <li>**التطبيق:** (....) -> (الأداة المقترحة: Google My Maps لوضع علامة على العواصم)."</li>
           </ul>
-          <p class="mt-2">اطلب من المتدربين إكمال سيناريوهات مشابهة لموادهم.</p>
+          <p class="mt-2">اطلب من المتدربين (في مجموعات صغيرة حسب التخصص إن أمكن) إكمال سيناريوهات مشابهة لموادهم ومشاركتها.</p>
+           <!-- Trainer Notes -->
+          <details class="trainer-notes">
+             <summary>📝 ملاحظات للمدرب</summary>
+            <div>
+              <p><strong>التوقيت:</strong> 15 دقيقة شرح، 45 دقيقة عمل مجموعات، 30 دقيقة مشاركة ومناقشة.</p>
+              <p><strong>التركيز:</strong> التأكد من أن اختيار الأداة يخدم المستوى المحدد بوضوح.</p>
+              <p><strong>سؤال للنقاش:</strong> "هل يمكن استخدام نفس الأداة لمستويات مختلفة؟ كيف؟"</p>
+            </div>
+          </details>
+          <!-- Reflection -->
+          <div class="mt-4">
+              <label for="reflection-ws1" class="block text-sm font-medium text-gray-700">🤔 تأملات المتدرب:</label>
+              <textarea id="reflection-ws1" name="reflection-ws1" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="ما هي الفائدة الرئيسية التي رأيتها من ربط الأداة بالمستوى؟"></textarea>
+          </div>
         </div>
       </div>
       
-      <!-- Activity 3: HOTS Workshop -->
-      <div class="objective-item bg-purple-50 p-4 rounded-lg border-r-4 border-purple-400">
+      <!-- Activity 3: HOTS Workshop 1 -->
+      <div class="activity-item bg-purple-50 p-4 rounded-lg border-purple-400 workshop-section"> <!-- Added workshop-section -->
         <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('activity-3')">
           <h4 class="font-bold text-purple-900">🛠️ ورشة عمل (2): نقد مهمة - (التحليل والتقييم) (الجلسة 4)</h4>
           <span id="icon-activity-3" class="text-purple-600 text-xl">▼</span>
         </div>
         <div id="content-activity-3" class="mt-3 text-gray-700 hidden">
-          <p class="font-semibold">الهدف: تحليل مهمة تعليمية قائمة وتقييم مستواها.</p>
+          <p class="font-semibold">الهدف: تحليل مهمة تعليمية قائمة وتقييم مستواها ورفعها لمستوى HOTS.</p>
           <p class="mt-2">النشاط: اعرض على المتدربين مهمة تقليدية (مثال: "اكتب ملخصاً من 5 أسطر عن أسباب الحرب العالمية الأولى").</p>
           <p class="mt-2">اطلب منهم (في مجموعات) تقييم هذه المهمة (هي في مستوى "الفهم" فقط) ثم إعادة صياغتها لترتقي إلى:</p>
           <ul class="list-disc list-inside mt-2 space-y-1">
-            <li>**التحليل:** (مثال: "قارن بين الأسباب الاقتصادية والسياسية للحرب باستخدام رسم بياني").</li>
-            <li>**التقييم:** (مثال: "ناقش في منتدى Padlet: ما هو السبب الأكثر تأثيراً في اندلاع الحرب؟ ولماذا؟").</li>
+            <li>**التحليل:** (مثال: "باستخدام أداة رسم بياني، قارن بين الأسباب الاقتصادية والسياسية للحرب من حيث الأهمية.").</li>
+            <li>**التقييم:** (مثال: "شارك في نقاش Padlet: ما هو السبب الأكثر تأثيراً في اندلاع الحرب؟ قدم دليلاً يدعم رأيك.").</li>
           </ul>
-          <!-- 4. زر الفيديو المضاف -->
+           <!-- Trainer Notes -->
+          <details class="trainer-notes">
+             <summary>📝 ملاحظات للمدرب</summary>
+            <div>
+              <p><strong>التوقيت:</strong> 20 دقيقة شرح، 60 دقيقة عمل مجموعات، 40 دقيقة عرض ومناقشة.</p>
+              <p><strong>التركيز:</strong> على صياغة "أفعال سلوكية" واضحة تتناسب مع مستويات التحليل والتقييم.</p>
+              <p><strong>تنبيه:</strong> قد يجد بعض المعلمين صعوبة في الانتقال من مهام التذكر والفهم. قدم أمثلة متعددة.</p>
+            </div>
+          </details>
+           <!-- Reflection -->
           <div class="mt-4">
-            <button onclick="openVideoModal('N-eM8n-t_iQ')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-              🎥 مشاهدة: شرح خبير (مهارات التفكير العليا)
-            </button>
+              <label for="reflection-ws2" class="block text-sm font-medium text-gray-700">🤔 تأملات المتدرب:</label>
+              <textarea id="reflection-ws2" name="reflection-ws2" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="كيف سيغير هذا التمرين طريقة تصميمك للمهام مستقبلاً؟"></textarea>
           </div>
         </div>
       </div>
       
-      <!-- Activity 4: Final Project -->
-      <div class="objective-item bg-red-50 p-4 rounded-lg border-r-4 border-red-400">
+      <!-- Activity 4: HOTS Workshop 2 (Final Project) -->
+      <div class="activity-item bg-red-50 p-4 rounded-lg border-red-400 workshop-section"> <!-- Added workshop-section -->
         <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('activity-4')">
           <h4 class="font-bold text-red-900">🛠️ ورشة عمل (3): المشروع النهائي: تصميم درس متكامل (الجلسة 5)</h4>
           <span id="icon-activity-4" class="text-red-600 text-xl">▼</span>
         </div>
         <div id="content-activity-4" class="mt-3 text-gray-700 hidden">
-          <p class="font-semibold">الهدف: تطبيق كل ما تعلموه.</p>
-          <p class="mt-2">المطلوب: اطلب من كل متدرب (أو مجموعة) اختيار درس واحد من مناهجهم، وإعادة تصميمه باستخدام "قالب تصميم الدرس" (الموجود في قسم الموارد) ليغطي 3 مستويات من هرم بلوم (واحد منها على الأقل HOTS) مع دمج أداة رقمية مناسبة لكل مستوى.</p>
-          <!-- 4. زر الفيديو المضاف -->
+          <p class="font-semibold">الهدف: تطبيق كل ما تعلموه في تصميم درس واحد.</p>
+          <p class="mt-2">المطلوب: اطلب من كل متدرب (أو مجموعة) اختيار درس واحد من مناهجهم، واستخدام "قالب تصميم الدرس التفاعلي" (الموجود في قسم الموارد أدناه) لتصميمه ليغطي 3 مستويات من هرم بلوم (واحد منها على الأقل HOTS)، مع دمج أداة رقمية مناسبة لكل مستوى وتبرير الاختيار.</p>
+           <!-- Trainer Notes -->
+          <details class="trainer-notes">
+            <summary>📝 ملاحظات للمدرب</summary>
+            <div>
+              <p><strong>التوقيت:</strong> 15 دقيقة شرح للمطلوب والقالب، 90 دقيقة عمل فردي/مجموعات، 15 دقيقة تحضير للعرض.</p>
+              <p><strong>الدعم:</strong> تجول بين المجموعات وقدم الدعم والمشورة، خاصة في اختيار الأدوات المناسبة لـ HOTS.</p>
+              <p><strong>المنتج:</strong> يجب أن يكون لدى كل متدرب/مجموعة خطة درس مكتملة في القالب التفاعلي.</p>
+            </div>
+          </details>
+           <!-- Reflection -->
           <div class="mt-4">
-            <button onclick="openVideoModal('YQiGLJSj41o')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-              🎥 مشاهدة: شرح خبير (الإبداع في التعليم)
-            </button>
+              <label for="reflection-ws3" class="block text-sm font-medium text-gray-700">🤔 تأملات المتدرب:</label>
+              <textarea id="reflection-ws3" name="reflection-ws3" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="ما هو الجزء الأصعب في تصميم هذا الدرس؟ وكيف تغلبت عليه؟"></textarea>
           </div>
         </div>
       </div>
       
       <!-- Activity 5: Post-assessment -->
-      <div class="objective-item bg-gray-50 p-4 rounded-lg border-r-4 border-gray-400">
+      <div class="activity-item bg-gray-50 p-4 rounded-lg border-gray-400">
         <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('activity-5')">
           <h4 class="font-bold text-gray-800">📈 نشاط (2): تقييم الدورة (10 دقائق) - (الجلسة 6)</h4>
           <span id="icon-activity-5" class="text-gray-600 text-xl">▼</span>
@@ -506,11 +597,20 @@ a.inline-link:hover {
           <p class="font-semibold">الأداة المقترحة: <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="inline-link">Google Forms</a>.</p>
           <p class="mt-2">الأسئلة المقترحة للمتدربين:</p>
           <ul class="list-disc list-inside mt-2 space-y-1">
-            <li>هل كانت أهداف الدورة واضحة ومحققة؟</li>
-            <li>ما هو أهم مفهوم/أداة تعلمتها اليوم؟</li>
-            <li>ما مدى رضاك عن محتوى الدورة (التقرير التفاعلي والأنشطة)؟</li>
-            <li>أي اقتراحات لتطوير الدورة مستقبلاً؟</li>
+            <li>هل كانت أهداف الدورة واضحة ومحققة؟ (مقياس ليكرت)</li>
+            <li>ما هو أهم مفهوم/أداة تعلمتها اليوم؟ (إجابة مفتوحة)</li>
+            <li>ما مدى رضاك عن محتوى الدورة والتفاعل؟ (مقياس ليكرت)</li>
+            <li>أي اقتراحات لتطوير الدورة مستقبلاً؟ (إجابة مفتوحة)</li>
           </ul>
+           <!-- Trainer Notes -->
+           <details class="trainer-notes">
+             <summary>📝 ملاحظات للمدرب</summary>
+            <div>
+              <p><strong>الهدف:</strong> جمع تغذية راجعة بناءة لتطوير الدورة.</p>
+              <p><strong>التطبيق:</strong> شارك الرابط في نهاية الجلسة الأخيرة.</p>
+              <p><strong>التأكيد:</strong> أكد للمتدربين أن ملاحظاتهم مهمة وسرية.</p>
+            </div>
+          </details>
         </div>
       </div>
     </div>
@@ -519,147 +619,183 @@ a.inline-link:hover {
   <!-- Section 5: Resources -->
   <section id="resources" class="mb-12 p-6 bg-white rounded-xl shadow-lg fade-in">
     <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">📎 5. موارد الحقيبة (للمدرب والمتدرب)</h2>
-    <p class="text-gray-600 mb-6">تجد هنا جميع الموارد الملحقة بالدورة، بما في ذلك قائمة الأدوات، وقالب تصميم الدرس، والمراجع الأكاديمية.</p>
+    <p class="text-gray-600 mb-6">تجد هنا جميع الموارد الملحقة بالدورة، بما في ذلك قائمة الأدوات، وقالب تصميم الدرس التفاعلي، والمراجع، وموارد إضافية.</p>
 
     <!-- Resource 1: Tools List -->
-    <div class="mb-6">
-      <h3 class="text-xl font-bold text-gray-700 mb-4">🔗 ملحق (أ): قائمة المصادر والأدوات</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- LOTS -->
-        <div class="bg-blue-50 p-4 rounded-lg border-b-4 border-blue-500">
-          <h4 class="font-bold text-blue-900 mb-3 text-lg">⬇️ المستويات الدنيا (LOTS)</h4>
-          <ul class="space-y-2">
-            <li><strong class="text-gray-800">التذكر:</strong> Quizlet, Kahoot, Google Forms.</li>
-            <li><strong class="text-gray-800">الفهم:</strong> Coggle, MindMeister, Padlet, Edpuzzle.</li>
-            <li><strong class="text-gray-800">التطبيق:</strong> Google Docs/Sheets/Slides, PhET Simulations, Google My Maps.</li>
-          </ul>
-        </div>
-        <!-- HOTS -->
-        <div class="bg-purple-50 p-4 rounded-lg border-b-4 border-purple-500">
-          <h4 class="font-bold text-purple-900 mb-3 text-lg">⬆️ المستويات العليا (HOTS)</h4>
-          <ul class="space-y-2">
-            <li><strong class="text-gray-800">التحليل:</strong> Mentimeter, Google Trends, Excel.</li>
-            <li><strong class="text-gray-800">التقييم:</strong> Padlet (للنقد), Flip (Flipgrid), منتديات Google Classroom.</li>
-            <li><strong class="text-gray-800">الإبداع:</strong> Canva, Adobe Express, Google Sites, Scratch, YouTube.</li>
-          </ul>
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+       <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-tools')">
+         <h3 class="text-xl font-bold text-gray-700">🔗 ملحق (أ): قائمة المصادر والأدوات</h3>
+         <span id="icon-res-tools" class="text-gray-600 text-xl">▼</span>
+       </div>
+       <div id="content-res-tools" class="mt-3 text-gray-700 hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- LOTS -->
+          <div class="bg-blue-50 p-4 rounded-lg border-b-4 border-blue-500">
+            <h4 class="font-bold text-blue-900 mb-3 text-lg">⬇️ المستويات الدنيا (LOTS)</h4>
+            <ul class="space-y-2">
+              <li><strong class="text-gray-800">التذكر:</strong> Quizlet, Kahoot, Google Forms.</li>
+              <li><strong class="text-gray-800">الفهم:</strong> Coggle, MindMeister, Padlet, Edpuzzle.</li>
+              <li><strong class="text-gray-800">التطبيق:</strong> Google Docs/Sheets/Slides, PhET Simulations, Google My Maps.</li>
+            </ul>
+          </div>
+          <!-- HOTS -->
+          <div class="bg-purple-50 p-4 rounded-lg border-b-4 border-purple-500">
+            <h4 class="font-bold text-purple-900 mb-3 text-lg">⬆️ المستويات العليا (HOTS)</h4>
+            <ul class="space-y-2">
+              <li><strong class="text-gray-800">التحليل:</strong> Mentimeter, Google Trends, Excel.</li>
+              <li><strong class="text-gray-800">التقييم:</strong> Padlet (للنقد), Flip (Flipgrid), منتديات Google Classroom.</li>
+              <li><strong class="text-gray-800">الإبداع:</strong> Canva, Adobe Express, Google Sites, Scratch, YouTube.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Resource 2: Lesson Template -->
-    <div class="mb-6">
-      <h3 class="text-xl font-bold text-gray-700 mb-4">🗒️ ملحق (ب): قالب ورشة عمل "تصميم درس رقمي"</h3>
-      <p class="text-gray-600 mb-4">استخدم هذا القالب (خلال ورشة العمل 3) لإعادة تصميم درس من منهجك. يمكنك نسخ المحتوى من الجداول أدناه.</p>
-      
-      <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200 lesson-template">
-          <thead class="bg-gray-50">
-            <tr>
-              <th colspan="2" class="p-3 text-lg font-semibold text-gray-700">ℹ️ 1. معلومات الدرس الأساسية</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>**اسم المعلم:**</td>
-              <td><textarea placeholder="اكتب هنا..."></textarea></td>
-            </tr>
-            <tr>
-              <td>**المادة:**</td>
-              <td><textarea placeholder="اكتب هنا..."></textarea></td>
-            </tr>
-            <tr>
-              <td>**عنوان الدرس:**</td>
-              <td><textarea placeholder="اكتب هنا..."></textarea></td>
-            </tr>
-            <tr>
-              <td>**الهدف التعليمي التقليدي للدرس:**</td>
-              <td><textarea placeholder="اكتب هنا..."></textarea></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- Resource 2: Interactive Lesson Template -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+       <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-template')">
+          <h3 class="text-xl font-bold text-gray-700">🗒️ ملحق (ب): قالب تصميم الدرس الرقمي (تفاعلي)</h3>
+          <span id="icon-res-template" class="text-gray-600 text-xl">▼</span>
+       </div>
+       <div id="content-res-template" class="mt-3 text-gray-700 hidden">
+        <p class="text-gray-600 mb-4">استخدم هذا القالب التفاعلي (خلال ورشة العمل 3) لإعادة تصميم درس من منهجك. يمكنك الكتابة مباشرة في الخانات وحفظ مسودتك مؤقتًا في متصفحك.</p>
+        <p class="text-sm text-red-600 mb-4">**ملاحظة:** الحفظ مؤقت ويعتمد على المتصفح. لتجنب فقدان العمل، انسخ النص النهائي إلى مستند خارجي.</p>
 
-      <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200 mt-6">
-        <table class="min-w-full divide-y divide-gray-200 lesson-template">
-          <thead class="bg-gray-50">
-            <tr>
-              <th colspan="3" class="p-3 text-lg font-semibold text-gray-700">🔄 2. إعادة التصميم بهرم بلوم الرقمي</th>
-            </tr>
-            <tr>
-              <th class="w-1/4">المستوى</th>
-              <th class="w-1/2">المهمة/النشاط المقترح</th>
-              <th class="w-1/4">الأداة الرقمية المقترحة</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><textarea placeholder="(اختر مستوى 1، مثال: الفهم)"></textarea></td>
-              <td><textarea placeholder="اكتب المهمة هنا..."></textarea></td>
-              <td><textarea placeholder="اكتب الأداة هنا..."></textarea></td>
-            </tr>
-            <tr>
-              <td><textarea placeholder="(اختر مستوى 2)"></textarea></td>
-              <td><textarea placeholder="اكتب المهمة هنا..."></textarea></td>
-              <td><textarea placeholder="اكتب الأداة هنا..."></textarea></td>
-            </tr>
-            <tr>
-              <td><textarea placeholder="(اختر مستوى 3 - يجب أن يكون HOTS)"></textarea></td>
-              <td><textarea placeholder="اكتب المهمة هنا..."></textarea></td>
-              <td><textarea placeholder="اكتب الأداة هنا..."></textarea></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <form id="lesson-template-form">
+          <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200 lesson-template">
+              <thead class="bg-gray-50"> <tr> <th colspan="2" class="p-3 text-lg font-semibold text-gray-700">ℹ️ 1. معلومات الدرس الأساسية</th> </tr> </thead>
+              <tbody>
+                <tr> <td>**اسم المعلم:**</td> <td><textarea id="lt-teacher-name" placeholder="اكتب هنا..."></textarea></td> </tr>
+                <tr> <td>**المادة:**</td> <td><textarea id="lt-subject" placeholder="اكتب هنا..."></textarea></td> </tr>
+                <tr> <td>**عنوان الدرس:**</td> <td><textarea id="lt-lesson-title" placeholder="اكتب هنا..."></textarea></td> </tr>
+                <tr> <td>**الهدف التقليدي:**</td> <td><textarea id="lt-original-goal" placeholder="اكتب هنا..."></textarea></td> </tr>
+              </tbody>
+            </table>
+          </div>
 
-      <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200 mt-6">
-        <table class="min-w-full divide-y divide-gray-200 lesson-template">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="p-3 text-lg font-semibold text-gray-700">🤔 3. التبرير البيداغوجي</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><textarea placeholder="لماذا اخترت هذه الأدوات لهذه المستويات؟ اشرح كيف تعزز الأداة من مستوى التفكير المستهدف..."></textarea></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200 mt-6">
+            <table class="min-w-full divide-y divide-gray-200 lesson-template">
+              <thead class="bg-gray-50"> <tr> <th colspan="3" class="p-3 text-lg font-semibold text-gray-700">🔄 2. إعادة التصميم بهرم بلوم الرقمي</th> </tr> <tr> <th>المستوى</th> <th>المهمة/النشاط</th> <th>الأداة الرقمية</th> </tr> </thead>
+              <tbody>
+                <tr> <td><textarea id="lt-level1" placeholder="(اختر مستوى 1)"></textarea></td> <td><textarea id="lt-task1" placeholder="اكتب المهمة هنا..."></textarea></td> <td><textarea id="lt-tool1" placeholder="اكتب الأداة هنا..."></textarea></td> </tr>
+                <tr> <td><textarea id="lt-level2" placeholder="(اختر مستوى 2)"></textarea></td> <td><textarea id="lt-task2" placeholder="اكتب المهمة هنا..."></textarea></td> <td><textarea id="lt-tool2" placeholder="اكتب الأداة هنا..."></textarea></td> </tr>
+                <tr> <td><textarea id="lt-level3" placeholder="(اختر مستوى 3 - HOTS)"></textarea></td> <td><textarea id="lt-task3" placeholder="اكتب المهمة هنا..."></textarea></td> <td><textarea id="lt-tool3" placeholder="اكتب الأداة هنا..."></textarea></td> </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200 mt-6">
+            <table class="min-w-full divide-y divide-gray-200 lesson-template">
+              <thead class="bg-gray-50"> <tr> <th class="p-3 text-lg font-semibold text-gray-700">🤔 3. التبرير البيداغوجي</th> </tr> </thead>
+              <tbody> <tr> <td><textarea id="lt-justification" placeholder="لماذا اخترت هذه الأدوات لهذه المستويات؟..."></textarea></td> </tr> </tbody>
+            </table>
+          </div>
+          <button type="button" onclick="saveLessonTemplate()">💾 حفظ المسودة</button>
+          <button type="button" onclick="loadLessonTemplate()">🔄 استعادة المسودة</button>
+          <span id="save-status" class="saved-message"></span>
+        </form>
+       </div>
     </div>
     
     <!-- Resource 3: Scientific Foundation -->
-    <div class="mb-6">
-      <h3 class="text-xl font-bold text-gray-700 mb-4">📜 ملحق (ج): الأساس العلمي والمراجع</h3>
-      <div class="objective-item bg-gray-50 p-4 rounded-lg border-r-4 border-gray-400">
-        <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('foundation')">
-          <h4 class="font-bold text-gray-800">اضغط لعرض المراجع الأكاديمية</h4>
-          <span id="icon-foundation" class="text-gray-600 text-xl">▼</span>
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('foundation')">
+        <h3 class="text-xl font-bold text-gray-700">📜 ملحق (ج): الأساس العلمي والمراجع</h3>
+        <span id="icon-foundation" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-foundation" class="mt-3 text-gray-700 hidden">
+        <div class="mb-4">
+          <button onclick="openVideoModal('xDW2eLDy1Qg')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+            🎥 مشاهدة: شرح أكاديمي لهرم بلوم
+          </button>
         </div>
-        <div id="content-foundation" class="mt-3 text-gray-700 hidden">
-          <!-- 4. زر الفيديو المضاف -->
-          <div class="mb-4">
-            <button onclick="openVideoModal('xDW2eLDy1Qg')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-              🎥 مشاهدة: شرح أكاديمي لهرم بلوم
-            </button>
+        <div class="space-y-4 text-left" dir="ltr">
+          <div class="bg-white p-4 rounded-lg shadow-sm border">
+            <p class="text-sm text-gray-800">Amin, H., & Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. <em>Asian Association of Open Universities Journal, 15</em>(2), 223-238. https://doi.org/10.1108/AAOUJ-04-2020-0023</p>
           </div>
-          <div class="space-y-4 text-left" dir="ltr">
-            <div class="bg-white p-4 rounded-lg shadow-sm border">
-              <p class="text-sm text-gray-800">Amin, H., & Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. <em>Asian Association of Open Universities Journal, 15</em>(2), 223-238. https://doi.org/10.1108/AAOUJ-04-2020-0023</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-sm border">
+           <div class="bg-white p-4 rounded-lg shadow-sm border">
               <p class="text-sm text-gray-800">Anderson, L. W., & Krathwohl, D. R. (Eds.). (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy of educational objectives.</em> Longman.</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm border">
               <p class="text-sm text-gray-800">Bloom, B. S. (Ed.). (1956). <em>Taxonomy of educational objectives: The classification of educational goals. Handbook 1: Cognitive domain.</em> David McKay.</p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm border">
-              <p class="text-sm text-gray-800">Churches, A. (2008). <em>Bloom's digital taxonomy.</em> A Web 2.0 Education. (Retrieved from http://edorigami.wikispaces.com/Bloom%27s+Digital+Taxonomy)</p>
+              <p class="text-sm text-gray-800">Churches, A. (2008). <em>Bloom's digital taxonomy.</em> Educational Origami. https://www.researchgate.net/publication/228381038_Bloom's_Digital_Taxonomy</p>
             </div>
              <div class="bg-white p-4 rounded-lg shadow-sm border">
               <p class="text-sm text-gray-800">St-Hilaire, C. (2023). Using Bloom’s digital taxonomy to map digital curriculum. <em>Journal of Digital Learning in Teacher Education, 39</em>(4), 238-250. https://doi.org/10.1080/21532974.2023.2205249</p>
             </div>
-          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Resource 4: Case Studies -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-case-studies')">
+        <h3 class="text-xl font-bold text-gray-700">🌟 ملحق (د): دراسات حالة (أمثلة واقعية)</h3>
+        <span id="icon-res-case-studies" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-case-studies" class="mt-3 text-gray-700 hidden space-y-3">
+        <div class="bg-white p-3 rounded-lg border">
+            <h4 class="font-bold text-green-700">مثال 1: استخدام Padlet للتقييم (مستوى التقييم)</h4>
+            <p class="text-sm">معلمة لغة عربية طلبت من طلابها نشر مسوداتهم لمقالة نقدية على Padlet. ثم قام كل طالب بتقديم تغذية راجعة بناءة (باستخدام معايير محددة) لزميلين آخرين. المعلمة استخدمت Padlet لمتابعة النقاش وتقييم قدرة الطلاب على النقد وإصدار الأحكام.</p>
+        </div>
+        <div class="bg-white p-3 rounded-lg border">
+            <h4 class="font-bold text-red-700">مثال 2: استخدام Canva للإبداع (مستوى الإبداع)</h4>
+            <p class="text-sm">معلم تاريخ طلب من الطلاب تصميم "ملصق إعلاني" (Poster) باستخدام Canva للترويج لحدث تاريخي مهم (مثل افتتاح قناة السويس)، مع مراعاة دقة المعلومات التاريخية وجاذبية التصميم.</p>
+        </div>
+         <!-- Add more case studies as needed -->
+      </div>
+    </div>
+
+     <!-- Resource 5: Assessment Strategies -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-assessment')">
+        <h3 class="text-xl font-bold text-gray-700">📊 ملحق (هـ): استراتيجيات التقييم الرقمي</h3>
+        <span id="icon-res-assessment" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-assessment" class="mt-3 text-gray-700 hidden space-y-3">
+        <p>عند تقييم مخرجات الطلاب باستخدام الأدوات الرقمية، خاصة في مستويات HOTS، ركز على:</p>
+        <ul class="list-disc list-inside space-y-1">
+            <li><strong>مقاييس التقييم (Rubrics):</strong> استخدم مقاييس تقييم واضحة تحدد معايير النجاح للمهام الإبداعية أو التحليلية (مثل تصميم فيديو أو تحليل بيانات).</li>
+            <li><strong>تقييم الأقران المنظم:</strong> وجه الطلاب لتقديم تغذية راجعة بناءة باستخدام نماذج أو أسئلة محددة (كما في مثال Padlet).</li>
+            <li><strong>الملف الرقمي (ePortfolio):</strong> شجع الطلاب على جمع أفضل أعمالهم الرقمية في ملف إلكتروني يعكس تطور مهاراتهم.</li>
+            <li><strong>التأمل الذاتي:</strong> اطلب من الطلاب تقييم عملهم وشرح عملية تفكيرهم (يمكن استخدام Flip أو مدونة بسيطة).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Resource 6: Common Challenges -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-challenges')">
+        <h3 class="text-xl font-bold text-gray-700">🚧 ملحق (و): معالجة التحديات الشائعة</h3>
+        <span id="icon-res-challenges" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-challenges" class="mt-3 text-gray-700 hidden space-y-3">
+         <ul class="list-disc list-inside space-y-2">
+            <li><strong>ضعف البنية التحتية (الإنترنت/الأجهزة):</strong> خطط لأنشطة يمكن تنفيذها جزئياً دون اتصال بالإنترنت، وشجع على استخدام الهواتف الذكية كبديل، وفكر في استراتيجيات العمل الجماعي لتقليل الحاجة للأجهزة.</li>
+            <li><strong>مقاومة التغيير (طلاب/معلمين):</strong> ابدأ بدمج أدوات بسيطة ومألوفة، وركز على القيمة المضافة، واعرض نماذج ناجحة، وقدم الدعم الفني والبيداغوجي المستمر.</li>
+            <li><strong>نقص التدريب:</strong> شجع على التعلم المستمر وتبادل الخبرات بين الزملاء، واستفد من الموارد المجانية المتاحة عبر الإنترنت (مثل فيديوهات الشرح).</li>
+            <li><strong>إدارة الوقت:</strong> ابدأ بدمج التكنولوجيا في جزء صغير من الدرس، وركز على الأدوات التي توفر الوقت على المدى الطويل (مثل التقييم التلقائي).</li>
+        </ul>
+      </div>
+    </div>
+
+     <!-- Resource 7: Further Learning -->
+    <div class="mb-6 resource-item bg-gray-50 p-4 rounded-lg border-gray-400">
+      <div class="flex justify-between items-center cursor-pointer" onclick="toggleObjective('res-further-learning')">
+        <h3 class="text-xl font-bold text-gray-700">🔗 ملحق (ز): مجتمعات مهنية ومتابعة التعلم</h3>
+        <span id="icon-res-further-learning" class="text-gray-600 text-xl">▼</span>
+      </div>
+      <div id="content-res-further-learning" class="mt-3 text-gray-700 hidden space-y-3">
+        <p>استمر في تطوير مهاراتك من خلال:</p>
+         <ul class="list-disc list-inside space-y-2">
+            <li><strong>تويتر (X):</strong> متابعة الهاشتاجات التعليمية مثل #التعليم_الرقمي، #تقنيات_التعليم والمختصين في المجال.</li>
+            <li><strong>مجموعات فيسبوك/واتساب:</strong> الانضمام إلى مجموعات المعلمين المهتمين بدمج التكنولوجيا.</li>
+            <li><strong>مواقع متخصصة:</strong> زيارة مواقع مثل "تعليم جديد"، "Edutopia" (باللغة الإنجليزية مع ترجمة).</li>
+            <li><strong>دورات عبر الإنترنت:</strong> منصات مثل Coursera, Edraak تقدم دورات متخصصة في تكنولوجيا التعليم.</li>
+        </ul>
       </div>
     </div>
 
@@ -667,20 +803,12 @@ a.inline-link:hover {
 
 </main>
 
-<!-- 2. HTML الخاص بنافذة الفيديو المنبثقة (Modal) -->
+<!-- Video Modal HTML -->
 <div id="video-modal" class="video-modal">
   <div class="video-modal-content">
     <span class="video-modal-close" onclick="closeVideoModal()">&times;</span>
     <div class="video-wrapper">
-      <iframe id="video-iframe"
-        width="560" 
-        height="315" 
-        src="" 
-        title="YouTube video player" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-      </iframe>
+      <iframe id="video-iframe" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
   </div>
 </div>
@@ -694,149 +822,145 @@ a.inline-link:hover {
 </footer>
 
 <script>
-// Toggle for objectives accordion
+// --- Global Elements ---
+const modal = document.getElementById('video-modal');
+const iframe = document.getElementById('video-iframe');
+const lessonTemplateForm = document.getElementById('lesson-template-form');
+const saveStatus = document.getElementById('save-status');
+const templateFields = [ // IDs for lesson template textareas
+    'lt-teacher-name', 'lt-subject', 'lt-lesson-title', 'lt-original-goal',
+    'lt-level1', 'lt-task1', 'lt-tool1',
+    'lt-level2', 'lt-task2', 'lt-tool2',
+    'lt-level3', 'lt-task3', 'lt-tool3',
+    'lt-justification'
+];
+
+// --- Toggling Functions ---
 function toggleObjective(id) {
   const content = document.getElementById('content-' + id);
   const icon = document.getElementById('icon-' + id);
-  if (content.classList.contains('hidden')) {
-    content.classList.remove('hidden');
-    icon.innerHTML = '▲';
+  if (content && icon) { // Check if elements exist
+    const isHidden = content.classList.contains('hidden');
+    content.classList.toggle('hidden');
+    icon.textContent = isHidden ? '▲' : '▼';
   } else {
-    content.classList.add('hidden');
-    icon.innerHTML = '▼';
+    console.error("Could not find content or icon for ID:", id);
   }
 }
 
-// Toggle for mobile menu
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
   menu.classList.toggle('hidden');
 }
 
-// Data for Bloom's tools
+// --- Bloom Tools Display ---
 const bloomTools = {
-  create: {
-    title: "🎨 أدوات الإبداع (Creating)",
-    color: "text-red-600",
-    tools: [
-      { name: "Canva", desc: "تصميم جرافيك وعروض تقديمية.", link: "https://www.canva.com" },
-      { name: "Adobe Express", desc: "تصميم سريع لصور وفيديوهات.", link: "https://www.adobe.com/express/" },
-      { name: "YouTube", desc: "إنشاء ونشر محتوى فيديو.", link: "https://www.youtube.com" },
-      { name: "Google Sites", desc: "إنشاء مواقع ويب بسيطة.", link: "https://sites.google.com" },
-      { name: "Scratch", desc: "برمجة قصص وألعاب تفاعلية.", link: "https://scratch.mit.edu" }
-    ]
-  },
-  evaluate: {
-    title: "⚖️ أدوات التقييم (Evaluating)",
-    color: "text-orange-600",
-    tools: [
-      { name: "Padlet", desc: "لوح حائط للنقد وتقييم الأقران.", link: "https://padlet.com" },
-      { name: "Flip (Flipgrid)", desc: "مناقشات فيديو لتقديم تغذية راجعة.", link: "https://info.flip.com" },
-      { name: "Google Forms", desc: "إنشاء استبيانات تقييم وتحليلها.", link: "https://forms.google.com" },
-      { name: "منتديات النقاش", desc: "مثل الموجودة في Google Classroom لتقييم الحجج.", link: "#" }
-    ]
-  },
-  analyze: {
-    title: "🔍 أدوات التحليل (Analyzing)",
-    color: "text-yellow-600",
-    tools: [
-      { name: "Mentimeter", desc: "تصويت حي وتحليل استجابات الجمهور.", link: "https://www.mentimeter.com" },
-      { name: "Google Trends", desc: "مقارنة وتحليل بيانات البحث.", link: "https://trends.google.com" },
-      { name: "Excel/Google Sheets", desc: "تحليل البيانات وتصنيفها ورسمها بيانياً.", link: "https://sheets.google.com" },
-      { name: "Coggle", desc: "تفكيك الأفكار وتحليل العلاقات (خرائط ذهنية).", link: "https://coggle.it" }
-    ]
-  },
-  apply: {
-    title: "🛠️ أدوات التطبيق (Applying)",
-    color: "text-green-600",
-    tools: [
-      { name: "Google Docs/Slides", desc: "تطبيق المعرفة في مستندات وعروض.", link: "https://docs.google.com" },
-      { name: "PhET Simulations", desc: "تطبيق المفاهيم العلمية في محاكاة تفاعلية.", link: "https://phet.colorado.edu" },
-      { name: "Google My Maps", desc: "تطبيق المفاهيم الجغرافية على الخريطة.", link: "https://www.google.com/maps/about/mymaps/" },
-      { name: "Microsoft Office", desc: "استخدام البرامج لتنفيذ مهام عملية.", link: "https://www.office.com" }
-    ]
-  },
-  understand: {
-    title: "💡 أدوات الفهم (Understanding)",
-    color: "text-blue-600",
-    tools: [
-      { name: "MindMeister", desc: "تلخيص وشرح المفاهيم عبر الخرائط الذهنية.", link: "https://www.mindmeister.com" },
-      { name: "Edpuzzle", desc: "شرح المفاهيم عبر مقاطع فيديو تفاعلية.", link: "https://edpuzzle.com" },
-      { name: "Padlet", desc: "تنظيم الأفكار وتصنيفها.", link: "https://padlet.com" },
-      { name: "Coggle", desc: "توضيح العلاقات بين الأفكار الرئيسية.", link: "https://coggle.it" }
-    ]
-  },
-  remember: {
-    title: "📚 أدوات التذكر (Remembering)",
-    color: "text-purple-600",
-    tools: [
-      { name: "Quizlet", desc: "حفظ المفردات والمصطلحات عبر البطاقات التعليمية.", link: "https://quizlet.com" },
-      { name: "Kahoot!", desc: "استرجاع المعلومات عبر اختبارات وألعاب تنافسية.", link: "https://kahoot.com" },
-      { name: "Google Forms", desc: "اختبارات قصيرة (Quizzes) لاستدعاء المعلومات.", link: "https://forms.google.com" }
-    ]
-  }
+  create: { title: "🎨 أدوات الإبداع", color: "text-red-600", tools: [ { name: "Canva", desc: "تصميم جرافيك.", link: "https://www.canva.com" }, { name: "Adobe Express", desc: "تصميم سريع.", link: "https://www.adobe.com/express/" }, { name: "YouTube", desc: "إنشاء ونشر فيديو.", link: "https://www.youtube.com" }, { name: "Google Sites", desc: "إنشاء مواقع ويب.", link: "https://sites.google.com" }, { name: "Scratch", desc: "برمجة قصص وألعاب.", link: "https://scratch.mit.edu" } ] },
+  evaluate: { title: "⚖️ أدوات التقييم", color: "text-orange-600", tools: [ { name: "Padlet", desc: "نقد وتقييم الأقران.", link: "https://padlet.com" }, { name: "Flip (Flipgrid)", desc: "مناقشات فيديو.", link: "https://info.flip.com" }, { name: "Google Forms", desc: "استبيانات تقييم.", link: "https://forms.google.com" }, { name: "منتديات النقاش", desc: "تقييم الحجج.", link: "#" } ] },
+  analyze: { title: "🔍 أدوات التحليل", color: "text-yellow-600", tools: [ { name: "Mentimeter", desc: "تصويت وتحليل.", link: "https://www.mentimeter.com" }, { name: "Google Trends", desc: "مقارنة بيانات بحث.", link: "https://trends.google.com" }, { name: "Excel/Sheets", desc: "تحليل بيانات.", link: "https://sheets.google.com" }, { name: "Coggle", desc: "تحليل العلاقات.", link: "https://coggle.it" } ] },
+  apply: { title: "🛠️ أدوات التطبيق", color: "text-green-600", tools: [ { name: "Google Docs/Slides", desc: "تطبيق في مستندات.", link: "https://docs.google.com" }, { name: "PhET Simulations", desc: "محاكاة تفاعلية.", link: "https://phet.colorado.edu" }, { name: "Google My Maps", desc: "تطبيق جغرافي.", link: "https://www.google.com/maps/about/mymaps/" }, { name: "MS Office", desc: "تنفيذ مهام عملية.", link: "https://www.office.com" } ] },
+  understand: { title: "💡 أدوات الفهم", color: "text-blue-600", tools: [ { name: "MindMeister", desc: "خرائط ذهنية.", link: "https://www.mindmeister.com" }, { name: "Edpuzzle", desc: "فيديو تفاعلي.", link: "https://edpuzzle.com" }, { name: "Padlet", desc: "تنظيم الأفكار.", link: "https://padlet.com" }, { name: "Coggle", desc: "توضيح العلاقات.", link: "https://coggle.it" } ] },
+  remember: { title: "📚 أدوات التذكر", color: "text-purple-600", tools: [ { name: "Quizlet", desc: "بطاقات تعليمية.", link: "https://quizlet.com" }, { name: "Kahoot!", desc: "ألعاب تنافسية.", link: "https://kahoot.com" }, { name: "Google Forms", desc: "اختبارات قصيرة.", link: "https://forms.google.com" } ] }
 };
 
-// Show tools for selected Bloom level
 function showTools(level) {
   const data = bloomTools[level];
   const display = document.getElementById('tools-display');
   const title = document.getElementById('tools-title');
   const grid = document.getElementById('tools-grid');
 
-  // Set title and color
-  title.innerHTML = data.title;
+  if (!data || !display || !title || !grid) return; // Basic error check
+
+  title.textContent = data.title;
   title.className = `text-2xl font-bold mb-4 ${data.color}`;
+  grid.innerHTML = ''; // Clear previous
 
-  // Clear previous tools
-  grid.innerHTML = '';
-
-  // Populate grid with new tools
   data.tools.forEach(tool => {
-    const card = `
+    const cardHTML = `
       <a href="${tool.link}" target="_blank" rel="noopener noreferrer" class="tool-card block bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
         <h4 class="font-bold text-gray-900">${tool.name}</h4>
         <p class="text-sm text-gray-600">${tool.desc}</p>
-      </a>
-    `;
-    grid.innerHTML += card;
+      </a>`;
+    grid.insertAdjacentHTML('beforeend', cardHTML);
   });
 
-  // Show display area
   display.classList.remove('hidden');
-  
-  // Scroll to the tools display
   display.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// 3. وظائف JavaScript للنافذة المنبثقة
-const modal = document.getElementById('video-modal');
-const iframe = document.getElementById('video-iframe');
-
-/**
- * يفتح النافذة المنبثقة ويقوم بتحميل الفيديو
- * @param {string} videoId - المعرف الخاص بفيديو اليوتيوب
- */
+// --- Video Modal Functions ---
 function openVideoModal(videoId) {
+  if (!modal || !iframe) return;
   const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
   iframe.src = embedUrl;
   modal.style.display = 'block';
 }
 
-/**
- * يغلق النافذة المنبثقة ويوقف الفيديو
- */
 function closeVideoModal() {
+  if (!modal || !iframe) return;
   modal.style.display = 'none';
-  iframe.src = ''; // الأهم: إيقاف الفيديو عن طريق مسح المصدر
+  iframe.src = ''; // Stop video
 }
 
-// إغلاق النافذة عند الضغط خارج محتوى الفيديو
 window.onclick = function(event) {
   if (event.target == modal) {
     closeVideoModal();
   }
 }
+
+// --- Lesson Template Save/Load ---
+function saveLessonTemplate() {
+    if (!lessonTemplateForm || !saveStatus) return;
+    const templateData = {};
+    templateFields.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            templateData[id] = element.value;
+        }
+    });
+    try {
+        localStorage.setItem('lessonTemplateDraft', JSON.stringify(templateData));
+        saveStatus.textContent = 'تم حفظ المسودة بنجاح!';
+        setTimeout(() => { saveStatus.textContent = ''; }, 3000); // Clear message after 3 seconds
+    } catch (e) {
+        console.error("Error saving to localStorage:", e);
+        saveStatus.textContent = 'خطأ: لم يتم حفظ المسودة (قد تكون السعة ممتلئة).';
+         setTimeout(() => { saveStatus.textContent = ''; }, 5000);
+    }
+}
+
+function loadLessonTemplate() {
+     if (!lessonTemplateForm || !saveStatus) return;
+    try {
+        const savedData = localStorage.getItem('lessonTemplateDraft');
+        if (savedData) {
+            const templateData = JSON.parse(savedData);
+            templateFields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element && templateData[id] !== undefined) {
+                    element.value = templateData[id];
+                }
+            });
+            saveStatus.textContent = 'تم استعادة المسودة.';
+             setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+        } else {
+            saveStatus.textContent = 'لا توجد مسودة محفوظة.';
+             setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+        }
+    } catch (e) {
+        console.error("Error loading from localStorage:", e);
+        saveStatus.textContent = 'خطأ أثناء استعادة المسودة.';
+         setTimeout(() => { saveStatus.textContent = ''; }, 5000);
+    }
+}
+
+// --- Initialize: Load draft on page load ---
+document.addEventListener('DOMContentLoaded', (event) => {
+    loadLessonTemplate(); // Try to load saved draft when page loads
+    // Reset save status message on initial load
+    if(saveStatus) saveStatus.textContent = '';
+});
+
 </script>
 
 </body>
