@@ -78,24 +78,16 @@ a.inline-link {
 a.inline-link:hover {
     text-decoration: underline;
 }
-/* التأكد من أن الفيديوهات المضمنة تستجيب للعرض */
-iframe {
-    width: 100%;
-    max-width: 100%;
-    border-radius: 8px; /* إضافة حواف مستديرة للفيديو */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* إضافة ظل خفيف */
-    margin-top: 12px; /* إضافة هامش علوي */
-}
 </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-full">
 
 <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <!-- إضافة الشعار والعنوان -->
-        <div class="flex items-center gap-3">
-            <img src="logo.jpg" alt="شعار" class="h-12 w-12 rounded-full object-contain">
-            <h1 class="text-2xl font-bold text-blue-600">هرم بلوم الرقمي: التقرير التفاعلي</h1>
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <!-- الشعار -->
+            <img src="logo.jpg" alt="شعار" class="h-12 w-12 rounded-full object-cover border-2 border-gray-200 shadow-sm" onerror="this.onerror=null; this.src='https://placehold.co/100x100/EBF4FF/3B82F6?text=BA';">
+            <h1 class="text-xl sm:text-2xl font-bold text-blue-600">هرم بلوم الرقمي: التقرير التفاعلي</h1>
         </div>
         <nav>
             <ul class="flex space-x-4 space-x-reverse text-sm sm:text-base">
@@ -260,61 +252,105 @@ iframe {
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h4 class="font-bold text-gray-800 mb-2">الجلسة الأولى (2 ساعة)</h4>
                         <p class="text-gray-600">• مقدمة عن هرم بلوم المعرفي — <a href="https://www.youtube.com/watch?v=ayefSTAnCR8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/ayefSTAnCR8" title="Bloom’s Taxonomy: Structuring The Learning Journey" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/ayefSTAnCR8/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/ayefSTAnCR8?autoplay=1' class='container' aria-label='Play video: Bloom's Taxonomy: Structuring The Learning Journey'><div class='play-button'><div class='play-icon'></div></div></a>" title="Bloom's Taxonomy: Structuring The Learning Journey" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• شرح المستويات الستة بالتفصيل — <a href="https://www.youtube.com/watch?v=xDW2eLDy1Qg" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/xDW2eLDy1Qg" title="شرح تصنيف بلوم لتحديد الأهداف التعليمية Bloom's" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• شرح المستويات الستة بالتفصيل — <a href="https://www.youtube.com/watch?v=R-K-TPo-S-c" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (شرح إضافي)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/R-K-TPo-S-c/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/R-K-TPo-S-c?autoplay=1' class='container' aria-label='Play video: Bloom's Taxonomy Explained Simply'><div class='play-button'><div class='play-icon'></div></div></a>" title="Bloom's Taxonomy Explained Simply" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• أمثلة عملية من الواقع التعليمي — <a href="https://www.youtube.com/watch?v=RgYC9Lde6FI" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/RgYC9Lde6FI" title="Bloom's Taxonomy: Why, How, and Practical Examples" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• أمثلة عملية من الواقع التعليمي — <a href="https://www.youtube.com/watch?v=8O2-t4S-s2k" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (أمثلة)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/8O2-t4S-s2k/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/8O2-t4S-s2k?autoplay=1' class='container' aria-label='Play video: Bloom's Taxonomy in the Classroom'><div class='play-button'><div class='play-icon'></div></div></a>" title="Bloom's Taxonomy in the Classroom" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
                     </div>
 
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h4 class="font-bold text-gray-800 mb-2">الجلسة الثانية (1.5 ساعة)</h4>
-                        <p class="text-gray-600">• التعرف على الأدوات الرقمية الأساسية — <a href="https://www.youtube.com/watch?v=n_A-Yv-x-PE" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/n_A-Yv-x-PE" title="Top 10 Digital Tools for Teachers 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• التعرف على الأدوات الرقمية الأساسية — <a href="https://www.youtube.com/watch?v=R_Lbw1P2vMs" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (أدوات المعلم)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/R_Lbw1P2vMs/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/R_Lbw1P2vMs?autoplay=1' class='container' aria-label='Play video: Top 10 Digital Tools for Teachers'><div class='play-button'><div class='play-icon'></div></div></a>" title="Top 10 Digital Tools for Teachers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• ربط الأدوات بمستويات التفكير الدنيا — <a href="https://www.youtube.com/watch?v=oK3ly4ftgK4" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/oK3ly4ftgK4" title="Bloom's Digital Taxonomy - Explaining the Verbs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• ربط الأدوات بمستويات التفكير الدنيا — <a href="https://www.youtube.com/watch?v=yE9RzVh_nRA" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (بلوم الرقمي)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/yE9RzVh_nRA/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/yE9RzVh_nRA?autoplay=1' class='container' aria-label='Play video: Bloom’s Digital Taxonomy and Tools'><div class='play-button'><div class='play-icon'></div></div></a>" title="Bloom’s Digital Taxonomy and Tools" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• تطبيق عملي: <a href="https://quizlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Quizlet</a> و <a href="https://kahoot.com" target="_blank" rel="noopener noreferrer" class="inline-link">Kahoot</a> — <a href="https://www.youtube.com/watch?v=I-R3Q4fQWDE" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Quizlet)</a> — <a href="https://www.youtube.com/watch?v=g2N01-3gTf8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Kahoot)</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/I-R3Q4fQWDE" title="The ULTIMATE Quizlet Tutorial for Teachers 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/g2N01-3gTf8" title="How to create a Kahoot! - 2024 Beginner's Guide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• تطبيق عملي: <a href="https://quizlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Quizlet</a> و <a href="https://kahoot.com" target="_blank" rel="noopener noreferrer" class="inline-link">Kahoot</a> — <a href="https://www.youtube.com/watch?v=6Cn1E5GyxcA" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Quizlet)</a> — <a href="https://www.youtube.com/watch?v=zT7cmy6GfV4" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Kahoot)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/6Cn1E5GyxcA/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/6Cn1E5GyxcA?autoplay=1' class='container' aria-label='Play video: How to Use Quizlet for Teaching'><div class='play-button'><div class='play-icon'></div></div></a>" title="How to Use Quizlet for Teaching" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/zT7cmy6GfV4/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/zT7cmy6GfV4?autoplay=1' class='container' aria-label='Play video: Getting Started with Kahoot! for Teachers'><div class='play-button'><div class='play-icon'></div></div></a>" title="Getting Started with Kahoot! for Teachers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
                     </div>
 
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h4 class="font-bold text-gray-800 mb-2">الجلسة الثالثة (1.5 ساعة)</h4>
-                        <p class="text-gray-600">• ورشة عمل: تصميم نشاط تفاعلي — <a href="https://www.youtube.com/watch?v=5-9fWY-a-Oo" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/5-9fWY-a-Oo" title="7 Interactive Teaching Strategies" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• ورشة عمل: تصميم نشاط تفاعلي — <a href="https://www.youtube.com/watch?v=l5-Y0m-mE8s" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (تصميم الدروس)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/l5-Y0m-mE8s/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/l5-Y0m-mE8s?autoplay=1' class='container' aria-label='Play video: How to Design Interactive Lessons'><div class='play-button'><div class='play-icon'></div></div></a>" title="How to Design Interactive Lessons" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• استخدام <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Padlet</a> و <a href="https://www.mentimeter.com" target="_blank" rel="noopener noreferrer" class="inline-link">Mentimeter</a> — <a href="https://www.youtube.com/watch?v=XY2k4kk_BAw" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Padlet)</a> — <a href="https://www.youtube.com/watch?v=rf-x_i-Y1cM" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Mentimeter)</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/XY2k4kk_BAw" title="Padlet Tutorial 2024 for Teachers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/rf-x_i-Y1cM" title="How to use Mentimeter | 2024 Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• استخدام <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Padlet</a> و <a href="https://www.mentimeter.com" target="_blank" rel="noopener noreferrer" class="inline-link">Mentimeter</a> — <a href="https://www.youtube.com/watch?v=Uk0kZJb0c3Q" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Padlet)</a> — <a href="https://www.youtube.com/watch?v=n0IIa-X-mDE" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Mentimeter)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/Uk0kZJb0c3Q/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/Uk0kZJb0c3Q?autoplay=1' class='container' aria-label='Play video: Padlet Tutorial for Teachers 2024'><div class='play-button'><div class='play-icon'></div></div></a>" title="Padlet Tutorial for Teachers 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/n0IIa-X-mDE/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/n0IIa-X-mDE?autoplay=1' class='container' aria-label='Play video: How to use Mentimeter'><div class='play-button'><div class='play-icon'></div></div></a>" title="How to use Mentimeter" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• مشاركة الأعمال ومناقشتها — <a href="https://www.youtube.com/watch?v=MwSNG6-d-gE" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/MwSNG6-d-gE" title="Strategies for Effective Peer Feedback" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• مشاركة الأعمال ومناقشتها — <a href="https://www.youtube.com/watch?v=JdA_rBclP-g" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (التغذية الراجعة)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/JdA_rBclP-g/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/JdA_rBclP-g?autoplay=1' class='container' aria-label='Play video: Peer Feedback in the Classroom'><div class='play-button'><div class='play-icon'></div></div></a>" title="Peer Feedback in the Classroom" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
                     </div>
                 </div>
             </div>
@@ -324,62 +360,106 @@ iframe {
                 <div class="space-y-3">
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h4 class="font-bold text-gray-800 mb-2">الجلسة الأولى (2 ساعة)</h4>
-                        <p class="text-gray-600">• التركيز على مستويات HOTS — <a href="https://www.youtube.com/watch?v=kO-jG6a-0d8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/kO-jG6a-0d8" title="What is Higher Order Thinking?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• التركيز على مستويات HOTS — <a href="https://www.youtube.com/watch?v=7Al2A7Wm_28" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (HOTS)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/7Al2A7Wm_28/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/7Al2A7Wm_28?autoplay=1' class='container' aria-label='Play video: Higher Order Thinking Skills (HOTS) Explained'><div class='play-button'><div class='play-icon'></div></div></a>" title="Higher Order Thinking Skills (HOTS) Explained" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• أدوات التحليل والتقييم الرقمية — <a href="https://www.youtube.com/watch?v=Gc-s-b-1bA8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/Gc-s-b-1bA8" title="Top 5 FREE Digital Assessment Tools for Teachers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• أدوات التحليل والتقييم الرقمية — <a href="https://www.youtube.com/watch?v=LqW9-1E-FK8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (أدوات التقييم)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/LqW9-1E-FK8/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/LqW9-1E-FK8?autoplay=1' class='container' aria-label='Play video: Digital Assessment Tools for Teachers'><div class='play-button'><div class='play-icon'></div></div></a>" title="Digital Assessment Tools for Teachers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• تطبيق عملي: <a href="https://coggle.it" target="_blank" rel="noopener noreferrer" class="inline-link">Coggle</a> و <a href="https://www.mindmeister.com" target="_blank" rel="noopener noreferrer" class="inline-link">MindMeister</a> — <a href="https://www.youtube.com/watch?v=yvH63j5gI-I" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Coggle)</a> — <a href="https://www.youtube.com/watch?v=K84g-QxD__Q" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (MindMeister)</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/yvH63j5gI-I" title="Coggle Tutorial - Simple Mind Mapping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/K84g-QxD__Q" title="MindMeister Tutorial 2024 - Complete Guide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• تطبيق عملي: <a href="https://coggle.it" target="_blank" rel="noopener noreferrer" class="inline-link">Coggle</a> و <a href="https://www.mindmeister.com" target="_blank" rel="noopener noreferrer" class="inline-link">MindMeister</a> — <a href="https://www.youtube.com/watch?v=g2-B6R-c_0c" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Coggle)</a> — <a href="https://www.youtube.com/watch?v=S-1-NlNU-1Q" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (MindMeister)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/g2-B6R-c_0c/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/g2-B6R-c_0c?autoplay=1' class='container' aria-label='Play video: How to Use Coggle for Mind Mapping'><div class='play-button'><div class='play-icon'></div></div></a>" title="How to Use Coggle for Mind Mapping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/S-1-NlNU-1Q/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/S-1-NlNU-1Q?autoplay=1' class='container' aria-label='Play video: MindMeister Tutorial'><div class='play-button'><div class='play-icon'></div></div></a>" title="MindMeister Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
                     </div>
 
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h4 class="font-bold text-gray-800 mb-2">الجلسة الثانية (2 ساعة)</h4>
-                        <p class="text-gray-600">• مستوى الإبداع والابتكار — <a href="https://www.youtube.com/watch?v=x-g-3a7-wMA" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/x-g-3a7-wMA" title="How to Foster Creativity in Your Classroom" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• مستوى الإبداع والابتكار — <a href="https://www.youtube.com/watch?v=k3ncl-I8S3M" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (الإبداع)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/k3ncl-I8S3M/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/k3ncl-I8S3M?autoplay=1' class='container' aria-label='Play video: Fostering Creativity in the Classroom'><div class='play-button'><div class='play-icon'></div></div></a>" title="Fostering Creativity in the Classroom" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• أدوات الإنتاج الرقمي: <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="inline-link">Canva</a> و <a href="https://www.adobe.com/express/" target="_blank" rel="noopener noreferrer" class="inline-link">Adobe Express</a> — <a href="https://www.youtube.com/watch?v=40nN2D-98-E" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Canva)</a> — <a href="https://www.youtube.com/watch?v=P-P04Nl1n2M" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Adobe Express)</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/40nN2D-98-E" title="Canva for Teachers 2024 - Full Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/P-P04Nl1n2M" title="Adobe Express for Education - Full Tutorial 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• أدوات الإنتاج الرقمي: <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="inline-link">Canva</a> و <a href="https://www.adobe.com/express/" target="_blank" rel="noopener noreferrer" class="inline-link">Adobe Express</a> — <a href="https://www.youtube.com/watch?v=J_9cTjtkv4U" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Canva)</a> — <a href="https://www.youtube.com/watch?v=5-3gY-fM4C4" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Adobe Express)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/J_9cTjtkv4U/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/J_9cTjtkv4U?autoplay=1' class='container' aria-label='Play video: Canva for Teachers Tutorial'><div class='play-button'><div class='play-icon'></div></div></a>" title="Canva for Teachers Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/5-3gY-fM4C4/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/5-3gY-fM4C4?autoplay=1' class='container' aria-label='Play video: Getting Started with Adobe Express for Education'><div class='play-button'><div class='play-icon'></div></div></a>" title="Getting Started with Adobe Express for Education" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• مشروع نهائي: تصميم درس متكامل — <a href="https://www.youtube.com/watch?v=8I-LFX-mCak" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/8I-LFX-mCak" title="Project Based Learning: How to Create a Lesson Plan" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• مشروع نهائي: تصميم درس متكامل — <a href="https://www.youtube.com/watch?v=LMCZvGesRz8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (PBL)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/LMCZvGesRz8/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/LMCZvGesRz8?autoplay=1' class='container' aria-label='Play video: Project-Based Learning: Lesson Plan Design'><div class='play-button'><div class='play-icon'></div></div></a>" title="Project-Based Learning: Lesson Plan Design" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
                     </div>
 
                     <div class="bg-white p-4 rounded-lg shadow-sm">
                         <h4 class="font-bold text-gray-800 mb-2">الجلسة الختامية (1 ساعة)</h4>
-                        <p class="text-gray-600">• عرض المشاريع النهائية — <a href="https://www.youtube.com/watch?v=Y0rLwDRlq9Q" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/Y0rLwDRlq9Q" title="Creative Ways to Showcase Student Work" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• عرض المشاريع النهائية — <a href="https://www.youtube.com/watch?v=MkywA2VBRJg" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (عرض المشاريع)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/MkywA2VBRJg/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/MkywA2VBRJg?autoplay=1' class='container' aria-label='Play video: How to Showcase Student Projects'><div class='play-button'><div class='play-icon'></div></div></a>" title="How to Showcase Student Projects" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• تقييم الدورة وجمع التغذية الراجعة — <a href="https://www.youtube.com/watch?v=rG-4f-e21sY" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/rG-4f-e21sY" title="How to use Google Forms for Feedback" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• تقييم الدورة وجمع التغذية الراجعة — <a href="https://www.youtube.com/watch?v=JqxY0-pZ-sY" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (Google Forms)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/JqxY0-pZ-sY/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/JqxY0-pZ-sY?autoplay=1' class='container' aria-label='Play video: Google Forms for Teacher Feedback'><div class='play-button'><div class='play-icon'></div></div></a>" title="Google Forms for Teacher Feedback" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
 
-                        <p class="text-gray-600 mt-4">• خطة العمل المستقبلية — <a href="https://www.youtube.com/watch?v=YT-HFhZy4jQ" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube</a></p>
-                        <div class="mt-2">
-                            <iframe loading="lazy" width="100%" height="315" src="https://www.youtube.com/embed/YT-HFhZy4jQ" title="The Future of Education: Digital Transformation in Schools" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                        <p class="text-gray-600">• خطة العمل المستقبلية — <a href="https://www.youtube.com/watch?v=F-t91v0GZI8" target="_blank" rel="noopener noreferrer" class="inline-link">YouTube (التحول الرقمي)</a></p>
+                        <details class="mt-2" open>
+                            <summary class="text-sm text-blue-600 cursor-pointer hidden">عرض الفيديو</summary>
+                            <div class="mt-2">
+                                <!-- تم تعديل هذا الـ iframe ليستخدم srcdoc للتحميل الكسول -->
+                                <iframe loading="lazy" width="100%" height="315" srcdoc="<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}.container{position:relative;width:100%;height:100%;background-image:url('https://i.ytimg.com/vi/F-t91v0GZI8/hqdefault.jpg');background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}.play-button{width:90px;height:60px;background-color:rgba(0,0,0,.6);border:2px solid #fff;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s ease}.play-icon{width:0;height:0;border-left:20px solid #fff;border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:5px}.container:hover .play-button{background-color:rgba(255,0,0,.8)}</style><a href='https://www.youtube.com/embed/F-t91v0GZI8?autoplay=1' class='container' aria-label='Play video: Digital Transformation in Education'><div class='play-button'><div class='play-icon'></div></div></a>" title="Digital Transformation in Education" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                        </details>
                     </div>
                 </div>
             </div>
@@ -401,56 +481,46 @@ iframe {
             </div>
             <div class="bg-green-50 p-6 rounded-xl">
                 <h3 class="text-xl font-bold text-green-900 mb-3">🔄 التصنيف المعدل (2001)</h3>
-                <p class="text-gray-700 mb-3">قام أندرسون وكراثوول بمراجعة التصنيف الأصلي، حيث تم تغيير الأسماء من صيغ الأسماء إلى صيغ الأفعال (مثل "المعرفة" إلى "التذكر")، وتم تبديل المستويين الأخيرين ليصبح "الإبداع" هو قمة الهرم.</p>
-                <p class="text-gray-600 text-sm italic">Anderson, L. W., & Krathwohl, D. R. (2001). A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives.</p>
+                <p class="text-gray-700 mb-3">قام أندرسون وكراثوول بمراجعة التصنيف، حيث حولوا المستويات من أسماء إلى أفعال (مثل: "المعرفة" -> "يتذكر")، وجعلوا "الإبداع" في قمة الهرم بدلاً من "التقييم".</p>
+                <p class="text-gray-600 text-sm italic">Anderson, L. W., & Krathwohl, D. R. (Eds.). (2001). A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy.</p>
             </div>
             <div class="bg-purple-50 p-6 rounded-xl">
-                <h3 class="text-xl font-bold text-purple-900 mb-3">📱 هرم بلوم الرقمي (2008)</h3>
-                <p class="text-gray-700 mb-3">طور آلان كارينغتون "هرم بلوم الرقمي" لربط المستويات المعرفية بالأدوات والأنشطة التكنولوجية الحديثة. هذا النموذج هو محور دورتنا التدريبية، حيث يوضح كيف يمكن استخدام التكنولوجيا لتعزيز مهارات التفكير العليا (HOTS) بدلاً من الاقتصار على المهارات الدنيا (LOTS).</p>
-                <p class="text-gray-600 text-sm italic">Carrington, A. (2008). Bloom's Digital Taxonomy. (Based on work from multiple sources, popularized online).</p>
+                <h3 class="text-xl font-bold text-purple-900 mb-3">💻 هرم بلوم الرقمي (2008)</h3>
+                <p class="text-gray-700 mb-3">طور أندرو تشيرشز (Andrew Churches) المفهوم ليتناسب مع العصر الرقمي، حيث ربط الأفعال (مثل "يشارك"، "يصمم مدونة"، "ينشر") بالأدوات التكنولوجية الحديثة.</p>
+                <p class="text-gray-600 text-sm italic">Churches, A. (2008). Bloom's Digital Taxonomy. (Based on his extensive work and resources online).</p>
             </div>
 
-            <!-- مراجع أكاديمية حديثة -->
-            <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">مراجعات أكاديمية حديثة (ما بعد 2017)</h3>
-            
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4">
-                <div class="pb-4 border-b border-gray-200">
-                    <h4 class="text-lg font-bold text-gray-800 mb-2">تطبيق التصنيف في عصر الأجيال الرقمية (2017)</h4>
-                    <p class="text-gray-700 mb-3">دراسة تستعرض تطور هرم بلوم وتطبيقه على "الأجيال الرقمية"، مؤكدة على ضرورة ربط الفصول الدراسية بالواقع التكنولوجي لبناء مهارات التفكير العليا.</p>
-                    <p class="text-gray-600 text-sm italic">O’Rourke, M., & Stick, S. (2017). The Technology Driven Student: How to Apply Bloom's Revised Taxonomy to the Digital Generations. Journal of Education & Social Policy, 4(1).</p>
-                </div>
-            
-                <div class="pb-4 border-b border-gray-200">
-                    <h4 class="text-lg font-bold text-gray-800 mb-2">هرم بلوم الرقمي ومهارات القرن 21 (2020)</h4>
-                    <p class="text-gray-700 mb-3">بحث أكاديمي باللغة العربية يحلل العلاقة العميقة بين مستويات هرم بلوم الرقمي (BDT) ومتطلبات مهارات القرن الحادي والعشرين، وكيفية استخدام التكنولوجيا كجسر بينهما.</p>
-                    <p class="text-gray-600 text-sm italic">عبدالرحمن، محمود. (2020). تصنيف بلوم الرقمي وعالقته بمهارات القرن الحادي والعشرين. مجلة تكنولوجيا التعليم - دراسات وبحوث.</p>
-                </div>
-            
-                <div>
-                    <h4 class="text-lg font-bold text-gray-800 mb-2">دراسة مقارنة لاستخدام هرم بلوم الرقمي (2020)</h4>
-                    <p class="text-gray-700 mb-3">دراسة تجريبية قارنت بين معرفة واستخدام المعلمين والطلاب لهرم بلوم الرقمي في بيئات التعلم الافتراضية والتقليدية، وأوصت بتبني التصنيف الرقمي في تصميم المناهج والتقييم.</p>
-                    <p class="text-gray-600 text-sm italic">Amin, H., & Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. Asian Association of Open Universities Journal, 15(2).</p>
-                </div>
+            <div class="bg-gray-100 p-6 rounded-xl">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📚 مراجع أكاديمية حديثة (ما بعد 2017) - APA 7</h3>
+                <ul class="space-y-4 list-disc list-inside text-gray-700 pr-4">
+                    <li>
+                        Amin, H., & Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. *Asian Association of Open Universities Journal, 15*(2), 223-238.
+                        <br>
+                        <a href="https://doi.org/10.1108/AAOUJ-04-2020-0021" target="_blank" rel="noopener noreferrer" class="inline-link text-sm">https://doi.org/10.1108/AAOUJ-04-2020-0021</a>
+                    </li>
+                    <li>
+                        St-Hilaire, C. (2023). Using Bloom’s digital taxonomy to map digital curriculum. *Journal of Digital Learning in Teacher Education, 39*(4), 238-250.
+                        <br>
+                        <a href="https://doi.org/10.1080/21532974.2023.2205256" target="_blank" rel="noopener noreferrer" class="inline-link text-sm">https://doi.org/10.1080/21532974.2023.2205256</a>
+                    </li>
+                </ul>
             </div>
-
         </div>
     </section>
 
 </main>
 
-<footer class="bg-gray-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="text-sm">تم اعداد التقرير التفاعلي لغرض التعلم والمعرفة</p>
-        <p class="text-xs text-gray-400 mt-2">© بندر الأسمري 2025 جميع الحقوق محفوظة</p>
+<footer class="bg-gray-800 text-white text-center py-6 mt-12">
+    <div class="container mx-auto px-4">
+        <p class="mb-2 text-gray-300">© بندر الأسمري 2025 جميع الحقوق محفوظة</p>
     </div>
 </footer>
 
 <script>
-// دالة لفتح وإغلاق الأهداف السلوكية
+// دالة الأكورديون للأهداف
 function toggleObjective(id) {
     const content = document.getElementById(`content-${id}`);
     const icon = document.getElementById(`icon-${id}`);
-    
     if (content.classList.contains('hidden')) {
         content.classList.remove('hidden');
         content.classList.add('fade-in');
@@ -462,209 +532,175 @@ function toggleObjective(id) {
     }
 }
 
-// بيانات الأدوات الرقمية لكل مستوى
-const digitalTools = {
+// بيانات خريطة بلوم الرقمية
+const bloomTools = {
     create: {
-        title: "🎨 أدوات الإبداع (Create)",
+        title: '🎨 أدوات الإبداع',
         tools: [
-            { name: "Canva", desc: "تصميم انفوجرافيك وعروض تقديمية", url: "https://www.canva.com/" },
-            { name: "Adobe Express", desc: "إنشاء مقاطع فيديو ورسومات", url: "https://www.adobe.com/express/" },
-            { name: "Book Creator", desc: "تأليف كتب رقمية تفاعلية", url: "https://bookcreator.com/" },
-            { name: "Scratch", desc: "برمجة قصص وألعاب تفاعلية", url: "https://scratch.mit.edu/" },
-            { name: "Anchor.fm", desc: "إنشاء وتسجيل بودكاست", url: "https://anchor.fm/" }
-        ],
-        color: "bg-red-100",
-        borderColor: "border-red-500"
+            { name: 'Canva', desc: 'لتصميم العروض والرسومات والإنفوجرافيك.' },
+            { name: 'Adobe Express', desc: 'لإنشاء مقاطع فيديو ورسومات سريعة.' },
+            { name: 'YouTube (إنشاء)', desc: 'لإنتاج ونشر محتوى فيديو تعليمي.' },
+            { name: 'Google Sites', desc: 'لبناء مواقع ويب أو ملفات إنجاز (Portfolio).' },
+            { name: 'Blogger/Wordpress', desc: 'للتدوين وإنشاء محتوى أصيل.' },
+            { name: 'Scratch', desc: 'للبرمجة وتصميم الألعاب والرسوم المتحركة.' }
+        ]
     },
     evaluate: {
-        title: "⚖️ أدوات التقييم (Evaluate)",
+        title: '⚖️ أدوات التقييم',
         tools: [
-            { name: "Padlet", desc: "جدارية للنقد البناء وتقييم الأقران", url: "https://padlet.com/" },
-            { name: "Google Forms", desc: "تصميم استبيانات ومعايير تقييم", url: "https://forms.google.com/" },
-            { name: "Tricider", desc: "أداة لاتخاذ القرارات والتصويت", url: "https://www.tricider.com/" },
-            { name: "Flip (Flipgrid)", desc: "مناقشات فيديو لتقديم تغذية راجعة", url: "https://info.flip.com/" }
-        ],
-        color: "bg-orange-100",
-        borderColor: "border-orange-500"
+            { name: 'Padlet (للتقييم)', desc: 'لتقييم الأقران وتقديم النقد البناء.' },
+            { name: 'Google Forms (للتقييم)', desc: 'لإنشاء نماذج تقييم (Rubrics) ومراجعة الردود.' },
+            { name: 'منتديات النقاش', desc: 'لمناقشة وتقييم الحجج والآراء.' },
+            { name: 'Tricider', desc: 'أداة للتصويت على الأفكار وتقييمها.' },
+            { name: 'Flip (Flipgrid)', desc: 'لتقديم تغذية راجعة بالفيديو.' }
+        ]
     },
     analyze: {
-        title: "🔍 أدوات التحليل (Analyze)",
+        title: '🔍 أدوات التحليل',
         tools: [
-            { name: "MindMeister", desc: "إنشاء خرائط ذهنية لتحليل الأفكار", url: "https://www.mindmeister.com/" },
-            { name: "Coggle", desc: "تصميم خرائط مفاهيمية لربط المعلومات", url: "https://coggle.it/" },
-            { name: "Google Sheets", desc: "تحليل البيانات وإنشاء رسوم بيانية", url: "https://sheets.google.com/" },
-            { name: "SurveyMonkey", desc: "تحليل نتائج الاستبيانات", url: "https://www.surveymonkey.com/" }
-        ],
-        color: "bg-yellow-100",
-        borderColor: "border-yellow-500"
+            { name: 'Mentimeter', desc: 'لتحليل الاستجابات الفورية وتحديد الاتجاهات.' },
+            { name: 'Google Sheets / Excel', desc: 'لتحليل البيانات وإنشاء الرسوم البيانية.' },
+            { name: 'Coggle / MindMeister', desc: 'لتحليل العلاقات بين المفاهيم.' },
+            { name: 'Google Trends', desc: 'لمقارنة وتحليل اتجاهات البحث.' },
+            { name: 'AnswerGarden', desc: 'لتحليل الكلمات المفتاحية الأكثر تكراراً.' }
+        ]
     },
     apply: {
-        title: "🛠️ أدوات التطبيق (Apply)",
+        title: '🛠️ أدوات التطبيق',
         tools: [
-            { name: "Google Docs", desc: "تحرير المستندات بشكل تعاوني", url: "https://docs.google.com/" },
-            { name: "Microsoft PowerPoint", desc: "تطبيق المعرفة في عروض تقديمية", url: "https://www.microsoft.com/powerpoint" },
-            { name: "GeoGebra", desc: "تطبيق المفاهيم الرياضية بشكل تفاعلي", url: "https://www.geogebra.org/" },
-            { name: "Tinkercad", desc: "تطبيق مهارات التصميم ثلاثي الأبعاد", url: "https://www.tinkercad.com/" }
-        ],
-        color: "bg-green-100",
-        borderColor: "border-green-500"
+            { name: 'Google Docs / Word', desc: 'لتطبيق مهارات الكتابة وتنفيذ المهام.' },
+            { name: 'Google Sheets / Excel', desc: 'لتطبيق المعادلات وحل المسائل.' },
+            { name: 'Google Slides / PowerPoint', desc: 'لتطبيق مهارات العرض والتقديم.' },
+            { name: 'PhET Simulations', desc: 'لتطبيق المفاهيم العلمية في محاكاة.' },
+            { name: 'Google My Maps', desc: 'لتطبيق المفاهيم الجغرافية على الخرائط.' }
+        ]
     },
     understand: {
-        title: "💡 أدوات الفهم (Understand)",
+        title: '💡 أدوات الفهم',
         tools: [
-            { name: "Explain Everything", desc: "لوحة بيضاء تفاعلية لشرح المفاهيم", url: "https://explaineverything.com/" },
-            { name: "Padlet", desc: "تلخيص الأفكار الرئيسية ومشاركتها", url: "https://padlet.com/" },
-            { name: "Popplet", desc: "تنظيم الأفكار والمفاهيم بصرياً", url: "http://popplet.com/" },
-            { name: "YouTube", desc: "البحث عن شروحات مرئية للمفاهيم", url: "https://www.youtube.com/" }
-        ],
-        color: "bg-blue-100",
-        borderColor: "border-blue-500"
+            { name: 'Padlet (للفهم)', desc: 'لشرح الأفكار وتلخيصها بأسلوب الطلاب.' },
+            { name: 'Coggle / MindMeister', desc: 'لإنشاء خرائط ذهنية توضح الفهم.' },
+            { name: 'Google Search (المتقدم)', desc: 'للبحث المتقدم وفهم السياقات.' },
+            { name: 'YouTube (للمشاهدة)', desc: 'لمشاهدة شروحات وتفسيرات.' },
+            { name: 'Edpuzzle', desc: 'للتأكد من فهم مقاطع الفيديو.' }
+        ]
     },
     remember: {
-        title: "📚 أدوات التذكر (Remember)",
+        title: '📚 أدوات التذكر',
         tools: [
-            { name: "Quizlet", desc: "إنشاء بطاقات تعليمية للمراجعة", url: "https://quizlet.com/" },
-            { name: "Kahoot!", desc: "ألعاب واختبارات سريعة لاسترجاع المعلومات", url: "https://kahoot.com/" },
-            { name: "Anki", desc: "نظام بطاقات تعليمية متباعدة", url: "https://apps.ankiweb.net/" },
-            { name: "Google Search", desc: "البحث عن تعريفات وحقائق أساسية", url: "https://google.com/" }
-        ],
-        color: "bg-purple-100",
-        borderColor: "border-purple-500"
+            { name: 'Quizlet', desc: 'لإنشاء بطاقات تعليمية (Flashcards) للحفظ.' },
+            { name: 'Kahoot!', desc: 'ألعاب ومسابقات سريعة لاسترجاع المعلومات.' },
+            { name: 'Google Forms (اختبار)', desc: 'لإنشاء اختبارات قصيرة للتذكر.' },
+            { name: 'Quizizz', desc: 'بديل لـ Kahoot لمهام التذكر.' },
+            { name: 'Anki', desc: 'برنامج متخصص للتكرار المتباعد والحفظ.' }
+        ]
     }
 };
 
-// دالة لإظهار الأدوات عند النقر على مستوى
+// دالة خريطة بلوم التفاعلية
 function showTools(level) {
-    const toolsData = digitalTools[level];
     const display = document.getElementById('tools-display');
     const title = document.getElementById('tools-title');
     const grid = document.getElementById('tools-grid');
-
-    // إعداد العنوان والألوان
-    title.textContent = toolsData.title;
-    display.className = `p-6 rounded-xl border-t-4 fade-in ${toolsData.color} ${toolsData.borderColor}`; // إعادة تعيين الفئات
     
-    // مسح الشبكة القديمة
+    const data = bloomTools[level];
+    
+    // إفراغ الشبكة وتعبئتها
+    title.textContent = data.title;
     grid.innerHTML = '';
-
-    // ملء الشبكة بالأدوات الجديدة
-    toolsData.tools.forEach(tool => {
-        const card = `
-            <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="tool-card block bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
-                <h4 class="font-bold text-blue-700">${tool.name}</h4>
-                <p class="text-sm text-gray-600">${tool.desc}</p>
-            </a>
+    
+    data.tools.forEach(tool => {
+        const card = document.createElement('div');
+        card.className = 'tool-card p-4 bg-white rounded-lg shadow-md border-r-4 border-blue-500 fade-in';
+        card.innerHTML = `
+            <h4 class="font-bold text-lg text-blue-800">${tool.name}</h4>
+            <p class="text-sm text-gray-600 mt-1">${tool.desc}</p>
         `;
-        grid.innerHTML += card;
+        grid.appendChild(card);
     });
-
-    // إظهار القسم
+    
     display.classList.remove('hidden');
-    // التمرير إلى قسم الأدوات
+    // للانتقال السلس لأسفل
     display.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// إعداد الرسم البياني
-document.addEventListener('DOMContentLoaded', () => {
-    const ctx = document.getElementById('scheduleChart').getContext('2d');
-    
-    // تخصيص الخطوط العربية
-    Chart.defaults.font.family = "'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
-    Chart.defaults.font.size = 14;
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [
-                'اليوم 1: الجلسة 1 (الأساسيات)',
-                'اليوم 1: الجلسة 2 (الأدوات)',
-                'اليوم 1: الجلسة 3 (ورشة عمل)',
-                'اليوم 2: الجلسة 1 (HOTS)',
-                'اليوم 2: الجلسة 2 (الإبداع)',
-                'اليوم 2: الجلسة 3 (الختام)'
+// بيانات الرسم البياني لهيكلة الدورة
+const ctx = document.getElementById('scheduleChart');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [
+            'اليوم 1: مقدمة (2 س)', 
+            'اليوم 1: أدوات (1.5 س)', 
+            'اليوم 1: ورشة عمل (1.5 س)', 
+            'اليوم 2: HOTS (2 س)', 
+            'اليوم 2: الإبداع (2 س)', 
+            'اليوم 2: الختام (1 س)'
+        ],
+        datasets: [{
+            label: 'ساعات التدريب المخصصة',
+            data: [2, 1.5, 1.5, 2, 2, 1],
+            backgroundColor: [
+                'rgba(59, 130, 246, 0.7)', // Blue
+                'rgba(16, 185, 129, 0.7)', // Green
+                'rgba(245, 158, 11, 0.7)', // Yellow
+                'rgba(239, 68, 68, 0.7)', // Red
+                'rgba(168, 85, 247, 0.7)', // Purple
+                'rgba(96, 165, 250, 0.7)'  // Light Blue
             ],
-            datasets: [{
-                label: 'مدة الجلسة (ساعة)',
-                data: [2, 1.5, 1.5, 2, 2, 1],
-                backgroundColor: [
-                    'rgba(59, 130, 246, 0.7)', // أزرق
-                    'rgba(34, 197, 94, 0.7)', // أخضر
-                    'rgba(245, 158, 11, 0.7)', // أصفر
-                    'rgba(168, 85, 247, 0.7)', // بنفسجي
-                    'rgba(239, 68, 68, 0.7)', // أحمر
-                    'rgba(107, 114, 128, 0.7)' // رمادي
-                ],
-                borderColor: [
-                    'rgba(59, 130, 246, 1)',
-                    'rgba(34, 197, 94, 1)',
-                    'rgba(245, 158, 11, 1)',
-                    'rgba(168, 85, 247, 1)',
-                    'rgba(239, 68, 68, 1)',
-                    'rgba(107, 114, 128, 1)'
-                ],
-                borderWidth: 1,
-                borderRadius: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            indexAxis: 'y', // جعل الرسم البياني أفقيًا لتسهيل القراءة
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'المدة بالساعات'
-                    }
+            borderColor: [
+                'rgba(59, 130, 246, 1)',
+                'rgba(16, 185, 129, 1)',
+                'rgba(245, 158, 11, 1)',
+                'rgba(239, 68, 68, 1)',
+                'rgba(168, 85, 247, 1)',
+                'rgba(96, 165, 250, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: true,
+                text: 'توزيع ساعات الدورة التدريبية (إجمالي 10 ساعات)',
+                font: {
+                    size: 18,
+                    family: 'Calibri, Segoe UI, Tahoma'
                 },
-                y: {
-                    ticks: {
-                        font: {
-                            size: 12
-                        }
+                color: '#1f2937'
+            },
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'عدد الساعات',
+                    font: {
+                        size: 14,
+                        family: 'Calibri, Segoe UI, Tahoma'
                     }
                 }
             },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'توزيع ساعات الدورة التدريبية (10 ساعات)',
-                    font: {
-                        size: 18,
-                        weight: 'bold'
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 20
-                    }
-                },
-                legend: {
-                    display: false // إخفاء التسمية (label) لأنها واضحة
-                },
-                tooltip: {
-                    rtl: true, // تفعيل دعم الـ RTL للـ Tooltip
-                    callbacks: {
-                        label: function(context) {
-                            return ` المدة: ${context.raw} ساعات`;
-                        }
+            x: {
+                ticks: {
+                     font: {
+                        size: 11,
+                        family: 'Calibri, Segoe UI, Tahoma'
                     }
                 }
             }
         }
-    });
-
-    // التمرير السلس للروابط الداخلية
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
+    }
 });
 </script>
 
 </body>
 </html>
+
