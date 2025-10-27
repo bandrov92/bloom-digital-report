@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale-1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حقيبة هرم بلوم الرقمية المتكاملة</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -108,6 +108,69 @@ a.inline-link:hover {
 .lesson-template th:first-child, .lesson-template td:first-child {
   background-color: #f9fafb; /* bg-gray-50 */
   font-weight: bold;
+}
+
+/* 1. تنسيقات نافذة الفيديو المنبثقة (Modal) */
+.video-modal {
+  display: none; /* مخفي افتراضياً */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7); /* خلفية سوداء شبه شفافة */
+  animation: fadeIn 0.3s ease;
+}
+.video-modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: 5% auto; /* توسيط عمودي وأفقي */
+  padding: 0;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 800px; /* عرض أقصى 800px */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  border-radius: 8px;
+  overflow: hidden; /* لإخفاء زوايا iframe المدورة */
+}
+.video-modal-close {
+  color: white;
+  background-color: #ef4444; /* red-500 */
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 20px;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  border: 2px solid white;
+}
+.video-modal-close:hover,
+.video-modal-close:focus {
+  background-color: #dc2626; /* red-600 */
+  text-decoration: none;
+  cursor: pointer;
+}
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
 </head>
@@ -406,6 +469,12 @@ a.inline-link:hover {
             <li>**التحليل:** (مثال: "قارن بين الأسباب الاقتصادية والسياسية للحرب باستخدام رسم بياني").</li>
             <li>**التقييم:** (مثال: "ناقش في منتدى Padlet: ما هو السبب الأكثر تأثيراً في اندلاع الحرب؟ ولماذا؟").</li>
           </ul>
+          <!-- 4. زر الفيديو المضاف -->
+          <div class="mt-4">
+            <button onclick="openVideoModal('N-eM8n-t_iQ')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+              🎥 مشاهدة: شرح خبير (مهارات التفكير العليا)
+            </button>
+          </div>
         </div>
       </div>
       
@@ -418,6 +487,12 @@ a.inline-link:hover {
         <div id="content-activity-4" class="mt-3 text-gray-700 hidden">
           <p class="font-semibold">الهدف: تطبيق كل ما تعلموه.</p>
           <p class="mt-2">المطلوب: اطلب من كل متدرب (أو مجموعة) اختيار درس واحد من مناهجهم، وإعادة تصميمه باستخدام "قالب تصميم الدرس" (الموجود في قسم الموارد) ليغطي 3 مستويات من هرم بلوم (واحد منها على الأقل HOTS) مع دمج أداة رقمية مناسبة لكل مستوى.</p>
+          <!-- 4. زر الفيديو المضاف -->
+          <div class="mt-4">
+            <button onclick="openVideoModal('YQiGLJSj41o')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+              🎥 مشاهدة: شرح خبير (الإبداع في التعليم)
+            </button>
+          </div>
         </div>
       </div>
       
@@ -560,8 +635,14 @@ a.inline-link:hover {
           <h4 class="font-bold text-gray-800">اضغط لعرض المراجع الأكاديمية</h4>
           <span id="icon-foundation" class="text-gray-600 text-xl">▼</span>
         </div>
-        <div id="content-foundation" class="mt-3 text-gray-700 hidden" dir="ltr">
-          <div class="space-y-4 text-left">
+        <div id="content-foundation" class="mt-3 text-gray-700 hidden">
+          <!-- 4. زر الفيديو المضاف -->
+          <div class="mb-4">
+            <button onclick="openVideoModal('xDW2eLDy1Qg')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+              🎥 مشاهدة: شرح أكاديمي لهرم بلوم
+            </button>
+          </div>
+          <div class="space-y-4 text-left" dir="ltr">
             <div class="bg-white p-4 rounded-lg shadow-sm border">
               <p class="text-sm text-gray-800">Amin, H., & Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. <em>Asian Association of Open Universities Journal, 15</em>(2), 223-238. https://doi.org/10.1108/AAOUJ-04-2020-0023</p>
             </div>
@@ -586,10 +667,28 @@ a.inline-link:hover {
 
 </main>
 
+<!-- 2. HTML الخاص بنافذة الفيديو المنبثقة (Modal) -->
+<div id="video-modal" class="video-modal">
+  <div class="video-modal-content">
+    <span class="video-modal-close" onclick="closeVideoModal()">&times;</span>
+    <div class="video-wrapper">
+      <iframe id="video-iframe"
+        width="560" 
+        height="315" 
+        src="" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</div>
+
 <!-- Footer -->
 <footer class="bg-gray-800 text-white py-8 mt-12">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <p class="mb-2">© 2025 بندر الأسمري. جميع الحقوق محفوظة.</p>
+    <p class="mb-2">© 2025 بندر الأسمري وحسين الشهراني. جميع الحقوق محفوظة.</p>
     <p class="text-sm text-gray-400">مورد تعليمي أُعد بحب لزملائي المعلمين والمدربين.</p>
   </div>
 </footer>
@@ -709,10 +808,37 @@ function showTools(level) {
   // Scroll to the tools display
   display.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+// 3. وظائف JavaScript للنافذة المنبثقة
+const modal = document.getElementById('video-modal');
+const iframe = document.getElementById('video-iframe');
+
+/**
+ * يفتح النافذة المنبثقة ويقوم بتحميل الفيديو
+ * @param {string} videoId - المعرف الخاص بفيديو اليوتيوب
+ */
+function openVideoModal(videoId) {
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  iframe.src = embedUrl;
+  modal.style.display = 'block';
+}
+
+/**
+ * يغلق النافذة المنبثقة ويوقف الفيديو
+ */
+function closeVideoModal() {
+  modal.style.display = 'none';
+  iframe.src = ''; // الأهم: إيقاف الفيديو عن طريق مسح المصدر
+}
+
+// إغلاق النافذة عند الضغط خارج محتوى الفيديو
+window.onclick = function(event) {
+  if (event.target == modal) {
+    closeVideoModal();
+  }
+}
 </script>
 
 </body>
 </html>
-
-
 
