@@ -10,8 +10,11 @@
  *  - The AI suggestion flow asks before overwriting the trainee's work and reports
  *    a clear message when no API key is available (e.g. on GitHub Pages).
  *  - LMS redesign: the Bloom levels moved from JS-rendered cards to static
- *    <details> in trainee.html; this module now tracks the course index
- *    (initCourseIndex); printing is handled by js/print-expand.js.
+ *    <details> in trainee.html; printing is handled by js/print-expand.js.
+ *  - Lesson-player redesign: one lesson on screen at a time behind a hash router
+ *    (initPlayer), a lesson drawer with saved completion progress, accessible tabs
+ *    for the workshops (initTabs) and a formative knowledge check
+ *    (initKnowledgeChecks).
  *
  * Data compatibility: the lesson draft is still stored under "lessonTemplateDraft"
  * with the original field ids as keys, so drafts saved by the old page still load.
@@ -27,6 +30,7 @@
   const STORAGE_KEYS = Object.freeze({
     lessonDraft: 'lessonTemplateDraft',
     reflections: 'reflectionsDraft',
+    progress: 'lessonProgress', // array of completed lesson ids
   });
 
   /** Lesson template field ids; also the keys inside the saved draft object. */
@@ -129,87 +133,362 @@
   // ---------------------------------------------------------------------------
 
   /**
-   * Expands or collapses one accordion panel and keeps its trigger's ARIA state,
-   * its arrow icon and the panel visibility in sync.
-   * @param {string} id Suffix shared by "content-{id}", "icon-{id}" and data-accordion.
+   * Expands or collapses one accordion panel and keeps its trigger's ARIA state
+   * in sync. The chevron rotation is pure CSS ([aria-expanded="true"]).
+   * @param {string} id Suffix shared by "content-{id}" and data-accordion.
+   * @param {boolean} [force] true to open, false to close, omitted to toggle.
    */
-  function toggleAccordion(id) {
+  function toggleAccordion(id, force) {
     const content = byId(`content-${id}`);
-    const icon = byId(`icon-${id}`);
     const trigger = document.querySelector(`[data-accordion="${CSS.escape(id)}"]`);
     if (!content) {
       console.error('Accordion panel not found for id:', id);
       return;
     }
-    const willOpen = content.classList.contains('hidden');
+    const willOpen = typeof force === 'boolean' ? force : content.classList.contains('hidden');
     content.classList.toggle('hidden', !willOpen);
-    if (icon) icon.textContent = willOpen ? '▲' : '▼';
     if (trigger) trigger.setAttribute('aria-expanded', String(willOpen));
   }
 
   // ---------------------------------------------------------------------------
-  // Mobile menu
+  // Lesson player: hash router, drawer and progress
+  //
+  // AI-assisted (Claude Code). Design notes:
+  //  - One lesson (<section data-lesson>) is visible at a time; the URL hash names it,
+  //    so trainee.html#map, Back/Forward and links from trainer.html all work.
+  //  - A hash that names an element INSIDE a lesson (#level-apply, #workshop-2,
+  //    #content-res-tools) opens that lesson, then reveals the element (opens the
+  //    <details>, selects the tab or expands the accordion) and scrolls to it.
+  //  - A lesson counts as complete once its end marker scrolls into view, so
+  //    progress costs the learner no extra click.
   // ---------------------------------------------------------------------------
 
+  /** Large-screen breakpoint (Tailwind lg). The drawer is a sidebar from here up. */
+  const desktopQuery = window.matchMedia('(min-width: 1024px)');
+
+  /** @type {HTMLElement[]} */
+  const lessons = [...document.querySelectorAll('[data-lesson]')];
+  /** @type {HTMLAnchorElement[]} */
+  const lessonLinks = [...document.querySelectorAll('[data-lesson-link]')];
+  const lessonIds = lessons.map((lesson) => lesson.id);
+
+  /** @type {HTMLElement|null} */
+  let currentLesson = null;
+
   /**
-   * Opens or closes the mobile navigation.
-   * @param {boolean} [force] true to open, false to close, omitted to toggle.
+   * Reads the completed lesson ids, keeping only ids that still exist on the page.
+   * @returns {Set<string>}
    */
-  function toggleMenu(force) {
-    const menu = byId('mobile-menu');
-    const button = byId('menu-toggle');
-    if (!menu || !button) return;
-    const open = typeof force === 'boolean' ? force : menu.classList.contains('hidden');
-    menu.classList.toggle('hidden', !open);
-    button.setAttribute('aria-expanded', String(open));
-    button.setAttribute('aria-label', open ? 'إغلاق القائمة' : 'فتح القائمة');
+  function readProgress() {
+    const saved = readStorage(STORAGE_KEYS.progress);
+    const list = Array.isArray(saved) ? saved : [];
+    return new Set(list.filter((id) => lessonIds.includes(id)));
+  }
+
+  const completed = readProgress();
+
+  /** Repaints the drawer marks, the progress bars and their ARIA values. */
+  function renderProgress() {
+    const percent = lessonIds.length ? Math.round((completed.size / lessonIds.length) * 100) : 0;
+    lessonLinks.forEach((link) => {
+      const done = completed.has(link.hash.slice(1));
+      link.toggleAttribute('data-complete', done);
+      const status = link.querySelector('[data-status-text]');
+      if (status) status.textContent = done ? ' (مكتمل)' : '';
+    });
+    const label = byId('progress-percent');
+    if (label) label.textContent = `${percent}%`;
+    byId('progress-bar')?.setAttribute('aria-valuenow', String(percent));
+    const fill = byId('progress-fill');
+    if (fill) fill.style.width = `${percent}%`;
+    const topFill = byId('topbar-progress-fill');
+    if (topFill) topFill.style.width = `${percent}%`;
+  }
+
+  /**
+   * Marks a lesson as complete and saves the progress.
+   * @param {string} id Lesson id.
+   */
+  function completeLesson(id) {
+    if (!lessonIds.includes(id) || completed.has(id)) return;
+    completed.add(id);
+    writeStorage(STORAGE_KEYS.progress, [...completed]);
+    renderProgress();
+  }
+
+  /**
+   * Resolves a URL hash to the lesson to show and an optional element inside it.
+   * @param {string} hash e.g. "#map" or "#level-apply".
+   * @returns {{lesson: HTMLElement|null, target: HTMLElement|null}}
+   *   lesson is null when the hash should not change the lesson (e.g. #main-content).
+   */
+  function resolveHash(hash) {
+    let id = '';
+    try {
+      id = decodeURIComponent(hash.replace(/^#/, ''));
+    } catch {
+      id = '';
+    }
+    if (!id) return { lesson: lessons[0] || null, target: null };
+    const element = byId(id);
+    if (!element) return { lesson: lessons[0] || null, target: null };
+    if (element.matches('[data-lesson]')) return { lesson: element, target: null };
+    const lesson = element.closest('[data-lesson]');
+    return lesson ? { lesson, target: element } : { lesson: null, target: null };
+  }
+
+  /**
+   * Makes an element inside the current lesson visible: opens its <details>,
+   * selects its tab or expands its accordion panel, then scrolls to it.
+   * @param {HTMLElement} target
+   */
+  function revealTarget(target) {
+    const details = target.closest('details');
+    if (details) details.open = true;
+    const panel = target.closest('[role="tabpanel"]');
+    if (panel) {
+      const tab = document.querySelector(`[role="tab"][aria-controls="${CSS.escape(panel.id)}"]`);
+      if (tab) selectTab(tab);
+    }
+    const accordionPanel = target.closest('[id^="content-"]');
+    if (accordionPanel) toggleAccordion(accordionPanel.id.replace(/^content-/, ''), true);
+    // Wait one frame so the newly shown content has a layout box.
+    requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+  }
+
+  /**
+   * Shows one lesson, hides the others and updates every piece of state that
+   * depends on the current lesson (drawer, counter, title, focus, scroll).
+   * @param {HTMLElement} lesson
+   * @param {{focus?: boolean}} [options] focus: move focus to the lesson title
+   *   (true for user navigation, false on first load).
+   */
+  function showLesson(lesson, { focus = false } = {}) {
+    const changed = lesson !== currentLesson;
+    if (changed) {
+      lessons.forEach((item) => { item.hidden = item !== lesson; });
+      lesson.classList.remove('is-entering');
+      void lesson.offsetWidth; // restart the entrance animation
+      lesson.classList.add('is-entering');
+      currentLesson = lesson;
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    const index = lessons.indexOf(lesson);
+    lessonLinks.forEach((link) => {
+      if (link.hash === `#${lesson.id}`) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+    const counter = byId('lesson-counter');
+    if (counter) counter.textContent = `${index + 1} من ${lessons.length}`; // Arabic order, no bidi flip
+    const title = lesson.querySelector('.lesson-title');
+    if (title) document.title = `${title.textContent.trim()} | مساحة المتدرب`;
+    if (focus && changed) title?.focus({ preventScroll: true });
+  }
+
+  /**
+   * Applies the current URL hash. Called on load and on every hashchange.
+   * @param {{initial?: boolean}} [options]
+   */
+  function route({ initial = false } = {}) {
+    const { lesson, target } = resolveHash(window.location.hash);
+    if (lesson) showLesson(lesson, { focus: !initial && !target });
+    if (target) revealTarget(target);
+    if (!desktopQuery.matches) setDrawer(false);
+  }
+
+  /** @returns {boolean} Whether the drawer is currently visible. */
+  function isDrawerVisible() {
+    return desktopQuery.matches
+      ? !document.body.classList.contains('drawer-collapsed')
+      : document.body.classList.contains('drawer-open');
+  }
+
+  /**
+   * Opens or closes the lesson drawer. Below lg it is an overlay with a backdrop;
+   * from lg it is a sidebar that the same button collapses.
+   * @param {boolean} [open] true to open, false to close, omitted to toggle.
+   */
+  function setDrawer(open) {
+    const show = typeof open === 'boolean' ? open : !isDrawerVisible();
+    if (desktopQuery.matches) {
+      document.body.classList.toggle('drawer-collapsed', !show);
+      document.body.classList.remove('drawer-open');
+    } else {
+      document.body.classList.toggle('drawer-open', show);
+    }
+    const backdrop = byId('drawer-backdrop');
+    if (backdrop) backdrop.hidden = !(show && !desktopQuery.matches);
+    const toggle = byId('drawer-toggle');
+    toggle?.setAttribute('aria-expanded', String(show));
+    toggle?.setAttribute('aria-label', show ? 'إخفاء قائمة الدروس' : 'قائمة الدروس');
+  }
+
+  /**
+   * Wires the drawer, the router and lesson completion.
+   * Interaction budget: lesson = 2 actions (menu + lesson), 1 on desktop.
+   */
+  function initPlayer() {
+    if (lessons.length === 0) return;
+
+    renderProgress();
+    setDrawer(desktopQuery.matches); // sidebar open on desktop, closed on phones
+    desktopQuery.addEventListener('change', () => setDrawer(desktopQuery.matches));
+
+    byId('drawer-toggle')?.addEventListener('click', () => {
+      const opening = !isDrawerVisible();
+      setDrawer(opening);
+      if (opening && !desktopQuery.matches) {
+        const current = document.querySelector('[data-lesson-link][aria-current="page"]');
+        /** @type {HTMLElement|null} */ (current || lessonLinks[0])?.focus();
+      }
+    });
+    byId('drawer-close')?.addEventListener('click', () => {
+      setDrawer(false);
+      byId('drawer-toggle')?.focus();
+    });
+    byId('drawer-backdrop')?.addEventListener('click', () => setDrawer(false));
+
+    // Picking the lesson already on screen does not fire hashchange: close and go to top.
+    lessonLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        if (currentLesson && link.hash === `#${currentLesson.id}`) {
+          if (!desktopQuery.matches) setDrawer(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // The "next lesson" bar also completes the lesson it closes.
+    document.querySelectorAll('[data-next-lesson]').forEach((bar) => {
+      bar.addEventListener('click', () => {
+        const lesson = bar.closest('[data-lesson]');
+        if (lesson) completeLesson(lesson.id);
+      });
+    });
+    // Leaving the last lesson through its finish bar completes it too.
+    document.querySelector('.next-lesson--finish')?.addEventListener('click', () => {
+      const last = lessons[lessons.length - 1];
+      if (last) completeLesson(last.id);
+    });
+
+    if ('IntersectionObserver' in window) {
+      const endObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const lesson = entry.target.closest('[data-lesson]');
+          if (entry.isIntersecting && lesson && !lesson.hidden) completeLesson(lesson.id);
+        });
+      }, { threshold: 0.6 });
+      document.querySelectorAll('[data-lesson-end]').forEach((end) => endObserver.observe(end));
+    }
+
+    window.addEventListener('hashchange', () => route());
+    route({ initial: true });
   }
 
   // ---------------------------------------------------------------------------
-  // Course index (LMS sidebar) and Bloom levels
+  // Tabs (WAI-ARIA tabs pattern, automatic activation)
   // ---------------------------------------------------------------------------
 
   /**
-   * Marks the course-index link of the section being read with aria-current="true".
-   * The link styles react to that attribute through Tailwind aria-[current=true]
-   * variants, so this function only manages state, never classes.
-   *
-   * AI-assisted (Claude Code): an IntersectionObserver watches a band just below the
-   * sticky header; the first observed section inside the band (in document order)
-   * wins, and the last active link stays highlighted while no section is inside it.
+   * Selects a tab, shows its panel and hides the sibling panels.
+   * Only the selected tab is in the Tab order (roving tabindex).
+   * @param {HTMLElement} tab
    */
-  function initCourseIndex() {
-    const links = [...document.querySelectorAll('[data-course-link]')];
-    if (links.length === 0 || !('IntersectionObserver' in window)) return;
-
-    const linkFor = new Map();
-    links.forEach((link) => {
-      const section = byId(decodeURIComponent(link.hash.slice(1)));
-      if (section) linkFor.set(section, link);
+  function selectTab(tab) {
+    const list = tab.closest('[role="tablist"]');
+    if (!list) return;
+    list.querySelectorAll('[role="tab"]').forEach((item) => {
+      const selected = item === tab;
+      const panel = byId(item.getAttribute('aria-controls') || '');
+      const wasHidden = panel?.hidden;
+      item.setAttribute('aria-selected', String(selected));
+      item.tabIndex = selected ? 0 : -1;
+      if (!panel) return;
+      panel.hidden = !selected;
+      if (selected && wasHidden) {
+        panel.classList.remove('is-entering');
+        void panel.offsetWidth;
+        panel.classList.add('is-entering');
+      }
     });
-    const sections = [...linkFor.keys()];
-    const inBand = new Set();
+  }
 
-    /** @param {HTMLAnchorElement} active */
-    const setActive = (active) => {
-      links.forEach((link) => {
-        if (link === active) link.setAttribute('aria-current', 'true');
-        else link.removeAttribute('aria-current');
+  /**
+   * Wires every tablist: click selects; arrow keys move in the reading direction
+   * (ArrowLeft = next in RTL); Home/End jump to the first/last tab.
+   */
+  function initTabs() {
+    document.querySelectorAll('[role="tablist"]').forEach((list) => {
+      const tabs = /** @type {HTMLElement[]} */ ([...list.querySelectorAll('[role="tab"]')]);
+      list.addEventListener('click', (event) => {
+        const tab = /** @type {HTMLElement} */ (event.target).closest('[role="tab"]');
+        if (tab) selectTab(tab);
       });
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) inBand.add(entry.target);
-        else inBand.delete(entry.target);
+      list.addEventListener('keydown', (event) => {
+        const index = tabs.indexOf(/** @type {HTMLElement} */ (document.activeElement));
+        if (index < 0) return;
+        const rtl = getComputedStyle(list).direction === 'rtl';
+        const step = { ArrowLeft: rtl ? 1 : -1, ArrowRight: rtl ? -1 : 1 }[event.key];
+        let next = null;
+        if (step) next = (index + step + tabs.length) % tabs.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = tabs.length - 1;
+        if (next === null) return;
+        event.preventDefault();
+        selectTab(tabs[next]);
+        tabs[next].focus();
       });
-      const current = sections.find((section) => inBand.has(section));
-      if (current) setActive(linkFor.get(current));
-    }, { rootMargin: '-96px 0px -55% 0px' });
+    });
+  }
 
-    // Above the first section (over the hero) the first unit is the natural "you are here".
-    setActive(linkFor.get(sections[0]));
-    sections.forEach((section) => observer.observe(section));
+  // ---------------------------------------------------------------------------
+  // Knowledge check (formative; nothing is stored or sent)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Wires every <form data-kc data-answer="x">: the submit button is enabled once
+   * an option is chosen; submitting marks the choice, reveals the explanation and
+   * locks the options until "أعد المحاولة" resets the question.
+   */
+  function initKnowledgeChecks() {
+    document.querySelectorAll('form[data-kc]').forEach((form) => {
+      const fieldset = form.querySelector('fieldset');
+      const submit = /** @type {HTMLButtonElement|null} */ (form.querySelector('.kc-submit'));
+      const feedback = /** @type {HTMLElement|null} */ (form.querySelector('.kc-feedback'));
+      const verdict = form.querySelector('.kc-verdict');
+      const retry = /** @type {HTMLButtonElement|null} */ (form.querySelector('.kc-retry'));
+      if (!fieldset || !submit || !feedback || !verdict) return;
+
+      form.addEventListener('change', () => { submit.disabled = false; });
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const chosen = /** @type {HTMLInputElement|null} */ (form.querySelector('input:checked'));
+        if (!chosen) return;
+        const correct = chosen.value === form.dataset.answer;
+        form.classList.toggle('is-correct', correct);
+        form.classList.toggle('is-wrong', !correct);
+        chosen.closest('.kc-option')?.classList.add(correct ? 'is-correct' : 'is-wrong');
+        verdict.textContent = correct ? 'إجابة صحيحة.' : 'ليست الإجابة الصحيحة.';
+        fieldset.disabled = true;
+        submit.hidden = true;
+        feedback.hidden = false;
+        retry?.focus();
+      });
+
+      retry?.addEventListener('click', () => {
+        form.reset();
+        form.classList.remove('is-correct', 'is-wrong');
+        form.querySelectorAll('.kc-option').forEach((option) => option.classList.remove('is-correct', 'is-wrong'));
+        fieldset.disabled = false;
+        submit.hidden = false;
+        submit.disabled = true;
+        feedback.hidden = true;
+        verdict.textContent = '';
+        /** @type {HTMLInputElement|null} */ (form.querySelector('input'))?.focus();
+      });
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -495,22 +774,21 @@
       return;
     }
 
-    if (target.closest('#menu-toggle')) {
-      toggleMenu();
-      return;
-    }
-
-    if (target.closest('#mobile-menu a')) {
-      toggleMenu(false);
-      return;
-    }
-
     if (target.closest('#video-modal-close') || target.id === 'video-modal') {
       closeVideoModal(); // close button or click on the dark backdrop
     }
   });
 
   document.addEventListener('keydown', handleModalKeydown);
+
+  // Escape closes the overlay drawer (phones/tablets) when no dialog is open.
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || desktopQuery.matches) return;
+    if (!byId('video-modal')?.hidden) return;
+    if (!document.body.classList.contains('drawer-open')) return;
+    setDrawer(false);
+    byId('drawer-toggle')?.focus();
+  });
 
   byId('save-draft-button')?.addEventListener('click', saveLessonTemplate);
   byId('load-draft-button')?.addEventListener('click', () => loadLessonTemplate());
@@ -519,5 +797,7 @@
   // Restore saved work on load (the script is deferred, so the DOM is ready).
   loadLessonTemplate({ silent: true });
   initReflections();
-  initCourseIndex();
+  initTabs();
+  initKnowledgeChecks();
+  initPlayer();
 })();

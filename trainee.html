@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="حقيبة تدريبية رقمية تفاعلية عن تطبيقات هرم بلوم الرقمي: الأهداف، والخريطة التفاعلية للأدوات، وخطة الدورة، والأنشطة، والموارد.">
-<meta name="theme-color" content="#1e3a8a">
+<meta name="description" content="مساحة المتدرب في حقيبة هرم بلوم الرقمية: سبعة دروس مستقلة تتدرج من الأهداف ومستويات بلوم إلى الورش والمشروع الختامي.">
+<meta name="theme-color" content="#0b1f52">
 <title>مساحة المتدرب | حقيبة هرم بلوم الرقمية</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <!-- Preload the font files this page renders above the fold (see src/tailwind.css). -->
@@ -16,263 +16,176 @@
 <script src="js/main.js" defer></script>
 <script src="js/print-expand.js" defer></script>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-full">
+<!--
+  Lesson player (Claude Code, AI-assisted redesign).
+  Pattern: one self-contained lesson on screen at a time, a lesson drawer with
+  completion marks and a progress bar, and a full-width "next lesson" bar at the
+  end of each lesson. Routing is hash based (trainee.html#map), so deep links,
+  Back/Forward and GitHub Pages all work without a server.
+
+  Interaction-cost budget (procedure design): any lesson is at most 2 actions away
+  (open the menu, pick the lesson; 1 on desktop where the menu stays open), and
+  any item inside a lesson at most 1 more (a tab, an accordion or a level).
+  Worst case from anywhere: 3 clicks, under the 5-click ceiling.
+-->
+<body class="player bg-gray-50 text-gray-800">
 
 <a href="#main-content" class="skip-link">تخطَّ إلى المحتوى</a>
 
-<!-- Header -->
-<header class="bg-white shadow-md sticky top-0 z-50">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-    <a href="#intro" class="flex items-center gap-3">
-      <img src="assets/logo.png" alt="شعار Bandarov" width="40" height="40" class="h-10 w-10 object-contain">
-      <span class="site-title text-xl sm:text-2xl font-bold text-blue-600">حقيبة هرم بلوم الرقمية</span>
-    </a>
-    <nav class="hidden sm:flex" aria-label="التنقل الرئيسي">
-      <ul class="flex gap-4 text-sm sm:text-base">
-        <li class="lg:hidden"><a href="#intro" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">المقدمة</a></li>
-        <li class="lg:hidden"><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخريطة</a></li>
-        <li class="lg:hidden"><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخطة</a></li>
-        <li class="lg:hidden"><a href="#activities" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الورش</a></li>
-        <li class="lg:hidden"><a href="#resources" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الموارد</a></li>
-        <!-- Role split: return to the entry portal (index.html). -->
-        <li><a href="index.html" class="text-blue-900 hover:text-sky-600 transition duration-300 font-semibold">البوابة</a></li>
-      </ul>
-    </nav>
-    <button type="button" id="menu-toggle" class="menu-toggle inline-flex items-center justify-center sm:hidden text-gray-700" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mobile-menu">
-      <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
-        <path d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
+<!-- Lesson drawer: fixed sidebar from lg, off-canvas panel below lg (js/main.js -> initDrawer). -->
+<div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+<nav id="course-drawer" class="drawer" aria-labelledby="drawer-title">
+  <div class="drawer-head">
+    <div class="drawer-brand">
+      <img src="assets/logo.png" alt="شعار Bandarov" width="40" height="40" class="drawer-logo">
+      <p id="drawer-title" class="drawer-course">حقيبة هرم بلوم الرقمية</p>
+      <button type="button" id="drawer-close" class="drawer-close" aria-label="إغلاق قائمة الدروس">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="drawer-progress">
+      <p id="progress-label" class="drawer-progress-label"><span id="progress-percent">0%</span> مكتمل</p>
+      <div id="progress-bar" class="progress-track" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span id="progress-fill" class="progress-fill"></span>
+      </div>
+    </div>
+  </div>
+
+  <ol class="lesson-list">
+    <li><a href="#intro" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">1</span><span class="lesson-link-text"><span class="lesson-link-title">نظرة عامة وأهداف الحقيبة</span><span class="lesson-link-meta">7 أهداف سلوكية</span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#map" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">2</span><span class="lesson-link-text"><span class="lesson-link-title">مستويات بلوم الرقمية</span><span class="lesson-link-meta">6 مستويات و24 أداة</span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#plan" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">3</span><span class="lesson-link-text"><span class="lesson-link-title">خطة الدورة التدريبية</span><span class="lesson-link-meta">يومان · 10 ساعات</span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#activities" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">4</span><span class="lesson-link-text"><span class="lesson-link-title">ورش العمل التطبيقية</span><span class="lesson-link-meta">3 ورش وتأملات</span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#template" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">5</span><span class="lesson-link-text"><span class="lesson-link-title">قالب تصميم الدرس</span><span class="lesson-link-meta">المشروع الختامي</span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#check" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">6</span><span class="lesson-link-text"><span class="lesson-link-title">التحقق من المعرفة</span><span class="lesson-link-meta">4 أسئلة قصيرة</span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#resources" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">7</span><span class="lesson-link-text"><span class="lesson-link-title">الموارد والمراجع</span><span class="lesson-link-meta">ملاحق الحقيبة</span></span><span class="sr-only" data-status-text></span></a></li>
+  </ol>
+
+  <div class="drawer-foot">
+    <a href="index.html" class="drawer-portal">العودة إلى البوابة</a>
+  </div>
+</nav>
+
+<div class="player-main">
+
+  <header class="topbar">
+    <button type="button" id="drawer-toggle" class="topbar-toggle" aria-controls="course-drawer" aria-expanded="false" aria-label="قائمة الدروس">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
-  </div>
-  <!-- Mobile Menu -->
-  <nav id="mobile-menu" class="hidden sm:hidden bg-white shadow-lg pb-4" aria-label="التنقل للجوال">
-    <ul class="flex flex-col items-center space-y-3 text-base">
-      <li><a href="#intro" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">المقدمة</a></li>
-      <li><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخريطة</a></li>
-      <li><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخطة</a></li>
-      <li><a href="#activities" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الورش</a></li>
-      <li><a href="#resources" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الموارد</a></li>
-      <li><a href="index.html" class="text-blue-900 hover:text-sky-600 transition duration-300 font-semibold">البوابة</a></li>
-    </ul>
-  </nav>
-</header>
+    <h1 class="topbar-title">حقيبة هرم بلوم الرقمية</h1>
+    <p class="topbar-counter"><span class="sr-only">الدرس </span><span id="lesson-counter">1 من 7</span></p>
+    <div id="topbar-progress" class="topbar-progress" aria-hidden="true"><span id="topbar-progress-fill"></span></div>
+  </header>
 
-<!--
-  LMS layout (Claude Code, AI-assisted): a sticky course index takes 1/4 of the width
-  from the lg breakpoint, the content takes 3/4. Below lg the header menu is the index.
-  The active entry is tracked by js/main.js -> initCourseIndex() through aria-current.
--->
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:grid lg:grid-cols-4 lg:items-start lg:gap-8">
+  <main id="main-content" tabindex="-1">
 
-  <nav id="course-index" class="hidden lg:col-span-1 lg:sticky lg:top-24 lg:block print:hidden" aria-labelledby="course-index-title">
-    <div class="overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200">
-      <div class="bg-[#0b1f52] px-5 py-4 text-white">
-        <p class="text-xs font-semibold text-teal-200">مساحة المتدرب</p>
-        <h2 id="course-index-title" class="mt-1 text-lg font-bold">فهرس الدورة</h2>
+  <!-- =========================== Lesson 1 =========================== -->
+  <section id="intro" class="lesson" data-lesson aria-labelledby="intro-title">
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الدرس 1 من 7</p>
+      <h2 id="intro-title" class="lesson-title" tabindex="-1">نظرة عامة وأهداف الحقيبة</h2>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="lesson-body">
+      <p class="lesson-lead">مرحباً بك في مساحة المتدرب. صُممت هذه الحقيبة لتزويدك بالأساس النظري والمهارات العملية لدمج الأدوات الرقمية بفاعلية في فصلك الدراسي، بما يتوافق مع مستويات التفكير العليا (HOTS)، عبر سبعة دروس مستقلة تتدرج من المفاهيم إلى المشروع الختامي.</p>
+
+      <dl class="stat-grid">
+        <div class="stat"><dt>مدة الدورة</dt><dd>10 ساعات</dd></div>
+        <div class="stat"><dt>أيام التدريب</dt><dd>يومان</dd></div>
+        <div class="stat"><dt>مستويات التفكير</dt><dd>6 مستويات</dd></div>
+        <div class="stat"><dt>ورش العمل</dt><dd>3 ورش</dd></div>
+      </dl>
+
+      <div class="block">
+        <h3 class="block-title">كيف تتنقّل في هذه الحقيبة</h3>
+        <ol class="steps">
+          <li><span class="steps-n" aria-hidden="true">1</span><p>افتح <strong>قائمة الدروس</strong> من الزر أعلى الصفحة (وتظهر جانباً على الشاشات الكبيرة)؛ تُوضع علامة ✓ أمام كل درس تُتمّه، وتظهر نسبة إنجازك أعلى القائمة.</p></li>
+          <li><span class="steps-n" aria-hidden="true">2</span><p>انتقل إلى الدرس التالي من <strong>الشريط الداكن</strong> أسفل كل درس، أو عُد إلى أي درس من القائمة متى شئت.</p></li>
+          <li><span class="steps-n" aria-hidden="true">3</span><p>ابدأ بالأهداف أدناه لتعرف ما ستُقاس عليه، ثم جرّب أداة واحدة على الأقل من كل مستوى في الدرس الثاني.</p></li>
+          <li><span class="steps-n" aria-hidden="true">4</span><p>دوّن تأملك بعد كل ورشة، واحفظ مسودة قالب الدرس؛ يُحفظ عملك تلقائياً في متصفحك.</p></li>
+        </ol>
       </div>
-      <ol class="max-h-[calc(100vh-14rem)] space-y-1 overflow-y-auto p-3">
-        <li>
-          <a href="#intro" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
-            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">1</span>
-            <span class="min-w-0">
-              <span class="block font-semibold leading-snug">مقدمة الحقيبة وأهدافها</span>
-              <span class="mt-0.5 block text-xs text-gray-500">7 أهداف سلوكية</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="#map" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
-            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">2</span>
-            <span class="min-w-0">
-              <span class="block font-semibold leading-snug">مستويات بلوم الرقمية</span>
-              <span class="mt-0.5 block text-xs text-gray-500">6 مستويات و24 أداة</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="#plan" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
-            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">3</span>
-            <span class="min-w-0">
-              <span class="block font-semibold leading-snug">خطة الدورة التدريبية</span>
-              <span class="mt-0.5 block text-xs text-gray-500">يومان · 10 ساعات</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="#activities" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
-            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">4</span>
-            <span class="min-w-0">
-              <span class="block font-semibold leading-snug">ورش العمل التطبيقية</span>
-              <span class="mt-0.5 block text-xs text-gray-500">3 ورش وتأملات</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="#resources" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
-            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">5</span>
-            <span class="min-w-0">
-              <span class="block font-semibold leading-snug">موارد الحقيبة</span>
-              <span class="mt-0.5 block text-xs text-gray-500">7 ملاحق</span>
-            </span>
-          </a>
-        </li>
-      </ol>
-      <div class="border-t border-gray-100 px-5 py-4">
-        <a href="index.html" class="text-sm font-semibold text-blue-900 transition duration-200 hover:text-teal-700">العودة إلى البوابة</a>
+
+      <div class="block">
+        <h3 class="block-title">الأهداف السلوكية (7 أهداف)</h3>
+        <!--
+          Accordion pattern (AI-assisted refactor, Claude Code): each header is a native <button>
+          with aria-expanded/aria-controls, so it works with keyboard and screen readers.
+          The ids "content-*" are kept from the original page.
+        -->
+        <div id="objectives-accordion" class="acc">
+          <div class="objective-item acc-item">
+            <h4 class="acc-heading"><button type="button" class="accordion-trigger" data-accordion="1" aria-expanded="false" aria-controls="content-1"><span>1. تحليل مستويات هرم بلوم المعرفية</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h4>
+            <div id="content-1" class="acc-panel hidden">يتمكن المتدرب من تحليل المستويات الستة لهرم بلوم (التذكر، الفهم، التطبيق، التحليل، التقييم، الإبداع) وتحديد خصائص كل مستوى بدقة.</div>
+          </div>
+          <div class="objective-item acc-item">
+            <h4 class="acc-heading"><button type="button" class="accordion-trigger" data-accordion="2" aria-expanded="false" aria-controls="content-2"><span>2. ربط الأدوات الرقمية بمستويات التفكير</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h4>
+            <div id="content-2" class="acc-panel hidden">يربط المتدرب بين التطبيقات الرقمية المختلفة ومستويات التفكير المناسبة لها، مع تقديم أمثلة عملية.</div>
+          </div>
+          <div class="objective-item acc-item">
+            <h4 class="acc-heading"><button type="button" class="accordion-trigger" data-accordion="3" aria-expanded="false" aria-controls="content-3"><span>3. تصميم مهام تعليمية تحفز HOTS</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h4>
+            <div id="content-3" class="acc-panel hidden">يصمم المتدرب مهام تعليمية تستهدف مهارات التفكير العليا باستخدام أدوات رقمية مناسبة.</div>
+          </div>
+          <div class="objective-item acc-item">
+            <h4 class="acc-heading"><button type="button" class="accordion-trigger" data-accordion="4" aria-expanded="false" aria-controls="content-4"><span>4. تقييم فعالية الأدوات الرقمية</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h4>
+            <div id="content-4" class="acc-panel hidden">يقيّم المتدرب مدى ملاءمة الأدوات الرقمية المختلفة لتحقيق أهداف تعليمية محددة.</div>
+          </div>
+          <div class="objective-item acc-item">
+            <h4 class="acc-heading"><button type="button" class="accordion-trigger" data-accordion="5" aria-expanded="false" aria-controls="content-5"><span>5. إنشاء محتوى تعليمي رقمي إبداعي</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h4>
+            <div id="content-5" class="acc-panel hidden">ينشئ المتدرب محتوى تعليمي رقمي يعكس مستويات التفكير العليا باستخدام أدوات مثل <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="inline-link">Canva</a> و <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Padlet</a>.</div>
+          </div>
+          <div class="objective-item acc-item">
+            <h4 class="acc-heading"><button type="button" class="accordion-trigger" data-accordion="6" aria-expanded="false" aria-controls="content-6"><span>6. تطبيق استراتيجيات التعلم النشط</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h4>
+            <div id="content-6" class="acc-panel hidden">يطبق المتدرب استراتيجيات التعلم النشط الرقمية التي تعزز مشاركة الطلاب وتفاعلهم.</div>
+          </div>
+          <div class="objective-item acc-item">
+            <h4 class="acc-heading"><button type="button" class="accordion-trigger" data-accordion="7" aria-expanded="false" aria-controls="content-7"><span>7. تطوير خطة تنفيذية للدمج الرقمي</span><svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></button></h4>
+            <div id="content-7" class="acc-panel hidden">يطور المتدرب خطة عمل لدمج الأدوات الرقمية في ممارساته التدريسية اليومية بشكل فعال.</div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
 
-<main id="main-content" class="min-w-0 lg:col-span-3">
-
-  <!-- Hero: brand navy to teal (bg-gradient-to-r). A <div>, not <header>: print CSS hides every header. -->
-  <div class="mb-10 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0b1f52] to-teal-700 p-6 text-white shadow-lg sm:p-10 print:mb-4 print:bg-none print:p-0 print:text-gray-900 print:shadow-none">
-    <p class="text-sm font-semibold text-teal-200 print:text-gray-600">حقيبة تدريبية رقمية · أكاديمية بيان</p>
-    <h1 class="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">حقيبة هرم بلوم الرقمية المتكاملة</h1>
-    <p class="mt-4 max-w-3xl text-base leading-relaxed text-blue-50 sm:text-lg print:text-gray-700">ورشة تطبيقية تنتقل بك من الأساس النظري لهرم بلوم إلى تصميم مهام رقمية تستهدف مهارات التفكير العليا، عبر خمس وحدات تتدرج من المفاهيم إلى المشروع الختامي.</p>
-    <dl class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
-        <dt class="text-xs text-blue-100 print:text-gray-600">مدة الدورة</dt>
-        <dd class="text-xl font-bold">10 ساعات</dd>
-      </div>
-      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
-        <dt class="text-xs text-blue-100 print:text-gray-600">أيام التدريب</dt>
-        <dd class="text-xl font-bold">يومان</dd>
-      </div>
-      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
-        <dt class="text-xs text-blue-100 print:text-gray-600">مستويات التفكير</dt>
-        <dd class="text-xl font-bold">6 مستويات</dd>
-      </div>
-      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
-        <dt class="text-xs text-blue-100 print:text-gray-600">ورش العمل</dt>
-        <dd class="text-xl font-bold">3 ورش</dd>
-      </div>
-    </dl>
-    <a href="#intro" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-bold text-[#0b1f52] shadow-md transition duration-200 hover:bg-teal-50 print:hidden">
-      ابدأ من الوحدة الأولى
-      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"/></svg>
+    <div class="lesson-end" data-lesson-end>
+      <span class="lesson-end-rule" aria-hidden="true"></span>
+      <p>بعد ذلك، ستستكشف مستويات بلوم الستة والأدوات الرقمية المناسبة لكل مستوى.</p>
+    </div>
+    <a href="#map" class="next-lesson" data-next-lesson>
+      <span>الدرس 2 — مستويات بلوم الرقمية</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
     </a>
-  </div>
-
-  <!-- Section 1: Introduction and Objectives -->
-  <section id="intro" class="mb-12 p-4 sm:p-6 bg-white rounded-xl shadow-lg fade-in" aria-labelledby="intro-title">
-    <h2 id="intro-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">👋 1. مقدمة الحقيبة وأهدافها</h2>
-    <p class="text-gray-600 mb-6">مرحباً بك في مساحة المتدرب. صُممت هذه الحقيبة لتزويدك بالأساس النظري والمهارات العملية لدمج الأدوات الرقمية بفاعلية في فصلك الدراسي، بما يتوافق مع مستويات التفكير العليا (HOTS).</p>
-
-    <!-- Learner orientation: how to use this space (replaces the trainer-facing kit notes, now in trainer.html). -->
-    <div class="mb-8 rounded-xl border border-teal-200 bg-teal-50 p-4 sm:p-5">
-      <h3 class="mb-3 text-lg font-bold text-[#0b1f52]">🧭 كيف تستفيد من هذه المساحة</h3>
-      <ol class="list-decimal space-y-2 ps-5 text-gray-700">
-        <li>تابع الوحدات بالترتيب من الفهرس، وابدأ بأهداف الدورة لتعرف ما ستُقاس عليه.</li>
-        <li>افتح مستويات بلوم في الوحدة الثانية، وجرّب أداة واحدة على الأقل من كل مستوى.</li>
-        <li>دوّن تأملك بعد كل ورشة في الخانة المخصصة له؛ يُحفظ تلقائياً في متصفحك.</li>
-        <li>استخدم قالب تصميم الدرس في الموارد لإنجاز مشروعك الختامي في الورشة الثالثة.</li>
-      </ol>
-    </div>
-
-    <h3 class="text-xl font-bold text-gray-700 mb-4">🎯 الأهداف السلوكية (7 أهداف)</h3>
-    <!--
-      Accordion pattern (AI-assisted refactor, Claude Code): each header is a native <button>
-      with aria-expanded/aria-controls, so it works with keyboard and screen readers.
-      The ids "icon-*" and "content-*" are kept from the original page.
-    -->
-    <div id="objectives-accordion" class="space-y-3">
-      <!-- Objective 1 -->
-      <div class="objective-item bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-s-4 border-purple-500">
-        <h4 class="font-bold text-purple-900">
-          <button type="button" class="accordion-trigger" data-accordion="1" aria-expanded="false" aria-controls="content-1">
-            <span>1. تحليل مستويات هرم بلوم المعرفية</span>
-            <span id="icon-1" class="accordion-icon text-purple-600" aria-hidden="true">▼</span>
-          </button>
-        </h4>
-        <div id="content-1" class="mt-3 text-gray-700 hidden">
-          يتمكن المتدرب من تحليل المستويات الستة لهرم بلوم (التذكر، الفهم، التطبيق، التحليل، التقييم، الإبداع) وتحديد خصائص كل مستوى بدقة.
-        </div>
-      </div>
-      <!-- Objective 2 -->
-      <div class="objective-item bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-s-4 border-blue-500">
-        <h4 class="font-bold text-blue-900">
-          <button type="button" class="accordion-trigger" data-accordion="2" aria-expanded="false" aria-controls="content-2">
-            <span>2. ربط الأدوات الرقمية بمستويات التفكير</span>
-            <span id="icon-2" class="accordion-icon text-blue-600" aria-hidden="true">▼</span>
-          </button>
-        </h4>
-        <div id="content-2" class="mt-3 text-gray-700 hidden">
-          يربط المتدرب بين التطبيقات الرقمية المختلفة ومستويات التفكير المناسبة لها، مع تقديم أمثلة عملية.
-        </div>
-      </div>
-      <!-- Objective 3 -->
-      <div class="objective-item bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-s-4 border-green-500">
-        <h4 class="font-bold text-green-900">
-          <button type="button" class="accordion-trigger" data-accordion="3" aria-expanded="false" aria-controls="content-3">
-            <span>3. تصميم مهام تعليمية تحفز HOTS</span>
-            <span id="icon-3" class="accordion-icon text-green-600" aria-hidden="true">▼</span>
-          </button>
-        </h4>
-        <div id="content-3" class="mt-3 text-gray-700 hidden">
-          يصمم المتدرب مهام تعليمية تستهدف مهارات التفكير العليا باستخدام أدوات رقمية مناسبة.
-        </div>
-      </div>
-      <!-- Objective 4 -->
-      <div class="objective-item bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-s-4 border-yellow-500">
-        <h4 class="font-bold text-yellow-900">
-          <button type="button" class="accordion-trigger" data-accordion="4" aria-expanded="false" aria-controls="content-4">
-            <span>4. تقييم فعالية الأدوات الرقمية</span>
-            <span id="icon-4" class="accordion-icon text-yellow-600" aria-hidden="true">▼</span>
-          </button>
-        </h4>
-        <div id="content-4" class="mt-3 text-gray-700 hidden">
-          يقيّم المتدرب مدى ملاءمة الأدوات الرقمية المختلفة لتحقيق أهداف تعليمية محددة.
-        </div>
-      </div>
-      <!-- Objective 5 -->
-      <div class="objective-item bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border-s-4 border-red-500">
-        <h4 class="font-bold text-red-900">
-          <button type="button" class="accordion-trigger" data-accordion="5" aria-expanded="false" aria-controls="content-5">
-            <span>5. إنشاء محتوى تعليمي رقمي إبداعي</span>
-            <span id="icon-5" class="accordion-icon text-red-600" aria-hidden="true">▼</span>
-          </button>
-        </h4>
-        <div id="content-5" class="mt-3 text-gray-700 hidden">
-          ينشئ المتدرب محتوى تعليمي رقمي يعكس مستويات التفكير العليا باستخدام أدوات مثل <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="inline-link">Canva</a> و <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="inline-link">Padlet</a>.
-        </div>
-      </div>
-      <!-- Objective 6 -->
-      <div class="objective-item bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border-s-4 border-indigo-500">
-        <h4 class="font-bold text-indigo-900">
-          <button type="button" class="accordion-trigger" data-accordion="6" aria-expanded="false" aria-controls="content-6">
-            <span>6. تطبيق استراتيجيات التعلم النشط</span>
-            <span id="icon-6" class="accordion-icon text-indigo-600" aria-hidden="true">▼</span>
-          </button>
-        </h4>
-        <div id="content-6" class="mt-3 text-gray-700 hidden">
-          يطبق المتدرب استراتيجيات التعلم النشط الرقمية التي تعزز مشاركة الطلاب وتفاعلهم.
-        </div>
-      </div>
-      <!-- Objective 7 -->
-      <div class="objective-item bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border-s-4 border-pink-500">
-        <h4 class="font-bold text-pink-900">
-          <button type="button" class="accordion-trigger" data-accordion="7" aria-expanded="false" aria-controls="content-7">
-            <span>7. تطوير خطة تنفيذية للدمج الرقمي</span>
-            <span id="icon-7" class="accordion-icon text-pink-600" aria-hidden="true">▼</span>
-          </button>
-        </h4>
-        <div id="content-7" class="mt-3 text-gray-700 hidden">
-          يطور المتدرب خطة عمل لدمج الأدوات الرقمية في ممارساته التدريسية اليومية بشكل فعال.
-        </div>
-      </div>
-    </div>
   </section>
 
-  <!-- Section 2: Interactive Map -->
-  <section id="map" class="mb-12 p-4 sm:p-6 bg-white rounded-xl shadow-lg fade-in" aria-labelledby="map-title">
-    <h2 id="map-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">🔎 2. خريطة بلوم الرقمية التفاعلية</h2>
-    <p class="text-gray-600 mb-6">اكتشف العلاقة بين مستويات التفكير والأدوات الرقمية المناسبة لها. افتح أي مستوى لاستعراض أفعاله السلوكية والأدوات الرقمية المناسبة له.</p>
+  <!-- =========================== Lesson 2 =========================== -->
+  <section id="map" class="lesson" data-lesson aria-labelledby="map-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الدرس 2 من 7</p>
+      <h2 id="map-title" class="lesson-title" tabindex="-1">مستويات بلوم الرقمية</h2>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="lesson-body">
+      <p class="lesson-lead">اكتشف العلاقة بين مستويات التفكير والأدوات الرقمية المناسبة لها. اختر مستوى من الهرم، أو افتح أي مستوى في القائمة لاستعراض أفعاله السلوكية وأدواته.</p>
+
+      <!-- Pyramid shortcut: each tier is a link to its <details>; js/main.js opens the level on arrival. -->
+      <nav class="block" aria-label="هرم بلوم: اختر مستوى">
+        <ul class="pyramid">
+          <li><a href="#level-create" class="pyramid-tier tier-6"><span>الإبداع</span></a></li>
+          <li><a href="#level-evaluate" class="pyramid-tier tier-5"><span>التقييم</span></a></li>
+          <li><a href="#level-analyze" class="pyramid-tier tier-4"><span>التحليل</span></a></li>
+          <li><a href="#level-apply" class="pyramid-tier tier-3"><span>التطبيق</span></a></li>
+          <li><a href="#level-understand" class="pyramid-tier tier-2"><span>الفهم</span></a></li>
+          <li><a href="#level-remember" class="pyramid-tier tier-1"><span>التذكر</span></a></li>
+        </ul>
+        <p class="pyramid-legend"><span>المستويات الثلاثة العليا: مهارات التفكير العليا (HOTS)</span><span>الدنيا: تأسيس المعرفة وتوظيفها (LOTS)</span></p>
+      </nav>
+
     <!--
       Bloom levels as native <details>/<summary> (Claude Code, AI-assisted refactor):
       keyboard and screen-reader support come from the browser, the content stays in the
-      HTML (no JS rendering), and js/main.js -> initPrintExpansion() opens every level
-      marked data-print-open before printing. Ordered from the base of the pyramid up.
+      HTML (no JS rendering), and js/print-expand.js opens every level marked
+      data-print-open before printing. Ordered from the base of the pyramid up.
     -->
     <div class="space-y-8">
     <div class="space-y-3">
@@ -528,12 +441,28 @@
       </details>
     </div>
     </div>
+    </div>
+
+    <div class="lesson-end" data-lesson-end>
+      <span class="lesson-end-rule" aria-hidden="true"></span>
+      <p>بعد ذلك، ستتعرف على خطة الدورة وتوزيع جلساتها على يومين.</p>
+    </div>
+    <a href="#plan" class="next-lesson" data-next-lesson>
+      <span>الدرس 3 — خطة الدورة التدريبية</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
   </section>
 
-  <!-- Section 3: Training Plan -->
-  <section id="plan" class="mb-12 p-4 sm:p-6 bg-white rounded-xl shadow-lg fade-in" aria-labelledby="plan-title">
-    <h2 id="plan-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">📅 3. خطة الدورة التدريبية (10 ساعات)</h2>
-    <p class="text-gray-600 mb-6">تنقسم الدورة إلى يومين تدريبيين، يركز اليوم الأول على الأساسيات وتطبيقها، بينما يركز اليوم الثاني على مهارات التفكير العليا والمشاريع العملية.</p>
+  <!-- =========================== Lesson 3 =========================== -->
+  <section id="plan" class="lesson" data-lesson aria-labelledby="plan-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الدرس 3 من 7</p>
+      <h2 id="plan-title" class="lesson-title" tabindex="-1">خطة الدورة التدريبية (10 ساعات)</h2>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="lesson-body">
+      <p class="lesson-lead">تنقسم الدورة إلى يومين تدريبيين، يركز اليوم الأول على الأساسيات وتطبيقها، بينما يركز اليوم الثاني على مهارات التفكير العليا والمشاريع العملية.</p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Day 1 -->
       <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-xl border-s-4 border-blue-500">
@@ -572,23 +501,41 @@
         </ol>
       </div>
     </div>
+    </div>
+
+    <div class="lesson-end" data-lesson-end>
+      <span class="lesson-end-rule" aria-hidden="true"></span>
+      <p>بعد ذلك، ستنتقل إلى الورش الثلاث وتطبّق ما تعلّمته.</p>
+    </div>
+    <a href="#activities" class="next-lesson" data-next-lesson>
+      <span>الدرس 4 — ورش العمل التطبيقية</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
   </section>
 
-  <!-- Section 4: Workshops (learner view). Facilitation details, timings and surveys live in trainer.html. -->
-  <section id="activities" class="mb-12 p-4 sm:p-6 bg-white rounded-xl shadow-lg fade-in" aria-labelledby="activities-title">
-    <h2 id="activities-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">🛠️ 4. ورش العمل التطبيقية</h2>
-    <p class="text-gray-600 mb-6">ثلاث ورش تتدرج من المستويات الدنيا إلى المشروع الختامي. بعد كل ورشة، دوّن تأملك في الخانة المخصصة له.</p>
+  <!-- =========================== Lesson 4 =========================== -->
+  <!-- Learner view of the workshops. Facilitation details, timings and surveys live in trainer.html. -->
+  <section id="activities" class="lesson" data-lesson aria-labelledby="activities-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الدرس 4 من 7</p>
+      <h2 id="activities-title" class="lesson-title" tabindex="-1">ورش العمل التطبيقية</h2>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
 
-    <div class="space-y-4">
-      <!-- Workshop 1 (LOTS) -->
-      <article class="activity-item bg-blue-50 p-4 rounded-lg border-s-4 border-blue-400 workshop-section">
-        <h3 class="font-bold text-blue-900">
-          <button type="button" class="accordion-trigger" data-accordion="activity-2" aria-expanded="false" aria-controls="content-activity-2">
-            <span>🛠️ ورشة عمل (1): تمرين الأدوات - المستويات الدنيا (الجلسة 3)</span>
-            <span id="icon-activity-2" class="accordion-icon text-blue-600" aria-hidden="true">▼</span>
-          </button>
-        </h3>
-        <div id="content-activity-2" class="mt-3 text-gray-700 hidden">
+    <div class="lesson-body">
+      <p class="lesson-lead">ثلاث ورش تتدرج من المستويات الدنيا إلى المشروع الختامي. اختر الورشة من التبويبات، وبعد كل ورشة دوّن تأملك في الخانة المخصصة له.</p>
+
+      <!-- Tabs (js/main.js -> initTabs): arrow keys follow the reading direction, Home/End jump. -->
+      <div class="tabs block">
+        <div class="tablist" role="tablist" aria-label="ورش العمل">
+          <button type="button" class="tab" role="tab" id="tab-workshop-1" aria-controls="workshop-1" aria-selected="true"><span class="tab-n">الورشة 1</span><span class="tab-sub">المستويات الدنيا</span></button>
+          <button type="button" class="tab" role="tab" id="tab-workshop-2" aria-controls="workshop-2" aria-selected="false" tabindex="-1"><span class="tab-n">الورشة 2</span><span class="tab-sub">التحليل والتقييم</span></button>
+          <button type="button" class="tab" role="tab" id="tab-workshop-3" aria-controls="workshop-3" aria-selected="false" tabindex="-1"><span class="tab-n">الورشة 3</span><span class="tab-sub">المشروع الختامي</span></button>
+        </div>
+
+        <!-- Workshop 1 (LOTS) -->
+        <article id="workshop-1" class="tabpanel" role="tabpanel" aria-labelledby="tab-workshop-1" tabindex="0">
+          <h3 class="panel-title">تمرين الأدوات — المستويات الدنيا <span class="chip">الجلسة 3</span></h3>
           <p class="font-semibold">الهدف: اختيار الأداة المناسبة للمهمة.</p>
           <p class="mt-2">سيناريو (مثال): "لديك درس عن (أسماء عواصم الدول). تريد من الطلاب:</p>
           <ul class="list-disc list-inside mt-2 space-y-1">
@@ -598,32 +545,25 @@
           </ul>
           <p class="mt-2"><strong>المطلوب:</strong> أكمل مع مجموعتك (حسب التخصص إن أمكن) سيناريوهات مشابهة من مادتك، ثم شاركها مع زملائك.</p>
           <!-- Reflection (auto-saved locally, see js/main.js -> initReflections) -->
-          <div class="mt-4">
-            <label for="reflection-ws1" class="block text-sm font-medium text-gray-700">🤔 تأملات المتدرب:</label>
-            <textarea id="reflection-ws1" name="reflection-ws1" aria-describedby="reflection-ws1-hint" rows="3" class="reflection-field mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 sm:text-sm" placeholder="ما هي الفائدة الرئيسية التي رأيتها من ربط الأداة بالمستوى؟"></textarea>
+          <div class="reflection">
+            <label for="reflection-ws1" class="reflection-label">تأملات المتدرب:</label>
+            <textarea id="reflection-ws1" name="reflection-ws1" aria-describedby="reflection-ws1-hint" rows="3" class="reflection-field" placeholder="ما هي الفائدة الرئيسية التي رأيتها من ربط الأداة بالمستوى؟"></textarea>
             <p id="reflection-ws1-hint" class="reflection-hint">تُحفظ تأملاتك تلقائياً في هذا المتصفح.</p>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- Workshop 2 (analyze + evaluate) -->
-      <article class="activity-item bg-purple-50 p-4 rounded-lg border-s-4 border-purple-400 workshop-section">
-        <h3 class="font-bold text-purple-900">
-          <button type="button" class="accordion-trigger" data-accordion="activity-3" aria-expanded="false" aria-controls="content-activity-3">
-            <span>🛠️ ورشة عمل (2): نقد مهمة - (التحليل والتقييم) (الجلسة 4)</span>
-            <span id="icon-activity-3" class="accordion-icon text-purple-600" aria-hidden="true">▼</span>
-          </button>
-        </h3>
-        <div id="content-activity-3" class="mt-3 text-gray-700 hidden">
+        <!-- Workshop 2 (analyze + evaluate) -->
+        <article id="workshop-2" class="tabpanel" role="tabpanel" aria-labelledby="tab-workshop-2" tabindex="0" hidden>
+          <h3 class="panel-title">نقد مهمة — التحليل والتقييم <span class="chip">الجلسة 4</span></h3>
           <p class="font-semibold">الهدف: تحليل مهمة تعليمية قائمة وتقييم مستواها ورفعها لمستوى HOTS.</p>
           <p class="mt-2">المهمة التقليدية: "اكتب ملخصاً من 5 أسطر عن أسباب الحرب العالمية الأولى".</p>
           <p class="mt-2"><strong>المطلوب:</strong> قيّم مع مجموعتك مستوى هذه المهمة في هرم بلوم، ثم أعد صياغتها لترتقي إلى مستويي التحليل والتقييم.</p>
-          <details class="group mt-3 rounded-lg border border-purple-200 bg-white">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-3 p-3 font-semibold text-purple-900 [&::-webkit-details-marker]:hidden">
-              <span>💡 مثال للاسترشاد (افتحه بعد محاولتك)</span>
-              <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+          <details class="hint" data-print-open>
+            <summary>
+              <span>مثال للاسترشاد (افتحه بعد محاولتك)</span>
+              <svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
             </summary>
-            <div class="border-t border-purple-100 p-3">
+            <div class="hint-body">
               <p>المهمة الأصلية في مستوى "الفهم" فقط. ومن صياغاتها المرتقية:</p>
               <ul class="list-disc list-inside mt-2 space-y-1">
                 <li><strong>التحليل:</strong> (مثال: "باستخدام أداة رسم بياني، قارن بين الأسباب الاقتصادية والسياسية للحرب من حيث الأهمية.").</li>
@@ -631,86 +571,48 @@
               </ul>
             </div>
           </details>
-          <!-- Reflection -->
-          <div class="mt-4">
-            <label for="reflection-ws2" class="block text-sm font-medium text-gray-700">🤔 تأملات المتدرب:</label>
-            <textarea id="reflection-ws2" name="reflection-ws2" aria-describedby="reflection-ws2-hint" rows="3" class="reflection-field mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 sm:text-sm" placeholder="كيف سيغير هذا التمرين طريقة تصميمك للمهام مستقبلاً؟"></textarea>
+          <div class="reflection">
+            <label for="reflection-ws2" class="reflection-label">تأملات المتدرب:</label>
+            <textarea id="reflection-ws2" name="reflection-ws2" aria-describedby="reflection-ws2-hint" rows="3" class="reflection-field" placeholder="كيف سيغير هذا التمرين طريقة تصميمك للمهام مستقبلاً؟"></textarea>
             <p id="reflection-ws2-hint" class="reflection-hint">تُحفظ تأملاتك تلقائياً في هذا المتصفح.</p>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <!-- Workshop 3 (final project) -->
-      <article class="activity-item bg-red-50 p-4 rounded-lg border-s-4 border-red-400 workshop-section">
-        <h3 class="font-bold text-red-900">
-          <button type="button" class="accordion-trigger" data-accordion="activity-4" aria-expanded="false" aria-controls="content-activity-4">
-            <span>🛠️ ورشة عمل (3): المشروع النهائي: تصميم درس متكامل (الجلسة 5)</span>
-            <span id="icon-activity-4" class="accordion-icon text-red-600" aria-hidden="true">▼</span>
-          </button>
-        </h3>
-        <div id="content-activity-4" class="mt-3 text-gray-700 hidden">
+        <!-- Workshop 3 (final project) -->
+        <article id="workshop-3" class="tabpanel" role="tabpanel" aria-labelledby="tab-workshop-3" tabindex="0" hidden>
+          <h3 class="panel-title">المشروع النهائي: تصميم درس متكامل <span class="chip">الجلسة 5</span></h3>
           <p class="font-semibold">الهدف: تطبيق كل ما تعلمته في تصميم درس واحد.</p>
-          <p class="mt-2"><strong>المطلوب:</strong> اختر درساً واحداً من منهجك، واستخدم "قالب تصميم الدرس التفاعلي" (في قسم الموارد أدناه) لتصميمه بحيث يغطي 3 مستويات من هرم بلوم (واحد منها على الأقل من المستويات العليا HOTS)، مع دمج أداة رقمية مناسبة لكل مستوى وتبرير اختيارك.</p>
-          <!-- Reflection -->
-          <div class="mt-4">
-            <label for="reflection-ws3" class="block text-sm font-medium text-gray-700">🤔 تأملات المتدرب:</label>
-            <textarea id="reflection-ws3" name="reflection-ws3" aria-describedby="reflection-ws3-hint" rows="3" class="reflection-field mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 sm:text-sm" placeholder="ما هو الجزء الأصعب في تصميم هذا الدرس؟ وكيف تغلبت عليه؟"></textarea>
+          <p class="mt-2"><strong>المطلوب:</strong> اختر درساً واحداً من منهجك، واستخدم "قالب تصميم الدرس التفاعلي" (في الدرس الخامس: <a href="#template" class="inline-link">قالب تصميم الدرس</a>) لتصميمه بحيث يغطي 3 مستويات من هرم بلوم (واحد منها على الأقل من المستويات العليا HOTS)، مع دمج أداة رقمية مناسبة لكل مستوى وتبرير اختيارك.</p>
+          <div class="reflection">
+            <label for="reflection-ws3" class="reflection-label">تأملات المتدرب:</label>
+            <textarea id="reflection-ws3" name="reflection-ws3" aria-describedby="reflection-ws3-hint" rows="3" class="reflection-field" placeholder="ما هو الجزء الأصعب في تصميم هذا الدرس؟ وكيف تغلبت عليه؟"></textarea>
             <p id="reflection-ws3-hint" class="reflection-hint">تُحفظ تأملاتك تلقائياً في هذا المتصفح.</p>
           </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- Section 5: Resources -->
-  <section id="resources" class="mb-12 p-4 sm:p-6 bg-white rounded-xl shadow-lg fade-in" aria-labelledby="resources-title">
-    <h2 id="resources-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">📎 5. موارد الحقيبة</h2>
-    <p class="text-gray-600 mb-6">تجد هنا جميع الموارد الملحقة بالدورة، بما في ذلك قائمة الأدوات، وقالب تصميم الدرس التفاعلي، والمراجع، وموارد إضافية.</p>
-
-    <!-- Resource 1: Tools List -->
-    <div class="mb-6 resource-item bg-gray-50 p-3 sm:p-4 rounded-lg border-s-4 border-gray-400">
-      <h3 class="text-xl font-bold text-gray-700">
-        <button type="button" class="accordion-trigger" data-accordion="res-tools" aria-expanded="false" aria-controls="content-res-tools">
-          <span>🔗 ملحق (أ): قائمة المصادر والأدوات</span>
-          <span id="icon-res-tools" class="accordion-icon text-gray-600" aria-hidden="true">▼</span>
-        </button>
-      </h3>
-      <div id="content-res-tools" class="mt-3 text-gray-700 hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- LOTS -->
-          <div class="bg-blue-50 p-4 rounded-lg border-b-4 border-blue-500">
-            <h4 class="font-bold text-blue-900 mb-3 text-lg">⬇️ المستويات الدنيا (LOTS)</h4>
-            <ul class="space-y-2">
-              <li><strong class="text-gray-800">التذكر:</strong> Quizlet, Kahoot, Google Forms.</li>
-              <li><strong class="text-gray-800">الفهم:</strong> Coggle, MindMeister, Padlet, Edpuzzle.</li>
-              <li><strong class="text-gray-800">التطبيق:</strong> Google Docs/Sheets/Slides, PhET Simulations, Google My Maps.</li>
-            </ul>
-          </div>
-          <!-- HOTS -->
-          <div class="bg-purple-50 p-4 rounded-lg border-b-4 border-purple-500">
-            <h4 class="font-bold text-purple-900 mb-3 text-lg">⬆️ المستويات العليا (HOTS)</h4>
-            <ul class="space-y-2">
-              <li><strong class="text-gray-800">التحليل:</strong> Mentimeter, Google Trends, Excel.</li>
-              <li><strong class="text-gray-800">التقييم:</strong> Padlet (للنقد), Flip (Flipgrid), منتديات Google Classroom.</li>
-              <li><strong class="text-gray-800">الإبداع:</strong> Canva, Adobe Express, Google Sites, Scratch, YouTube.</li>
-            </ul>
-          </div>
-        </div>
+        </article>
       </div>
     </div>
 
-    <!-- Resource 2: Interactive Lesson Template -->
-    <div class="mb-6 resource-item bg-gray-50 p-3 sm:p-4 rounded-lg border-s-4 border-gray-400">
-      <h3 class="text-xl font-bold text-gray-700">
-        <button type="button" class="accordion-trigger" data-accordion="res-template" aria-expanded="false" aria-controls="content-res-template">
-          <span>🗒️ ملحق (ب): قالب تصميم الدرس الرقمي (تفاعلي)</span>
-          <span id="icon-res-template" class="accordion-icon text-gray-600" aria-hidden="true">▼</span>
-        </button>
-      </h3>
-      <div id="content-res-template" class="mt-3 text-gray-700 hidden">
-        <p class="text-gray-600 mb-4">استخدم هذا القالب التفاعلي (خلال ورشة العمل 3) لإعادة تصميم درس من منهجك. يمكنك الكتابة مباشرة في الخانات وحفظ مسودتك مؤقتًا في متصفحك.</p>
-        <p class="text-sm text-red-600 mb-4"><strong>ملاحظة:</strong> الحفظ مؤقت ويعتمد على المتصفح. لتجنب فقدان العمل، انسخ النص النهائي إلى مستند خارجي.</p>
+    <div class="lesson-end" data-lesson-end>
+      <span class="lesson-end-rule" aria-hidden="true"></span>
+      <p>بعد ذلك، ستصمم درسك في القالب التفاعلي.</p>
+    </div>
+    <a href="#template" class="next-lesson" data-next-lesson>
+      <span>الدرس 5 — قالب تصميم الدرس</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
 
+  <!-- =========================== Lesson 5 =========================== -->
+  <section id="template" class="lesson" data-lesson aria-labelledby="template-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الدرس 5 من 7 · ملحق (ب)</p>
+      <h2 id="template-title" class="lesson-title" tabindex="-1">قالب تصميم الدرس الرقمي</h2>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="lesson-body">
+      <p class="lesson-lead">استخدم هذا القالب التفاعلي (خلال ورشة العمل 3) لإعادة تصميم درس من منهجك. يمكنك الكتابة مباشرة في الخانات وحفظ مسودتك مؤقتًا في متصفحك.</p>
+      <p class="note-warn"><strong>ملاحظة:</strong> الحفظ مؤقت ويعتمد على المتصفح. لتجنب فقدان العمل، انسخ النص النهائي إلى مستند خارجي.</p>
         <!-- Field ids (lt-*) are the localStorage keys of the saved draft: do not rename them. -->
         <form id="lesson-template-form">
           <div class="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
@@ -758,18 +660,164 @@
           <p id="save-status" class="saved-message" role="status" aria-live="polite"></p>
           <p id="gemini-error" class="gemini-error" role="alert"></p>
         </form>
+    </div>
+
+    <div class="lesson-end" data-lesson-end>
+      <span class="lesson-end-rule" aria-hidden="true"></span>
+      <p>بعد ذلك، اختبر فهمك بأربعة أسئلة قصيرة.</p>
+    </div>
+    <a href="#check" class="next-lesson" data-next-lesson>
+      <span>الدرس 6 — التحقق من المعرفة</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Lesson 6 =========================== -->
+  <!--
+    Knowledge check (js/main.js -> initKnowledgeChecks). Formative only: nothing is
+    stored or sent. Each form names its correct option in data-answer.
+  -->
+  <section id="check" class="lesson" data-lesson aria-labelledby="check-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الدرس 6 من 7</p>
+      <h2 id="check-title" class="lesson-title" tabindex="-1">التحقق من المعرفة</h2>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="lesson-body">
+      <p class="lesson-lead">أربعة أسئلة قصيرة تراجع بها ما تعلمته. اختر إجابة ثم اضغط «تحقق»؛ تظهر لك التغذية الراجعة فوراً، ويمكنك إعادة المحاولة.</p>
+
+      <form class="kc" data-kc data-answer="b">
+        <fieldset>
+          <legend><span class="kc-count">السؤال 1 من 4</span><span class="kc-question">أي مستويات هرم بلوم المعدّل تُعدّ من مهارات التفكير العليا (HOTS)؟</span></legend>
+          <label class="kc-option"><input type="radio" name="kc1" value="a"><span>التذكر والفهم والتطبيق</span></label>
+          <label class="kc-option"><input type="radio" name="kc1" value="b"><span>التحليل والتقييم والإبداع</span></label>
+          <label class="kc-option"><input type="radio" name="kc1" value="c"><span>الفهم والتطبيق والتحليل</span></label>
+        </fieldset>
+        <button type="submit" class="kc-submit" disabled>تحقق</button>
+        <div class="kc-feedback" role="status" hidden>
+          <p class="kc-verdict"></p>
+          <p class="kc-explain">المستويات الثلاثة العليا في الهرم (التحليل، والتقييم، والإبداع) هي مهارات التفكير العليا، وتقوم على المستويات الدنيا التي تؤسس المعرفة وتوظفها.</p>
+          <button type="button" class="kc-retry">أعد المحاولة</button>
+        </div>
+      </form>
+
+      <form class="kc" data-kc data-answer="c">
+        <fieldset>
+          <legend><span class="kc-count">السؤال 2 من 4</span><span class="kc-question">طلب معلم من طلابه تصميم إنفوجرافيك في Canva يشرح أحد مشاريع رؤية 2030. أي مستوى تستهدفه المهمة؟</span></legend>
+          <label class="kc-option"><input type="radio" name="kc2" value="a"><span>التطبيق</span></label>
+          <label class="kc-option"><input type="radio" name="kc2" value="b"><span>التقييم</span></label>
+          <label class="kc-option"><input type="radio" name="kc2" value="c"><span>الإبداع</span></label>
+        </fieldset>
+        <button type="submit" class="kc-submit" disabled>تحقق</button>
+        <div class="kc-feedback" role="status" hidden>
+          <p class="kc-verdict"></p>
+          <p class="kc-explain">ينتج الطالب عملاً جديداً لم يكن موجوداً، وهذا جوهر مستوى الإبداع؛ ولهذا عُرض المثال في دراسات الحالة تحت «مستوى الإبداع».</p>
+          <button type="button" class="kc-retry">أعد المحاولة</button>
+        </div>
+      </form>
+
+      <form class="kc" data-kc data-answer="b">
+        <fieldset>
+          <legend><span class="kc-count">السؤال 3 من 4</span><span class="kc-question">المهمة «اكتب ملخصاً من 5 أسطر عن أسباب الحرب العالمية الأولى» تقع في مستوى:</span></legend>
+          <label class="kc-option"><input type="radio" name="kc3" value="a"><span>التذكر</span></label>
+          <label class="kc-option"><input type="radio" name="kc3" value="b"><span>الفهم</span></label>
+          <label class="kc-option"><input type="radio" name="kc3" value="c"><span>التحليل</span></label>
+        </fieldset>
+        <button type="submit" class="kc-submit" disabled>تحقق</button>
+        <div class="kc-feedback" role="status" hidden>
+          <p class="kc-verdict"></p>
+          <p class="kc-explain">التلخيص إعادة صياغة للمعنى، وهو من أفعال مستوى الفهم. ترتقي المهمة إلى التحليل حين يقارن الطالب بين الأسباب ويوازن أهميتها.</p>
+          <button type="button" class="kc-retry">أعد المحاولة</button>
+        </div>
+      </form>
+
+      <form class="kc" data-kc data-answer="b">
+        <fieldset>
+          <legend><span class="kc-count">السؤال 4 من 4</span><span class="kc-question">أي أداة أنسب لنشاط يقدّم فيه الطلاب تغذية راجعة على أعمال زملائهم وفق معايير محددة؟</span></legend>
+          <label class="kc-option"><input type="radio" name="kc4" value="a"><span><bdi>Kahoot!</bdi></span></label>
+          <label class="kc-option"><input type="radio" name="kc4" value="b"><span><bdi>Padlet</bdi></span></label>
+          <label class="kc-option"><input type="radio" name="kc4" value="c"><span><bdi>PhET Simulations</bdi></span></label>
+        </fieldset>
+        <button type="submit" class="kc-submit" disabled>تحقق</button>
+        <div class="kc-feedback" role="status" hidden>
+          <p class="kc-verdict"></p>
+          <p class="kc-explain">يتيح Padlet نشر الأعمال والتعليق عليها، فيصلح لنقد الأقران وإصدار الأحكام (مستوى التقييم). أما Kahoot! فللتذكر، وPhET للتطبيق.</p>
+          <button type="button" class="kc-retry">أعد المحاولة</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="lesson-end" data-lesson-end>
+      <span class="lesson-end-rule" aria-hidden="true"></span>
+      <p>أخيراً، تجد في الموارد قائمة الأدوات ودراسات الحالة والمراجع العلمية.</p>
+    </div>
+    <a href="#resources" class="next-lesson" data-next-lesson>
+      <span>الدرس 7 — الموارد والمراجع</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Lesson 7 =========================== -->
+  <section id="resources" class="lesson" data-lesson aria-labelledby="resources-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الدرس 7 من 7</p>
+      <h2 id="resources-title" class="lesson-title" tabindex="-1">الموارد والمراجع</h2>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="lesson-body">
+      <p class="lesson-lead">تجد هنا جميع الموارد الملحقة بالدورة، بما في ذلك قائمة الأدوات، ودراسات الحالة، واستراتيجيات التقييم، والمراجع، وموارد إضافية.</p>
+
+      <div class="acc">
+    <!-- Resource 1: Tools List -->
+    <div class="resource-item acc-item">
+      <h3 class="acc-heading">
+        <button type="button" class="accordion-trigger" data-accordion="res-tools" aria-expanded="false" aria-controls="content-res-tools">
+          <span>🔗 ملحق (أ): قائمة المصادر والأدوات</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </h3>
+      <div id="content-res-tools" class="acc-panel hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- LOTS -->
+          <div class="bg-blue-50 p-4 rounded-lg border-b-4 border-blue-500">
+            <h4 class="font-bold text-blue-900 mb-3 text-lg">⬇️ المستويات الدنيا (LOTS)</h4>
+            <ul class="space-y-2">
+              <li><strong class="text-gray-800">التذكر:</strong> Quizlet, Kahoot, Google Forms.</li>
+              <li><strong class="text-gray-800">الفهم:</strong> Coggle, MindMeister, Padlet, Edpuzzle.</li>
+              <li><strong class="text-gray-800">التطبيق:</strong> Google Docs/Sheets/Slides, PhET Simulations, Google My Maps.</li>
+            </ul>
+          </div>
+          <!-- HOTS -->
+          <div class="bg-purple-50 p-4 rounded-lg border-b-4 border-purple-500">
+            <h4 class="font-bold text-purple-900 mb-3 text-lg">⬆️ المستويات العليا (HOTS)</h4>
+            <ul class="space-y-2">
+              <li><strong class="text-gray-800">التحليل:</strong> Mentimeter, Google Trends, Excel.</li>
+              <li><strong class="text-gray-800">التقييم:</strong> Padlet (للنقد), Flip (Flipgrid), منتديات Google Classroom.</li>
+              <li><strong class="text-gray-800">الإبداع:</strong> Canva, Adobe Express, Google Sites, Scratch, YouTube.</li>
+            </ul>
+          </div>
+        </div>
       </div>
+    </div>
+    <!-- Resource 2 lives in its own lesson (#template); this row links to it. -->
+    <div class="resource-item acc-item">
+      <a href="#template" class="acc-link">
+        <span>ملحق (ب): قالب تصميم الدرس الرقمي (تفاعلي)</span>
+        <span class="acc-link-hint">الدرس 5</span>
+      </a>
     </div>
 
     <!-- Resource 3: Case Studies -->
-    <div class="mb-6 resource-item bg-gray-50 p-3 sm:p-4 rounded-lg border-s-4 border-gray-400">
-      <h3 class="text-xl font-bold text-gray-700">
+    <div class="resource-item acc-item">
+      <h3 class="acc-heading">
         <button type="button" class="accordion-trigger" data-accordion="res-case-studies" aria-expanded="false" aria-controls="content-res-case-studies">
           <span>🌟 ملحق (ج): دراسات حالة (أمثلة واقعية)</span>
-          <span id="icon-res-case-studies" class="accordion-icon text-gray-600" aria-hidden="true">▼</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </button>
       </h3>
-      <div id="content-res-case-studies" class="mt-3 text-gray-700 hidden space-y-3">
+      <div id="content-res-case-studies" class="acc-panel hidden space-y-3">
         <div class="bg-white p-3 rounded-lg border">
           <h4 class="font-bold text-green-700">مثال 1: استخدام Padlet للتقييم (مستوى التقييم)</h4>
           <p class="text-sm">معلمة لغة عربية طلبت من طلابها نشر مسوداتهم لمقالة نقدية على Padlet. ثم قام كل طالب بتقديم تغذية راجعة بناءة (باستخدام معايير محددة) لزميلين آخرين. المعلمة استخدمت Padlet لمتابعة النقاش وتقييم قدرة الطلاب على النقد وإصدار الأحكام.</p>
@@ -782,14 +830,14 @@
     </div>
 
     <!-- Resource 4: Assessment Strategies -->
-    <div class="mb-6 resource-item bg-gray-50 p-3 sm:p-4 rounded-lg border-s-4 border-gray-400">
-      <h3 class="text-xl font-bold text-gray-700">
+    <div class="resource-item acc-item">
+      <h3 class="acc-heading">
         <button type="button" class="accordion-trigger" data-accordion="res-assessment" aria-expanded="false" aria-controls="content-res-assessment">
           <span>📊 ملحق (د): استراتيجيات التقييم الرقمي</span>
-          <span id="icon-res-assessment" class="accordion-icon text-gray-600" aria-hidden="true">▼</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </button>
       </h3>
-      <div id="content-res-assessment" class="mt-3 text-gray-700 hidden space-y-3">
+      <div id="content-res-assessment" class="acc-panel hidden space-y-3">
         <p>عند تقييم مخرجات الطلاب باستخدام الأدوات الرقمية، خاصة في مستويات HOTS، ركز على:</p>
         <ul class="list-disc list-inside space-y-1">
           <li><strong>مقاييس التقييم (Rubrics):</strong> استخدم مقاييس تقييم واضحة تحدد معايير النجاح للمهام الإبداعية أو التحليلية (مثل تصميم فيديو أو تحليل بيانات).</li>
@@ -801,14 +849,14 @@
     </div>
 
     <!-- Resource 5: Common Challenges -->
-    <div class="mb-6 resource-item bg-gray-50 p-3 sm:p-4 rounded-lg border-s-4 border-gray-400">
-      <h3 class="text-xl font-bold text-gray-700">
+    <div class="resource-item acc-item">
+      <h3 class="acc-heading">
         <button type="button" class="accordion-trigger" data-accordion="res-challenges" aria-expanded="false" aria-controls="content-res-challenges">
           <span>🚧 ملحق (هـ): معالجة التحديات الشائعة</span>
-          <span id="icon-res-challenges" class="accordion-icon text-gray-600" aria-hidden="true">▼</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </button>
       </h3>
-      <div id="content-res-challenges" class="mt-3 text-gray-700 hidden space-y-3">
+      <div id="content-res-challenges" class="acc-panel hidden space-y-3">
         <ul class="list-disc list-inside space-y-2">
           <li><strong>ضعف البنية التحتية (الإنترنت/الأجهزة):</strong> خطط لأنشطة يمكن تنفيذها جزئياً دون اتصال بالإنترنت، وشجع على استخدام الهواتف الذكية كبديل، وفكر في استراتيجيات العمل الجماعي لتقليل الحاجة للأجهزة.</li>
           <li><strong>مقاومة التغيير (طلاب/معلمين):</strong> ابدأ بدمج أدوات بسيطة ومألوفة، وركز على القيمة المضافة، واعرض نماذج ناجحة، وقدم الدعم الفني والبيداغوجي المستمر.</li>
@@ -819,14 +867,14 @@
     </div>
 
     <!-- Resource 6: Further Learning -->
-    <div class="mb-6 resource-item bg-gray-50 p-3 sm:p-4 rounded-lg border-s-4 border-gray-400">
-      <h3 class="text-xl font-bold text-gray-700">
+    <div class="resource-item acc-item">
+      <h3 class="acc-heading">
         <button type="button" class="accordion-trigger" data-accordion="res-further-learning" aria-expanded="false" aria-controls="content-res-further-learning">
           <span>🔗 ملحق (و): مجتمعات مهنية ومتابعة التعلم</span>
-          <span id="icon-res-further-learning" class="accordion-icon text-gray-600" aria-hidden="true">▼</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </button>
       </h3>
-      <div id="content-res-further-learning" class="mt-3 text-gray-700 hidden space-y-3">
+      <div id="content-res-further-learning" class="acc-panel hidden space-y-3">
         <p>استمر في تطوير مهاراتك من خلال:</p>
         <ul class="list-disc list-inside space-y-2">
           <li><strong>تويتر (X):</strong> متابعة الهاشتاجات التعليمية مثل #التعليم_الرقمي، #تقنيات_التعليم والمختصين في المجال.</li>
@@ -838,14 +886,14 @@
     </div>
 
     <!-- Resource 7: Scientific Foundation -->
-    <div class="mb-6 resource-item bg-gray-50 p-3 sm:p-4 rounded-lg border-s-4 border-gray-400">
-      <h3 class="text-xl font-bold text-gray-700">
+    <div class="resource-item acc-item">
+      <h3 class="acc-heading">
         <button type="button" class="accordion-trigger" data-accordion="foundation" aria-expanded="false" aria-controls="content-foundation">
           <span>📜 ملحق (ز): الأساس العلمي والمراجع</span>
-          <span id="icon-foundation" class="accordion-icon text-gray-600" aria-hidden="true">▼</span>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </button>
       </h3>
-      <div id="content-foundation" class="mt-3 text-gray-700 hidden">
+      <div id="content-foundation" class="acc-panel hidden">
         <div class="mb-4">
           <button type="button" class="video-open-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out" data-video-id="xDW2eLDy1Qg" aria-haspopup="dialog">
             🎥 مشاهدة: شرح أكاديمي لهرم بلوم
@@ -870,9 +918,29 @@
         </div>
       </div>
     </div>
+      </div>
+    </div>
+
+    <div class="lesson-end" data-lesson-end>
+      <span class="lesson-end-rule" aria-hidden="true"></span>
+      <p>أتممت دروس الحقيبة. يمكنك العودة إلى أي درس من القائمة في أي وقت.</p>
+    </div>
+    <a href="index.html" class="next-lesson next-lesson--finish">
+      <span>العودة إلى البوابة</span>
+    </a>
   </section>
 
-</main>
+  </main>
+
+  <!-- Footer: author and rights (same on every page). -->
+  <footer class="mt-12 bg-[#0b1f52] py-8 text-white">
+    <div class="container mx-auto flex flex-col items-center gap-2 px-4 text-center sm:px-6 lg:px-8">
+      <p class="text-lg font-bold">إعداد: بندر الأسمري</p>
+      <p class="text-sm text-blue-100">مورد تعليمي أُعد بحب لزملائي المعلمين والمدربين.</p>
+      <p class="text-xs text-blue-200">© 2025–2026 بندر الأسمري. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
 </div>
 
 <!-- Video Modal (accessible dialog: Escape closes, focus is trapped and restored) -->
@@ -885,15 +953,6 @@
     </div>
   </div>
 </div>
-
-<!-- Footer: author and rights (same on every page). -->
-<footer class="mt-12 bg-[#0b1f52] py-8 text-white">
-  <div class="container mx-auto flex flex-col items-center gap-2 px-4 text-center sm:px-6 lg:px-8">
-    <p class="text-lg font-bold">إعداد: بندر الأسمري</p>
-    <p class="text-sm text-blue-100">مورد تعليمي أُعد بحب لزملائي المعلمين والمدربين.</p>
-    <p class="text-xs text-blue-200">© 2025–2026 بندر الأسمري. جميع الحقوق محفوظة.</p>
-  </div>
-</footer>
 
 </body>
 </html>
