@@ -11,7 +11,7 @@
  *    a clear message when no API key is available (e.g. on GitHub Pages).
  *  - LMS redesign: the Bloom levels moved from JS-rendered cards to static
  *    <details> in trainee.html; this module now tracks the course index
- *    (initCourseIndex) and expands the levels for printing (initPrintExpansion).
+ *    (initCourseIndex); printing is handled by js/print-expand.js.
  *
  * Data compatibility: the lesson draft is still stored under "lessonTemplateDraft"
  * with the original field ids as keys, so drafts saved by the old page still load.
@@ -210,23 +210,6 @@
     // Above the first section (over the hero) the first unit is the natural "you are here".
     setActive(linkFor.get(sections[0]));
     sections.forEach((section) => observer.observe(section));
-  }
-
-  /**
-   * Browsers print closed <details> without their content. Opens every element marked
-   * data-print-open before printing and closes again only the ones it opened.
-   */
-  function initPrintExpansion() {
-    /** @type {HTMLDetailsElement[]} */
-    let openedForPrint = [];
-    window.addEventListener('beforeprint', () => {
-      openedForPrint = [...document.querySelectorAll('details[data-print-open]:not([open])')];
-      openedForPrint.forEach((details) => { details.open = true; });
-    });
-    window.addEventListener('afterprint', () => {
-      openedForPrint.forEach((details) => { details.open = false; });
-      openedForPrint = [];
-    });
   }
 
   // ---------------------------------------------------------------------------
@@ -537,5 +520,4 @@
   loadLessonTemplate({ silent: true });
   initReflections();
   initCourseIndex();
-  initPrintExpansion();
 })();

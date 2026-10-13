@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="لوحة المدرب في حقيبة هرم بلوم الرقمية.">
+<meta name="description" content="لوحة المدرب في حقيبة هرم بلوم الرقمية: دليل تنفيذ الورشة، وإرشادات التيسير، وتفاصيل كل نشاط وتوقيته.">
 <meta name="theme-color" content="#0b1f52">
 <title>لوحة المدرب | حقيبة هرم بلوم الرقمية</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -13,11 +13,14 @@
 <!-- Tailwind is pre-compiled to a static file (no runtime CDN). Rebuild with: npm run build:css -->
 <link rel="stylesheet" href="css/tailwind.css">
 <link rel="stylesheet" href="css/styles.css">
+<!-- Opens every guide entry before printing (shared with trainee.html). -->
+<script src="js/print-expand.js" defer></script>
 </head>
 <!--
-  Trainer dashboard — initial empty shell (role-split refactor, Claude Code AI-assisted).
-  Future widgets go inside #dashboard-widgets. No script yet: add js/trainer.js
-  (linked with defer) when the first interactive widget lands.
+  Trainer dashboard (Claude Code, AI-assisted role split): everything addressed to the
+  trainer — kit overview, facilitation tips, the full activity guide with timings,
+  surveys and trainer notes — moved here verbatim from trainee.html, which now keeps
+  only learner-facing content. Guide entries are native <details>.
 -->
 <body class="min-h-full bg-slate-50 text-gray-800">
 
@@ -40,23 +43,199 @@
 
 <main id="main-content" class="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
 
-  <h1 class="text-2xl font-extrabold text-[#0b1f52] sm:text-3xl">لوحة المدرب</h1>
+  <h1 class="text-3xl font-extrabold text-[#0b1f52] sm:text-4xl">لوحة المدرب</h1>
+  <p class="mt-3 max-w-3xl text-lg text-gray-600">دليل تنفيذ الورشة: نظرة عامة على الحقيبة، وإرشادات التيسير، وتفاصيل كل نشاط بتوقيته وملاحظاته.</p>
 
-  <!-- Widget area: empty on purpose. Replace the empty state when widgets are added. -->
-  <section id="dashboard-widgets" class="mt-8" aria-labelledby="dashboard-empty-title">
-    <div class="rounded-2xl border-2 border-dashed border-sky-200 bg-white px-6 py-16 text-center">
-      <svg class="mx-auto h-12 w-12 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-        <rect x="3" y="3" width="7" height="9" rx="1.5"/>
-        <rect x="14" y="3" width="7" height="5" rx="1.5"/>
-        <rect x="14" y="12" width="7" height="9" rx="1.5"/>
-        <rect x="3" y="16" width="7" height="5" rx="1.5"/>
-      </svg>
-      <h2 id="dashboard-empty-title" class="mt-4 text-lg font-bold text-gray-900">اللوحة قيد الإعداد</h2>
-      <p class="mt-2 text-gray-600">ستظهر أدوات المدرب هنا في الإصدارات القادمة.</p>
+  <nav class="mt-6 mb-10" aria-label="أقسام لوحة المدرب">
+    <ul class="flex flex-wrap gap-2 text-sm">
+      <li><a href="#overview" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">نظرة عامة</a></li>
+      <li><a href="#facilitation" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">إرشادات التيسير</a></li>
+      <li><a href="#guide" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">دليل الجلسات والأنشطة</a></li>
+    </ul>
+  </nav>
+
+  <!-- Moved from trainee.html (role split): content addressed to the trainer. -->
+  <section id="overview" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="overview-title">
+    <h2 id="overview-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">👋 نظرة عامة على الحقيبة</h2>
+    <p class="text-gray-600 mb-6">هذه الحقيبة الرقمية مصممة لتمكين المدربين والمعلمين من تقديم ورشة عمل تفاعلية حول "تطبيقات هرم بلوم الرقمية". 🎯 الهدف هو تزويد المتدربين بالأساس النظري والمهارات العملية لدمج الأدوات الرقمية بفاعلية في فصولهم الدراسية، بما يتوافق مع مستويات التفكير العليا (HOTS).</p>
+
+    <h3 class="text-xl font-bold text-gray-700 mb-4">📦 مكونات الحقيبة الرقمية:</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="p-4 bg-blue-50 border-s-4 border-blue-500 rounded-lg">
+        <h4 class="font-bold text-blue-900">1. مساحة المتدرب</h4>
+        <p class="text-sm text-gray-700">الأهداف، والخريطة التفاعلية، وخطة الدورة، وورش العمل، والموارد.</p>
+      </div>
+      <div class="p-4 bg-teal-50 border-s-4 border-teal-600 rounded-lg">
+        <h4 class="font-bold text-teal-900">2. لوحة المدرب (هذه الصفحة)</h4>
+        <p class="text-sm text-gray-700">دليل الجلسات والأنشطة، وتوقيتاتها، وملاحظات التيسير.</p>
+      </div>
+      <div class="p-4 bg-gray-100 border-s-4 border-gray-500 rounded-lg">
+        <h4 class="font-bold text-gray-800">3. الموارد المرفقة</h4>
+        <p class="text-sm text-gray-700">قوالب تفاعلية وقائمة أدوات مقترحة لكل مستوى.</p>
+      </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-700 mb-4">🔗 روابط سريعة إلى مساحة المتدرب</h3>
+    <ul class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <li>
+          <a href="trainee.html#plan" class="block h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:border-teal-500 hover:shadow-md">
+            <span class="block font-bold text-gray-900">📅 خطة الدورة</span>
+            <span class="mt-1 block text-sm text-gray-600">يومان · 10 ساعات · ست جلسات</span>
+          </a>
+        </li>
+        <li>
+          <a href="trainee.html#map" class="block h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:border-teal-500 hover:shadow-md">
+            <span class="block font-bold text-gray-900">🔎 خريطة بلوم والأدوات</span>
+            <span class="mt-1 block text-sm text-gray-600">6 مستويات و24 أداة رقمية</span>
+          </a>
+        </li>
+        <li>
+          <a href="trainee.html#resources" class="block h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:border-teal-500 hover:shadow-md">
+            <span class="block font-bold text-gray-900">📎 القالب والموارد</span>
+            <span class="mt-1 block text-sm text-gray-600">قالب تصميم الدرس والملاحق</span>
+          </a>
+        </li>
+    </ul>
+  </section>
+
+  <section id="facilitation" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="facilitation-title">
+    <h2 id="facilitation-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">🧭 إرشادات التيسير</h2>
+    <p class="text-gray-600 mb-6">💡 مراعاة التمايز: تم تصميم الأنشطة لتكون مرنة. شجع المعلمين الأكثر خبرة على استكشاف أدوات متقدمة، وقدم دعماً إضافياً للمبتدئين.</p>
+    <p class="text-gray-600">🤸 كسر الجمود: ابدأ كل يوم بنشاط قصير وممتع (مثل سؤال طريف عبر Mentimeter أو لعبة سريعة) لتنشيط المجموعة.</p>
+  </section>
+
+  <section id="guide" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="guide-title">
+    <h2 id="guide-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">📋 دليل الجلسات والأنشطة التفصيلي</h2>
+    <p class="text-gray-600 mb-6">هذا الدليل يوفر للمدرب تفاصيل الأنشطة وورش العمل لكل جلسة تدريبية.</p>
+    <div class="space-y-3">
+      <details id="guide-activity-1" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">✏️ نشاط (1): استبيان قبلي (10 دقائق) - (الجلسة 1)</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
+          <p class="font-semibold">الأداة المقترحة: <a href="https://www.mentimeter.com" target="_blank" rel="noopener noreferrer" class="inline-link">Mentimeter</a> أو Google Forms.</p>
+          <p class="mt-2">الأسئلة المقترحة للمتدربين:</p>
+          <ul class="list-disc list-inside mt-2 space-y-1">
+            <li>ما مدى معرفتك بهرم بلوم؟ (1 = لا أعرف شيئاً، 5 = خبير).</li>
+            <li>ما هي أكثر أداة رقمية تستخدمها في فصلك حالياً؟</li>
+            <li>ما هو التحدي الأكبر الذي يواجهك في دمج التكنولوجيا؟</li>
+          </ul>
+          <div class="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h4 class="mb-2 font-bold text-amber-900">📝 ملاحظات للمدرب</h4>
+            <div class="space-y-1 text-sm text-gray-800">
+            <p><strong>التوقيت:</strong> 5 دقائق للإجابة، 5 دقائق لمناقشة النتائج.</p>
+            <p><strong>الهدف:</strong> قياس مستوى معرفة وخبرة المجموعة قبل البدء.</p>
+            <p><strong>نصيحة:</strong> استخدم النتائج لتوجيه تركيزك خلال الدورة.</p>
+            </div>
+          </div>
+        </div>
+      </details>
+      <details id="guide-activity-2" class="group rounded-xl border border-gray-200 border-s-4 border-s-blue-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🛠️ ورشة عمل (1): تمرين الأدوات - المستويات الدنيا (الجلسة 3)</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
+          <p class="font-semibold">الهدف: اختيار الأداة المناسبة للمهمة.</p>
+          <p class="mt-2">سيناريو (مثال): "لديك درس عن (أسماء عواصم الدول). تريد من الطلاب:</p>
+          <ul class="list-disc list-inside mt-2 space-y-1">
+            <li><strong>التذكر:</strong> (....) ← (الأداة المقترحة: Quizlet أو Kahoot).</li>
+            <li><strong>الفهم:</strong> (....) ← (الأداة المقترحة: Coggle لربط الدولة بالقارة والمناخ).</li>
+            <li><strong>التطبيق:</strong> (....) ← (الأداة المقترحة: Google My Maps لوضع علامة على العواصم)."</li>
+          </ul>
+          <p class="mt-2">اطلب من المتدربين (في مجموعات صغيرة حسب التخصص إن أمكن) إكمال سيناريوهات مشابهة لموادهم ومشاركتها.</p>
+          <div class="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h4 class="mb-2 font-bold text-amber-900">📝 ملاحظات للمدرب</h4>
+            <div class="space-y-1 text-sm text-gray-800">
+            <p><strong>التوقيت:</strong> 15 دقيقة شرح، 45 دقيقة عمل مجموعات، 30 دقيقة مشاركة ومناقشة.</p>
+            <p><strong>التركيز:</strong> التأكد من أن اختيار الأداة يخدم المستوى المحدد بوضوح.</p>
+            <p><strong>سؤال للنقاش:</strong> "هل يمكن استخدام نفس الأداة لمستويات مختلفة؟ كيف؟"</p>
+            </div>
+          </div>
+          <a href="trainee.html#activities" class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-900 hover:text-teal-700">عرض الورشة كما يراها المتدرب ←</a>
+        </div>
+      </details>
+      <details id="guide-activity-3" class="group rounded-xl border border-gray-200 border-s-4 border-s-purple-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🛠️ ورشة عمل (2): نقد مهمة - (التحليل والتقييم) (الجلسة 4)</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
+          <p class="font-semibold">الهدف: تحليل مهمة تعليمية قائمة وتقييم مستواها ورفعها لمستوى HOTS.</p>
+          <p class="mt-2">النشاط: اعرض على المتدربين مهمة تقليدية (مثال: "اكتب ملخصاً من 5 أسطر عن أسباب الحرب العالمية الأولى").</p>
+          <p class="mt-2">اطلب منهم (في مجموعات) تقييم هذه المهمة (هي في مستوى "الفهم" فقط) ثم إعادة صياغتها لترتقي إلى:</p>
+          <ul class="list-disc list-inside mt-2 space-y-1">
+            <li><strong>التحليل:</strong> (مثال: "باستخدام أداة رسم بياني، قارن بين الأسباب الاقتصادية والسياسية للحرب من حيث الأهمية.").</li>
+            <li><strong>التقييم:</strong> (مثال: "شارك في نقاش Padlet: ما هو السبب الأكثر تأثيراً في اندلاع الحرب؟ قدم دليلاً يدعم رأيك.").</li>
+          </ul>
+          <div class="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h4 class="mb-2 font-bold text-amber-900">📝 ملاحظات للمدرب</h4>
+            <div class="space-y-1 text-sm text-gray-800">
+            <p><strong>التوقيت:</strong> 20 دقيقة شرح، 60 دقيقة عمل مجموعات، 40 دقيقة عرض ومناقشة.</p>
+            <p><strong>التركيز:</strong> على صياغة "أفعال سلوكية" واضحة تتناسب مع مستويات التحليل والتقييم.</p>
+            <p><strong>تنبيه:</strong> قد يجد بعض المعلمين صعوبة في الانتقال من مهام التذكر والفهم. قدم أمثلة متعددة.</p>
+            </div>
+          </div>
+          <a href="trainee.html#activities" class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-900 hover:text-teal-700">عرض الورشة كما يراها المتدرب ←</a>
+        </div>
+      </details>
+      <details id="guide-activity-4" class="group rounded-xl border border-gray-200 border-s-4 border-s-red-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🛠️ ورشة عمل (3): المشروع النهائي: تصميم درس متكامل (الجلسة 5)</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
+          <p class="font-semibold">الهدف: تطبيق كل ما تعلموه في تصميم درس واحد.</p>
+          <p class="mt-2">المطلوب: اطلب من كل متدرب (أو مجموعة) اختيار درس واحد من مناهجهم، واستخدام "قالب تصميم الدرس التفاعلي" (الموجود في قسم الموارد أدناه) لتصميمه ليغطي 3 مستويات من هرم بلوم (واحد منها على الأقل HOTS)، مع دمج أداة رقمية مناسبة لكل مستوى وتبرير الاختيار.</p>
+          <div class="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h4 class="mb-2 font-bold text-amber-900">📝 ملاحظات للمدرب</h4>
+            <div class="space-y-1 text-sm text-gray-800">
+            <p><strong>التوقيت:</strong> 15 دقيقة شرح للمطلوب والقالب، 90 دقيقة عمل فردي/مجموعات، 15 دقيقة تحضير للعرض.</p>
+            <p><strong>الدعم:</strong> تجول بين المجموعات وقدم الدعم والمشورة، خاصة في اختيار الأدوات المناسبة لـ HOTS.</p>
+            <p><strong>المنتج:</strong> يجب أن يكون لدى كل متدرب/مجموعة خطة درس مكتملة في القالب التفاعلي.</p>
+            </div>
+          </div>
+          <a href="trainee.html#activities" class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-900 hover:text-teal-700">عرض الورشة كما يراها المتدرب ←</a>
+        </div>
+      </details>
+      <details id="guide-activity-5" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">📈 نشاط (2): تقييم الدورة (10 دقائق) - (الجلسة 6)</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
+          <p class="font-semibold">الأداة المقترحة: <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="inline-link">Google Forms</a>.</p>
+          <p class="mt-2">الأسئلة المقترحة للمتدربين:</p>
+          <ul class="list-disc list-inside mt-2 space-y-1">
+            <li>هل كانت أهداف الدورة واضحة ومحققة؟ (مقياس ليكرت)</li>
+            <li>ما هو أهم مفهوم/أداة تعلمتها اليوم؟ (إجابة مفتوحة)</li>
+            <li>ما مدى رضاك عن محتوى الدورة والتفاعل؟ (مقياس ليكرت)</li>
+            <li>أي اقتراحات لتطوير الدورة مستقبلاً؟ (إجابة مفتوحة)</li>
+          </ul>
+          <div class="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <h4 class="mb-2 font-bold text-amber-900">📝 ملاحظات للمدرب</h4>
+            <div class="space-y-1 text-sm text-gray-800">
+            <p><strong>الهدف:</strong> جمع تغذية راجعة بناءة لتطوير الدورة.</p>
+            <p><strong>التطبيق:</strong> شارك الرابط في نهاية الجلسة الأخيرة.</p>
+            <p><strong>التأكيد:</strong> أكد للمتدربين أن ملاحظاتهم مهمة وسرية.</p>
+            </div>
+          </div>
+        </div>
+      </details>
     </div>
   </section>
 
 </main>
+
+<!-- Footer: author and rights (same on every page). -->
+<footer class="mt-12 bg-[#0b1f52] py-8 text-white">
+  <div class="container mx-auto flex flex-col items-center gap-2 px-4 text-center sm:px-6 lg:px-8">
+    <p class="text-lg font-bold">إعداد: بندر الأسمري</p>
+    <p class="text-sm text-blue-100">مورد تعليمي أُعد بحب لزملائي المعلمين والمدربين.</p>
+    <p class="text-xs text-blue-200">© 2025–2026 بندر الأسمري. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
 
 </body>
 </html>

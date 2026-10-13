@@ -22,7 +22,10 @@
 -->
 <body class="min-h-full bg-[#0b1f52] text-white antialiased">
 
-<main class="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-4 py-16 sm:px-6">
+<!-- Full-height column: the portal fills the screen and the footer sits at the bottom. -->
+<div class="relative isolate flex min-h-screen flex-col overflow-hidden">
+
+<main class="flex flex-1 items-center justify-center px-4 py-16 sm:px-6">
 
   <!-- Decorative glow: cyan from the top, navy at the edges. -->
   <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60rem_40rem_at_50%_-10%,rgba(34,211,238,0.28),transparent_65%)]" aria-hidden="true"></div>
@@ -43,7 +46,9 @@
       <span class="flex-1 rounded-full bg-white"></span>
     </div>
 
-    <nav class="mt-12" aria-label="اختيار نوع الدخول">
+    <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed text-blue-100 sm:text-lg">حقيبة تدريبية رقمية تفاعلية تُمكّن المعلمين من توظيف الأدوات الرقمية وفق مستويات هرم بلوم، من التذكر إلى الإبداع.</p>
+
+    <nav class="mt-10" aria-label="اختيار نوع الدخول">
       <ul class="grid gap-4 sm:grid-cols-2">
         <li>
           <a href="trainer.html" class="group flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 py-5 text-lg font-bold text-[#0b1f52] shadow-lg shadow-black/25 transition duration-200 hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
@@ -68,6 +73,14 @@
 
   </div>
 </main>
+
+<!-- Footer: author and rights (same wording on every page). -->
+<footer class="px-4 pb-6 text-center">
+  <p class="font-bold text-white">إعداد: بندر الأسمري</p>
+  <p class="mt-1 text-xs text-blue-200">© 2025–2026 بندر الأسمري. جميع الحقوق محفوظة.</p>
+</footer>
+
+</div>
 
 </body>
 </html>
