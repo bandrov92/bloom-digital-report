@@ -25,11 +25,11 @@
     </a>
     <nav class="hidden sm:flex" aria-label="التنقل الرئيسي">
       <ul class="flex gap-4 text-sm sm:text-base">
-        <li><a href="#intro" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">المقدمة</a></li>
-        <li><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخريطة</a></li>
-        <li><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخطة</a></li>
-        <li><a href="#activities" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الأنشطة</a></li>
-        <li><a href="#resources" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الموارد</a></li>
+        <li class="lg:hidden"><a href="#intro" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">المقدمة</a></li>
+        <li class="lg:hidden"><a href="#map" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخريطة</a></li>
+        <li class="lg:hidden"><a href="#plan" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الخطة</a></li>
+        <li class="lg:hidden"><a href="#activities" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الأنشطة</a></li>
+        <li class="lg:hidden"><a href="#resources" class="text-gray-600 hover:text-blue-600 transition duration-300 font-medium">الموارد</a></li>
         <!-- Role split: return to the entry portal (index.html). -->
         <li><a href="index.html" class="text-blue-900 hover:text-sky-600 transition duration-300 font-semibold">البوابة</a></li>
       </ul>
@@ -53,9 +53,102 @@
   </nav>
 </header>
 
-<main id="main-content" class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<!--
+  LMS layout (Claude Code, AI-assisted): a sticky course index takes 1/4 of the width
+  from the lg breakpoint, the content takes 3/4. Below lg the header menu is the index.
+  The active entry is tracked by js/main.js -> initCourseIndex() through aria-current.
+-->
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:grid lg:grid-cols-4 lg:items-start lg:gap-8">
 
-  <h1 class="sr-only">حقيبة هرم بلوم الرقمية المتكاملة</h1>
+  <nav id="course-index" class="hidden lg:col-span-1 lg:sticky lg:top-24 lg:block print:hidden" aria-labelledby="course-index-title">
+    <div class="overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200">
+      <div class="bg-[#0b1f52] px-5 py-4 text-white">
+        <p class="text-xs font-semibold text-teal-200">مساحة المتدرب</p>
+        <h2 id="course-index-title" class="mt-1 text-lg font-bold">فهرس الدورة</h2>
+      </div>
+      <ol class="max-h-[calc(100vh-14rem)] space-y-1 overflow-y-auto p-3">
+        <li>
+          <a href="#intro" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
+            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">1</span>
+            <span class="min-w-0">
+              <span class="block font-semibold leading-snug">مقدمة الحقيبة وأهدافها</span>
+              <span class="mt-0.5 block text-xs text-gray-500">7 أهداف سلوكية</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#map" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
+            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">2</span>
+            <span class="min-w-0">
+              <span class="block font-semibold leading-snug">مستويات بلوم الرقمية</span>
+              <span class="mt-0.5 block text-xs text-gray-500">6 مستويات و24 أداة</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#plan" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
+            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">3</span>
+            <span class="min-w-0">
+              <span class="block font-semibold leading-snug">خطة الدورة التدريبية</span>
+              <span class="mt-0.5 block text-xs text-gray-500">يومان · 10 ساعات</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#activities" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
+            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">4</span>
+            <span class="min-w-0">
+              <span class="block font-semibold leading-snug">الجلسات والأنشطة</span>
+              <span class="mt-0.5 block text-xs text-gray-500">5 أنشطة وورش عمل</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="#resources" data-course-link class="group flex items-start gap-3 rounded-xl border-s-4 border-transparent p-3 text-gray-700 transition duration-200 hover:bg-gray-50 aria-[current=true]:border-teal-600 aria-[current=true]:bg-teal-50 aria-[current=true]:text-[#0b1f52]">
+            <span class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600 group-aria-[current=true]:bg-teal-600 group-aria-[current=true]:text-white" aria-hidden="true">5</span>
+            <span class="min-w-0">
+              <span class="block font-semibold leading-snug">موارد الحقيبة</span>
+              <span class="mt-0.5 block text-xs text-gray-500">7 ملاحق</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+      <div class="border-t border-gray-100 px-5 py-4">
+        <a href="index.html" class="text-sm font-semibold text-blue-900 transition duration-200 hover:text-teal-700">العودة إلى البوابة</a>
+      </div>
+    </div>
+  </nav>
+
+<main id="main-content" class="min-w-0 lg:col-span-3">
+
+  <!-- Hero: brand navy to teal (bg-gradient-to-r). A <div>, not <header>: print CSS hides every header. -->
+  <div class="mb-10 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0b1f52] to-teal-700 p-6 text-white shadow-lg sm:p-10 print:mb-4 print:bg-none print:p-0 print:text-gray-900 print:shadow-none">
+    <p class="text-sm font-semibold text-teal-200 print:text-gray-600">حقيبة تدريبية رقمية · أكاديمية بيان</p>
+    <h1 class="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">حقيبة هرم بلوم الرقمية المتكاملة</h1>
+    <p class="mt-4 max-w-3xl text-base leading-relaxed text-blue-50 sm:text-lg print:text-gray-700">ورشة تطبيقية تنتقل بك من الأساس النظري لهرم بلوم إلى تصميم مهام رقمية تستهدف مهارات التفكير العليا، عبر خمس وحدات تتدرج من المفاهيم إلى المشروع الختامي.</p>
+    <dl class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
+        <dt class="text-xs text-blue-100 print:text-gray-600">مدة الدورة</dt>
+        <dd class="text-xl font-bold">10 ساعات</dd>
+      </div>
+      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
+        <dt class="text-xs text-blue-100 print:text-gray-600">أيام التدريب</dt>
+        <dd class="text-xl font-bold">يومان</dd>
+      </div>
+      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
+        <dt class="text-xs text-blue-100 print:text-gray-600">مستويات التفكير</dt>
+        <dd class="text-xl font-bold">6 مستويات</dd>
+      </div>
+      <div class="flex flex-col-reverse rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20 print:ring-gray-300">
+        <dt class="text-xs text-blue-100 print:text-gray-600">ورش العمل</dt>
+        <dd class="text-xl font-bold">3 ورش</dd>
+      </div>
+    </dl>
+    <a href="#intro" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-bold text-[#0b1f52] shadow-md transition duration-200 hover:bg-teal-50 print:hidden">
+      ابدأ من الوحدة الأولى
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"/></svg>
+    </a>
+  </div>
 
   <!-- Section 1: Introduction and Objectives -->
   <section id="intro" class="mb-12 p-4 sm:p-6 bg-white rounded-xl shadow-lg fade-in" aria-labelledby="intro-title">
@@ -173,32 +266,266 @@
   <!-- Section 2: Interactive Map -->
   <section id="map" class="mb-12 p-4 sm:p-6 bg-white rounded-xl shadow-lg fade-in" aria-labelledby="map-title">
     <h2 id="map-title" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2 border-blue-200">🔎 2. خريطة بلوم الرقمية التفاعلية</h2>
-    <p class="text-gray-600 mb-6">اكتشف العلاقة بين مستويات التفكير والأدوات الرقمية المناسبة لها. انقر على أي مستوى لاستكشاف الأدوات المرتبطة به.</p>
-    <!-- Bloom Levels Grid: native buttons; tools are rendered by js/main.js -> showTools() -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-      <button type="button" class="bloom-level bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-xl text-white shadow-lg" data-bloom-level="create" aria-controls="tools-display">
-        <span class="block text-4xl mb-3" aria-hidden="true">🎨</span> <span class="block text-2xl font-bold mb-2">الإبداع</span> <span class="block text-sm opacity-90">تصميم، إنتاج، ابتكار</span>
-      </button>
-      <button type="button" class="bloom-level bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl text-white shadow-lg" data-bloom-level="evaluate" aria-controls="tools-display">
-        <span class="block text-4xl mb-3" aria-hidden="true">⚖️</span> <span class="block text-2xl font-bold mb-2">التقييم</span> <span class="block text-sm opacity-90">نقد، حكم، تقدير</span>
-      </button>
-      <button type="button" class="bloom-level bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl text-white shadow-lg" data-bloom-level="analyze" aria-controls="tools-display">
-        <span class="block text-4xl mb-3" aria-hidden="true">🔍</span> <span class="block text-2xl font-bold mb-2">التحليل</span> <span class="block text-sm opacity-90">مقارنة، تفكيك، استنتاج</span>
-      </button>
-      <button type="button" class="bloom-level bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl text-white shadow-lg" data-bloom-level="apply" aria-controls="tools-display">
-        <span class="block text-4xl mb-3" aria-hidden="true">🛠️</span> <span class="block text-2xl font-bold mb-2">التطبيق</span> <span class="block text-sm opacity-90">تنفيذ، استخدام، حل</span>
-      </button>
-      <button type="button" class="bloom-level bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-white shadow-lg" data-bloom-level="understand" aria-controls="tools-display">
-        <span class="block text-4xl mb-3" aria-hidden="true">💡</span> <span class="block text-2xl font-bold mb-2">الفهم</span> <span class="block text-sm opacity-90">شرح، تفسير، تلخيص</span>
-      </button>
-      <button type="button" class="bloom-level bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl text-white shadow-lg" data-bloom-level="remember" aria-controls="tools-display">
-        <span class="block text-4xl mb-3" aria-hidden="true">📚</span> <span class="block text-2xl font-bold mb-2">التذكر</span> <span class="block text-sm opacity-90">حفظ، تعريف، سرد</span>
-      </button>
+    <p class="text-gray-600 mb-6">اكتشف العلاقة بين مستويات التفكير والأدوات الرقمية المناسبة لها. افتح أي مستوى لاستعراض أفعاله السلوكية والأدوات الرقمية المناسبة له.</p>
+    <!--
+      Bloom levels as native <details>/<summary> (Claude Code, AI-assisted refactor):
+      keyboard and screen-reader support come from the browser, the content stays in the
+      HTML (no JS rendering), and js/main.js -> initPrintExpansion() opens every level
+      marked data-print-open before printing. Ordered from the base of the pyramid up.
+    -->
+    <div class="space-y-8">
+    <div class="space-y-3">
+      <h3 class="flex flex-wrap items-baseline gap-x-2 text-lg font-bold text-gray-800">⬇️ المستويات الدنيا (LOTS)<span class="text-sm font-normal text-gray-500">تأسيس المعرفة وتوظيفها</span></h3>
+      <details id="level-remember" class="group rounded-xl border border-gray-200 border-s-4 border-s-purple-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-2xl" aria-hidden="true">📚</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-xs font-semibold text-purple-700">المستوى 1</span>
+            <span class="block text-lg font-bold text-gray-900">التذكر</span>
+            <span class="block text-sm text-gray-600">حفظ، تعريف، سرد</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">3 أدوات</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h4 class="mb-3 text-sm font-semibold text-gray-700">الأدوات الرقمية المقترحة</h4>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://quizlet.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Quizlet</bdi>
+                <span class="block text-sm text-gray-600">بطاقات تعليمية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://kahoot.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Kahoot!</bdi>
+                <span class="block text-sm text-gray-600">ألعاب تنافسية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Forms</bdi>
+                <span class="block text-sm text-gray-600">اختبارات قصيرة.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-understand" class="group rounded-xl border border-gray-200 border-s-4 border-s-blue-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-2xl" aria-hidden="true">💡</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-xs font-semibold text-blue-700">المستوى 2</span>
+            <span class="block text-lg font-bold text-gray-900">الفهم</span>
+            <span class="block text-sm text-gray-600">شرح، تفسير، تلخيص</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أدوات</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h4 class="mb-3 text-sm font-semibold text-gray-700">الأدوات الرقمية المقترحة</h4>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://www.mindmeister.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">MindMeister</bdi>
+                <span class="block text-sm text-gray-600">خرائط ذهنية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://edpuzzle.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Edpuzzle</bdi>
+                <span class="block text-sm text-gray-600">فيديو تفاعلي.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Padlet</bdi>
+                <span class="block text-sm text-gray-600">تنظيم الأفكار.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://coggle.it" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Coggle</bdi>
+                <span class="block text-sm text-gray-600">توضيح العلاقات.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-apply" class="group rounded-xl border border-gray-200 border-s-4 border-s-green-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100 text-2xl" aria-hidden="true">🛠️</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-xs font-semibold text-green-700">المستوى 3</span>
+            <span class="block text-lg font-bold text-gray-900">التطبيق</span>
+            <span class="block text-sm text-gray-600">تنفيذ، استخدام، حل</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أدوات</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h4 class="mb-3 text-sm font-semibold text-gray-700">الأدوات الرقمية المقترحة</h4>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://docs.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Docs/Slides</bdi>
+                <span class="block text-sm text-gray-600">تطبيق في مستندات.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://phet.colorado.edu" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">PhET Simulations</bdi>
+                <span class="block text-sm text-gray-600">محاكاة تفاعلية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.google.com/maps/about/mymaps/" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google My Maps</bdi>
+                <span class="block text-sm text-gray-600">تطبيق جغرافي.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.office.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">MS Office</bdi>
+                <span class="block text-sm text-gray-600">تنفيذ مهام عملية.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
     </div>
-    <!-- Tools Display Area -->
-    <div id="tools-display" class="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 hidden" aria-live="polite">
-      <h3 class="text-2xl font-bold mb-4 text-gray-800" id="tools-title" tabindex="-1"></h3>
-      <ul id="tools-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></ul>
+    <div class="space-y-3">
+      <h3 class="flex flex-wrap items-baseline gap-x-2 text-lg font-bold text-gray-800">⬆️ المستويات العليا (HOTS)<span class="text-sm font-normal text-gray-500">مهارات التفكير العليا</span></h3>
+      <details id="level-analyze" class="group rounded-xl border border-gray-200 border-s-4 border-s-yellow-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-yellow-100 text-2xl" aria-hidden="true">🔍</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-xs font-semibold text-yellow-700">المستوى 4</span>
+            <span class="block text-lg font-bold text-gray-900">التحليل</span>
+            <span class="block text-sm text-gray-600">مقارنة، تفكيك، استنتاج</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أدوات</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h4 class="mb-3 text-sm font-semibold text-gray-700">الأدوات الرقمية المقترحة</h4>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://www.mentimeter.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Mentimeter</bdi>
+                <span class="block text-sm text-gray-600">تصويت وتحليل.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://trends.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Trends</bdi>
+                <span class="block text-sm text-gray-600">مقارنة بيانات بحث.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://sheets.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Excel/Sheets</bdi>
+                <span class="block text-sm text-gray-600">تحليل بيانات.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://coggle.it" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Coggle</bdi>
+                <span class="block text-sm text-gray-600">تحليل العلاقات.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-evaluate" class="group rounded-xl border border-gray-200 border-s-4 border-s-orange-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-2xl" aria-hidden="true">⚖️</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-xs font-semibold text-orange-700">المستوى 5</span>
+            <span class="block text-lg font-bold text-gray-900">التقييم</span>
+            <span class="block text-sm text-gray-600">نقد، حكم، تقدير</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أدوات</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h4 class="mb-3 text-sm font-semibold text-gray-700">الأدوات الرقمية المقترحة</h4>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Padlet</bdi>
+                <span class="block text-sm text-gray-600">نقد وتقييم الأقران.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://info.flip.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Flip (Flipgrid)</bdi>
+                <span class="block text-sm text-gray-600">مناقشات فيديو.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Forms</bdi>
+                <span class="block text-sm text-gray-600">استبيانات تقييم.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://classroom.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">منتديات Google Classroom</bdi>
+                <span class="block text-sm text-gray-600">تقييم الحجج.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-create" class="group rounded-xl border border-gray-200 border-s-4 border-s-red-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-100 text-2xl" aria-hidden="true">🎨</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-xs font-semibold text-red-700">المستوى 6</span>
+            <span class="block text-lg font-bold text-gray-900">الإبداع</span>
+            <span class="block text-sm text-gray-600">تصميم، إنتاج، ابتكار</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">5 أدوات</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h4 class="mb-3 text-sm font-semibold text-gray-700">الأدوات الرقمية المقترحة</h4>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Canva</bdi>
+                <span class="block text-sm text-gray-600">تصميم جرافيك.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.adobe.com/express/" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Adobe Express</bdi>
+                <span class="block text-sm text-gray-600">تصميم سريع.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">YouTube</bdi>
+                <span class="block text-sm text-gray-600">إنشاء ونشر فيديو.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://sites.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Sites</bdi>
+                <span class="block text-sm text-gray-600">إنشاء مواقع ويب.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://scratch.mit.edu" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Scratch</bdi>
+                <span class="block text-sm text-gray-600">برمجة قصص وألعاب.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </div>
     </div>
   </section>
 
@@ -620,6 +947,7 @@
   </section>
 
 </main>
+</div>
 
 <!-- Video Modal (accessible dialog: Escape closes, focus is trapped and restored) -->
 <div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-modal-title" hidden>

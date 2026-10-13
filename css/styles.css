@@ -93,24 +93,7 @@ section[id] {
   line-height: 1;
 }
 
-/* --- Bloom map ------------------------------------------------------------ */
-.bloom-level {
-  width: 100%;
-  border: 0;
-  text-align: start;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.bloom-level:hover,
-.bloom-level[aria-pressed="true"] {
-  transform: scale(1.03);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-.bloom-level[aria-pressed="true"] {
-  outline: 3px solid #1e3a8a;
-  outline-offset: 3px;
-}
-
+/* --- Bloom levels (tool cards inside the <details> accordions) ------------- */
 .tool-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -118,10 +101,6 @@ section[id] {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
-#tools-title:focus {
-  outline: none;
-}
-
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -353,7 +332,6 @@ body.modal-open {
   .objective-item:hover,
   .activity-item:hover,
   .resource-item:hover,
-  .bloom-level:hover,
   .tool-card:hover {
     transform: none;
   }
@@ -369,10 +347,7 @@ body.modal-open {
   .skip-link,
   .template-actions,
   .video-open-button,
-  #tools-display,
   #video-modal,
-  .bloom-level,
-  .tool-card,
   .accordion-icon,
   .trainer-notes {
     display: none !important;

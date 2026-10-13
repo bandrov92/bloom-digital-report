@@ -9,6 +9,9 @@
  *  - Storage access wrapped in safe helpers; trainee reflections now auto-save.
  *  - The AI suggestion flow asks before overwriting the trainee's work and reports
  *    a clear message when no API key is available (e.g. on GitHub Pages).
+ *  - LMS redesign: the Bloom levels moved from JS-rendered cards to static
+ *    <details> in trainee.html; this module now tracks the course index
+ *    (initCourseIndex) and expands the levels for printing (initPrintExpansion).
  *
  * Data compatibility: the lesson draft is still stored under "lessonTemplateDraft"
  * with the original field ids as keys, so drafts saved by the old page still load.
@@ -44,50 +47,6 @@
   ]);
 
   const REFLECTION_FIELDS = Object.freeze(['reflection-ws1', 'reflection-ws2', 'reflection-ws3']);
-
-  /**
-   * Digital tools per Bloom level. The "color" values are full Tailwind class names
-   * so the Tailwind build (which scans this file) keeps them in css/tailwind.css.
-   * @type {Record<string, {title: string, color: string, tools: {name: string, desc: string, link: string}[]}>}
-   */
-  const BLOOM_TOOLS = Object.freeze({
-    create: { title: '🎨 أدوات الإبداع', color: 'text-red-600', tools: [
-      { name: 'Canva', desc: 'تصميم جرافيك.', link: 'https://www.canva.com' },
-      { name: 'Adobe Express', desc: 'تصميم سريع.', link: 'https://www.adobe.com/express/' },
-      { name: 'YouTube', desc: 'إنشاء ونشر فيديو.', link: 'https://www.youtube.com' },
-      { name: 'Google Sites', desc: 'إنشاء مواقع ويب.', link: 'https://sites.google.com' },
-      { name: 'Scratch', desc: 'برمجة قصص وألعاب.', link: 'https://scratch.mit.edu' },
-    ] },
-    evaluate: { title: '⚖️ أدوات التقييم', color: 'text-orange-600', tools: [
-      { name: 'Padlet', desc: 'نقد وتقييم الأقران.', link: 'https://padlet.com' },
-      { name: 'Flip (Flipgrid)', desc: 'مناقشات فيديو.', link: 'https://info.flip.com' },
-      { name: 'Google Forms', desc: 'استبيانات تقييم.', link: 'https://forms.google.com' },
-      { name: 'منتديات Google Classroom', desc: 'تقييم الحجج.', link: 'https://classroom.google.com' },
-    ] },
-    analyze: { title: '🔍 أدوات التحليل', color: 'text-yellow-600', tools: [
-      { name: 'Mentimeter', desc: 'تصويت وتحليل.', link: 'https://www.mentimeter.com' },
-      { name: 'Google Trends', desc: 'مقارنة بيانات بحث.', link: 'https://trends.google.com' },
-      { name: 'Excel/Sheets', desc: 'تحليل بيانات.', link: 'https://sheets.google.com' },
-      { name: 'Coggle', desc: 'تحليل العلاقات.', link: 'https://coggle.it' },
-    ] },
-    apply: { title: '🛠️ أدوات التطبيق', color: 'text-green-600', tools: [
-      { name: 'Google Docs/Slides', desc: 'تطبيق في مستندات.', link: 'https://docs.google.com' },
-      { name: 'PhET Simulations', desc: 'محاكاة تفاعلية.', link: 'https://phet.colorado.edu' },
-      { name: 'Google My Maps', desc: 'تطبيق جغرافي.', link: 'https://www.google.com/maps/about/mymaps/' },
-      { name: 'MS Office', desc: 'تنفيذ مهام عملية.', link: 'https://www.office.com' },
-    ] },
-    understand: { title: '💡 أدوات الفهم', color: 'text-blue-600', tools: [
-      { name: 'MindMeister', desc: 'خرائط ذهنية.', link: 'https://www.mindmeister.com' },
-      { name: 'Edpuzzle', desc: 'فيديو تفاعلي.', link: 'https://edpuzzle.com' },
-      { name: 'Padlet', desc: 'تنظيم الأفكار.', link: 'https://padlet.com' },
-      { name: 'Coggle', desc: 'توضيح العلاقات.', link: 'https://coggle.it' },
-    ] },
-    remember: { title: '📚 أدوات التذكر', color: 'text-purple-600', tools: [
-      { name: 'Quizlet', desc: 'بطاقات تعليمية.', link: 'https://quizlet.com' },
-      { name: 'Kahoot!', desc: 'ألعاب تنافسية.', link: 'https://kahoot.com' },
-      { name: 'Google Forms', desc: 'اختبارات قصيرة.', link: 'https://forms.google.com' },
-    ] },
-  });
 
   // Gemini API. The key is intentionally empty: the Gemini Canvas environment injects it.
   // Never commit a real key here — anything in this file is public on GitHub Pages.
@@ -207,55 +166,67 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Bloom map
+  // Course index (LMS sidebar) and Bloom levels
   // ---------------------------------------------------------------------------
 
   /**
-   * Renders the tool cards for one Bloom level, marks the chosen level as pressed,
-   * then scrolls to the results and moves focus to their heading.
-   * @param {string} level Key of BLOOM_TOOLS (e.g. "create").
+   * Marks the course-index link of the section being read with aria-current="true".
+   * The link styles react to that attribute through Tailwind aria-[current=true]
+   * variants, so this function only manages state, never classes.
+   *
+   * AI-assisted (Claude Code): an IntersectionObserver watches a band just below the
+   * sticky header; the first observed section inside the band (in document order)
+   * wins, and the last active link stays highlighted while no section is inside it.
    */
-  function showTools(level) {
-    const data = BLOOM_TOOLS[level];
-    const display = byId('tools-display');
-    const title = byId('tools-title');
-    const grid = byId('tools-grid');
-    if (!data || !display || !title || !grid) return;
+  function initCourseIndex() {
+    const links = [...document.querySelectorAll('[data-course-link]')];
+    if (links.length === 0 || !('IntersectionObserver' in window)) return;
 
-    document.querySelectorAll('[data-bloom-level]').forEach((button) => {
-      button.setAttribute('aria-pressed', String(button.dataset.bloomLevel === level));
+    const linkFor = new Map();
+    links.forEach((link) => {
+      const section = byId(decodeURIComponent(link.hash.slice(1)));
+      if (section) linkFor.set(section, link);
     });
+    const sections = [...linkFor.keys()];
+    const inBand = new Set();
 
-    title.textContent = data.title;
-    title.className = `text-2xl font-bold mb-4 ${data.color}`;
+    /** @param {HTMLAnchorElement} active */
+    const setActive = (active) => {
+      links.forEach((link) => {
+        if (link === active) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    };
 
-    const fragment = document.createDocumentFragment();
-    data.tools.forEach((tool) => {
-      const item = document.createElement('li');
-      const link = document.createElement('a');
-      link.href = tool.link;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.className = 'tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500';
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) inBand.add(entry.target);
+        else inBand.delete(entry.target);
+      });
+      const current = sections.find((section) => inBand.has(section));
+      if (current) setActive(linkFor.get(current));
+    }, { rootMargin: '-96px 0px -55% 0px' });
 
-      const name = document.createElement('span');
-      name.className = 'block font-bold text-gray-900';
-      name.textContent = tool.name;
+    // Above the first section (over the hero) the first unit is the natural "you are here".
+    setActive(linkFor.get(sections[0]));
+    sections.forEach((section) => observer.observe(section));
+  }
 
-      const desc = document.createElement('span');
-      desc.className = 'block text-sm text-gray-600';
-      desc.textContent = tool.desc;
-
-      link.append(name, desc);
-      item.append(link);
-      fragment.append(item);
+  /**
+   * Browsers print closed <details> without their content. Opens every element marked
+   * data-print-open before printing and closes again only the ones it opened.
+   */
+  function initPrintExpansion() {
+    /** @type {HTMLDetailsElement[]} */
+    let openedForPrint = [];
+    window.addEventListener('beforeprint', () => {
+      openedForPrint = [...document.querySelectorAll('details[data-print-open]:not([open])')];
+      openedForPrint.forEach((details) => { details.open = true; });
     });
-    grid.replaceChildren(fragment);
-
-    display.classList.remove('hidden');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    display.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
-    title.focus({ preventScroll: true });
+    window.addEventListener('afterprint', () => {
+      openedForPrint.forEach((details) => { details.open = false; });
+      openedForPrint = [];
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -535,12 +506,6 @@
       return;
     }
 
-    const bloomButton = target.closest('[data-bloom-level]');
-    if (bloomButton) {
-      showTools(bloomButton.dataset.bloomLevel);
-      return;
-    }
-
     const videoButton = target.closest('[data-video-id]');
     if (videoButton) {
       openVideoModal(videoButton.dataset.videoId, videoButton);
@@ -571,4 +536,6 @@
   // Restore saved work on load (the script is deferred, so the DOM is ready).
   loadLessonTemplate({ silent: true });
   initReflections();
+  initCourseIndex();
+  initPrintExpansion();
 })();
