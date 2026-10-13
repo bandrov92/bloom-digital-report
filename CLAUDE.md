@@ -14,6 +14,12 @@
 - `js/portal.js`: يحوّل الروابط القديمة مثل `index.html#map` إلى `trainee.html#map`؛ حدّث `LEGACY_SECTION_IDS` إن تغيّرت معرّفات الأقسام.
 - `js/main.js`: تفاعل صفحة المتدرب كله عبر مستمع نقر مفوَّض وخصائص `data-accordion` و`data-video-id`، و`initCourseIndex()` الذي يضع `aria-current="true"` على رابط القسم الظاهر (التنسيق عبر أصناف Tailwind `aria-[current=true]:`)، و`initPrintExpansion()` الذي يفتح مستويات بلوم قبل الطباعة.
 - `assets/logo.png` و`assets/favicon.png`: الشعار بعد القص والتصغير.
+- `assets/fonts/thmanyah/`: خطّا ثمانية (Serif Display Black للعناوين، وSerif Text Light للنصوص)، مرخّصان لصاحب الموقع. العائلتان معرّفتان في `tailwind.config.js` (`font-sans` و`font-display`)، وقواعد `@font-face` في `src/tailwind.css`:
+  - عائلة النص تربط الأوزان 100–500 بملف Light، والأوزان 600–900 بملف Black، فلا يولّد المتصفح عريضاً مزيّفاً.
+  - العناوين `h1`–`h6` تأخذ `font-display` تلقائياً.
+  - كل صفحة تحمّل مسبقاً (`preload`) الملف الذي تعرضه أعلى الصفحة.
+  - لا تضف وزناً جديداً دون ملفه، ولا تعرّف الخط في `styles.css`.
+- `.claude/skills/bloom-reviewer/`: مهارة فحص للقراءة فقط تراجع صياغة الأهداف السلوكية وفق تصنيف بلوم. التشغيل: `/bloom-reviewer [الملف]`، والملف الافتراضي `trainee.html`. لا تمنحها أدوات تحرير.
 - لا مكتبات خارجية وقت التشغيل. الطلبات الخارجية الوحيدة: فيديو YouTube عند فتحه، وGemini عند طلب الاقتراح.
 
 ## العربية والاتجاه

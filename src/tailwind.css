@@ -2,3 +2,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Site typography — Thmanyah Serif (two files, licensed by the site owner).
+ * AI-assisted (Claude Code): only two weights ship, so each family maps a weight
+ * RANGE to a real file instead of letting the browser fake bold from Light:
+ *   - "Thmanyah Serif Text"   100–500 -> Text Light   (body copy)
+ *                             600–900 -> Display Black (semibold/bold/extrabold)
+ *   - "Thmanyah Serif Display" 100–900 -> Display Black (headings)
+ * Paths are relative to the compiled file in css/. font-display: swap keeps text
+ * visible while the fonts load; the pages also preload the files they use.
+ */
+@layer base {
+  @font-face {
+    font-family: 'Thmanyah Serif Text';
+    src: url('../assets/fonts/thmanyah/thmanyahseriftext-Light.woff2') format('woff2');
+    font-weight: 100 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Thmanyah Serif Text';
+    src: url('../assets/fonts/thmanyah/thmanyahserifdisplay-Black.woff2') format('woff2');
+    font-weight: 600 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Thmanyah Serif Display';
+    src: url('../assets/fonts/thmanyah/thmanyahserifdisplay-Black.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Headings use the display face; body text inherits font-sans from <html> (preflight). */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}

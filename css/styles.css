@@ -13,12 +13,8 @@ html {
   scroll-behavior: smooth;
 }
 
-body,
-button,
-input,
-textarea {
-  font-family: 'Segoe UI', Tahoma, 'Noto Sans Arabic', Arial, sans-serif;
-}
+/* Font families live in tailwind.config.js (font-sans / font-display) and the
+   @font-face rules in src/tailwind.css; form controls inherit them via preflight. */
 
 /* Keep section headings visible below the sticky header when jumping to an anchor. */
 section[id] {
