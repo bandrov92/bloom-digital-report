@@ -1,0 +1,11 @@
+{
+  "name": "bloom-digital-report",
+  "private": true,
+  "description": "حقيبة هرم بلوم الرقمية — موقع ثابت على GitHub Pages",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/tailwind.css -o ./css/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.19"
+  }
+}
