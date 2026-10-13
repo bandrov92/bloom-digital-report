@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="لوحة المدرب في حقيبة هرم بلوم الرقمية.">
+<meta name="theme-color" content="#0b1f52">
+<title>لوحة المدرب | حقيبة هرم بلوم الرقمية</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<!-- Tailwind is pre-compiled to a static file (no runtime CDN). Rebuild with: npm run build:css -->
+<link rel="stylesheet" href="css/tailwind.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<!--
+  Trainer dashboard — initial empty shell (role-split refactor, Claude Code AI-assisted).
+  Future widgets go inside #dashboard-widgets. No script yet: add js/trainer.js
+  (linked with defer) when the first interactive widget lands.
+-->
+<body class="min-h-full bg-slate-50 text-gray-800">
+
+<a href="#main-content" class="skip-link">تخطَّ إلى المحتوى</a>
+
+<header class="bg-[#0b1f52] text-white shadow-md">
+  <div class="container mx-auto flex items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <a href="index.html" class="flex items-center gap-3">
+      <img src="assets/logo.png" alt="شعار Bandarov" width="40" height="40" class="h-10 w-10 rounded-full bg-white p-0.5 object-contain">
+      <span class="text-lg font-bold sm:text-xl">حقيبة هرم بلوم الرقمية</span>
+    </a>
+    <nav aria-label="تنقل لوحة المدرب">
+      <ul class="flex items-center gap-4 text-sm sm:text-base">
+        <li><a href="trainee.html" class="font-medium text-sky-200 transition duration-300 hover:text-white">مساحة المتدرب</a></li>
+        <li><a href="index.html" class="font-medium text-sky-200 transition duration-300 hover:text-white">البوابة</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content" class="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
+
+  <h1 class="text-2xl font-extrabold text-[#0b1f52] sm:text-3xl">لوحة المدرب</h1>
+
+  <!-- Widget area: empty on purpose. Replace the empty state when widgets are added. -->
+  <section id="dashboard-widgets" class="mt-8" aria-labelledby="dashboard-empty-title">
+    <div class="rounded-2xl border-2 border-dashed border-sky-200 bg-white px-6 py-16 text-center">
+      <svg class="mx-auto h-12 w-12 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <rect x="3" y="3" width="7" height="9" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="5" rx="1.5"/>
+        <rect x="14" y="12" width="7" height="9" rx="1.5"/>
+        <rect x="3" y="16" width="7" height="5" rx="1.5"/>
+      </svg>
+      <h2 id="dashboard-empty-title" class="mt-4 text-lg font-bold text-gray-900">اللوحة قيد الإعداد</h2>
+      <p class="mt-2 text-gray-600">ستظهر أدوات المدرب هنا في الإصدارات القادمة.</p>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
