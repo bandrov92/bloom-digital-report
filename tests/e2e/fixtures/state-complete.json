@@ -1,0 +1,933 @@
+{
+ "schema": 1,
+ "createdAt": "2026-10-23T13:51:37.100Z",
+ "updatedAt": "2026-10-23T13:52:18.307Z",
+ "position": {
+  "screen": "26",
+  "at": "2026-10-23T13:52:18.307Z"
+ },
+ "drafts": {
+  "s01": {
+   "context": "own",
+   "title": "مقارنة مصدرين في درس العلوم"
+  },
+  "s02": {
+   "q1": "f",
+   "q2": "a",
+   "q3": "b",
+   "q4": "b",
+   "q5": "b",
+   "q6": "f"
+  },
+  "s03": {
+   "title": "مقارنة مصدرين في درس العلوم",
+   "status": "planned",
+   "current": "يعيد الطلاب كتابة ما ورد في مصدرين.",
+   "need": "أريد أن يحكموا على المصدرين بمعيارين."
+  },
+  "s09": {
+   "performance": "يختار المتعلم المصدر الأنسب",
+   "conditions": "عرض مصدرين عن الموضوع نفسه",
+   "criterion": "ملاءمة المصدر وإمكانية تتبعه",
+   "statement": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+   "rv1": "partly",
+   "rv2": "partly",
+   "rv3": "partly",
+   "rv4": "partly"
+  },
+  "s10": {
+   "priority": "n2",
+   "step": "أجرب المهمة في محاكاة",
+   "return": "قبل الدرس المقبل",
+   "specific": true
+  },
+  "s07": {
+   "paraphrase": "يحكم المتعلم على مصدرين بمعيارين.",
+   "rv1": "yes",
+   "rv2": "yes",
+   "rv3": "yes"
+  },
+  "s08": {
+   "means": "جدول مقارنة في مستند",
+   "alternative": "ورقة مطبوعة",
+   "rv1": "yes",
+   "rv2": "yes"
+  },
+  "s11": {
+   "means": "need"
+  },
+  "s12": {},
+  "s14": {
+   "v1": "اكتب عن الخطتين.",
+   "v1evidence": "نص مكتوب",
+   "exampleOpened": true,
+   "c1": "missing",
+   "c2": "missing",
+   "c3": "present",
+   "v2": "قارن الخطتين وفق المعيارين واحكم بشاهد."
+  },
+  "s15": {
+   "goal": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+   "action": "يقارن المصدرين ويختار الأنسب مع التعليل",
+   "evidence": "جدول مقارنة وتعليل",
+   "function": "جدول مشترك",
+   "level": "evaluate",
+   "alternative": "ورقة مطبوعة",
+   "reason": "الهدف يطلب حكمًا بمعيار",
+   "rv1": "yes",
+   "rv2": "yes",
+   "changed": "صار المطلوب حكمًا"
+  },
+  "s16": {
+   "before": "يعيد الطلاب كتابة ما ورد في مصدرين.",
+   "after": "يقارن المصدرين ويختار الأنسب مع التعليل",
+   "explain": "تغير المطلوب من نقل إلى حكم.",
+   "kind": "display",
+   "deficits": [
+    "tool"
+   ]
+  },
+  "s17": {
+   "audience": "طلاب المرحلة المتوسطة",
+   "prereqStatus": "tbd",
+   "goal": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+   "constraintsStatus": "na",
+   "goalReview": "improve"
+  },
+  "s18": {
+   "process": "evaluate",
+   "task": "يقارن المصدرين ويختار الأنسب مع التعليل",
+   "means": "جدول مشترك",
+   "alternative": "ورقة مطبوعة",
+   "sources": "مصدران مطبوعان",
+   "rationale": "الجدول يظهر المقارنة",
+   "processQuote": "اختر الأنسب وعلل",
+   "previewChecked": true
+  },
+  "s19": {
+   "rows": [
+    {
+     "desc": "يطبق المعيارين",
+     "evidence": "جدول",
+     "remedy": "أضف المعيار الثاني",
+     "next": "أعيد قراءة الجدول"
+    }
+   ],
+   "compared": true
+  },
+  "s20": {
+   "level_goal": "improve",
+   "evidence_goal": "شاهد من عملي",
+   "level_alignment": "improve",
+   "evidence_alignment": "شاهد من عملي",
+   "level_clarity": "improve",
+   "evidence_clarity": "شاهد من عملي",
+   "level_digital": "improve",
+   "evidence_digital": "شاهد من عملي",
+   "level_feedback": "improve",
+   "evidence_feedback": "شاهد من عملي",
+   "level_sources": "na",
+   "evidence_sources": "لم أستخدم مصادر خارجية بعد",
+   "level_trial": "improve",
+   "evidence_trial": "شاهد من عملي"
+  },
+  "s25": {},
+  "s26": {
+   "use": "أستخدم معاييره في جدول المقارنة",
+   "limit": "عينته طلاب لا معلمون",
+   "reviewed": true
+  },
+  "s27": {
+   "type": "sim",
+   "context": "أنفذ المهمة بنفسي",
+   "evidence": "مواضع الغموض",
+   "criterion": "أي تعليمات احتجت تفسيرها",
+   "return": "الأسبوع المقبل"
+  },
+  "s24": {
+   "conclusion": "أراجع الربط بين الدليل والهدف",
+   "concept": "A2",
+   "step": "أعدل المحك في مشروعي"
+  },
+  "s28": {}
+ },
+ "checks": {
+  "s05": {
+   "attempts": [
+    {
+     "answers": {
+      "judge": "no",
+      "reason": "act"
+     },
+     "correct": {
+      "judge": true,
+      "reason": true
+     },
+     "allCorrect": true,
+     "at": "2026-10-23T13:51:45.740Z"
+    }
+   ],
+   "solvedAt": "2026-10-23T13:51:45.740Z"
+  },
+  "s06": {
+   "attempts": [
+    {
+     "answers": {
+      "m1": "remember",
+      "m2": "understand",
+      "m3": "apply"
+     },
+     "correct": {
+      "m1": true,
+      "m2": true,
+      "m3": true
+     },
+     "allCorrect": true,
+     "at": "2026-10-23T13:51:46.235Z"
+    }
+   ],
+   "solvedAt": "2026-10-23T13:51:46.235Z"
+  },
+  "s07": {
+   "attempts": [
+    {
+     "answers": {
+      "m1": "analyze",
+      "m2": "evaluate",
+      "m3": "create"
+     },
+     "correct": {
+      "m1": true,
+      "m2": true,
+      "m3": true
+     },
+     "allCorrect": true,
+     "at": "2026-10-23T13:51:46.703Z"
+    }
+   ],
+   "solvedAt": "2026-10-23T13:51:46.703Z"
+  },
+  "s08": {
+   "attempts": [
+    {
+     "answers": {
+      "fn": "compare"
+     },
+     "correct": {
+      "fn": true
+     },
+     "allCorrect": true,
+     "at": "2026-10-23T13:51:47.721Z"
+    }
+   ],
+   "solvedAt": "2026-10-23T13:51:47.721Z"
+  },
+  "s13": {
+   "attempts": [
+    {
+     "answers": {
+      "pick": "b"
+     },
+     "correct": {
+      "pick": true
+     },
+     "allCorrect": true,
+     "at": "2026-10-23T13:51:51.557Z"
+    }
+   ],
+   "solvedAt": "2026-10-23T13:51:51.557Z"
+  },
+  "s13b": {
+   "attempts": [
+    {
+     "answers": {
+      "link1": "resp",
+      "link2": "track"
+     },
+     "correct": {
+      "link1": true,
+      "link2": true
+     },
+     "allCorrect": true,
+     "at": "2026-10-23T13:51:52.002Z"
+    }
+   ],
+   "solvedAt": "2026-10-23T13:51:52.002Z"
+  },
+  "s26": {
+   "attempts": [
+    {
+     "answers": {
+      "judge": "context"
+     },
+     "correct": {
+      "judge": true
+     },
+     "allCorrect": true,
+     "at": "2026-10-23T13:52:05.620Z"
+    }
+   ],
+   "solvedAt": "2026-10-23T13:52:05.620Z"
+  }
+ },
+ "diagnostic": {
+  "attempts": [
+   {
+    "items": [
+     "q1",
+     "q2",
+     "q3",
+     "q4",
+     "q5",
+     "q6"
+    ],
+    "answers": {
+     "q1": "f",
+     "q2": "a",
+     "q3": "b",
+     "q4": "b",
+     "q5": "b",
+     "q6": "f"
+    },
+    "submittedAt": "2026-10-23T13:51:39.045Z",
+    "reportViewedAt": "2026-10-23T13:51:39.046Z"
+   }
+  ]
+ },
+ "elements": {
+  "t01": {
+   "at": "2026-10-23T13:51:39.047Z",
+   "version": "0.1",
+   "screen": "02",
+   "evidence": {
+    "draft": {
+     "q1": "f",
+     "q2": "a",
+     "q3": "b",
+     "q4": "b",
+     "q5": "b",
+     "q6": "f"
+    },
+    "check": null
+   }
+  },
+  "t02": {
+   "at": "2026-10-23T13:51:40.254Z",
+   "version": "0.1",
+   "screen": "03",
+   "evidence": {
+    "draft": {
+     "title": "مقارنة مصدرين في درس العلوم",
+     "status": "planned",
+     "current": "يعيد الطلاب كتابة ما ورد في مصدرين.",
+     "need": "أريد أن يحكموا على المصدرين بمعيار."
+    },
+    "check": null
+   },
+   "revisions": [
+    {
+     "at": "2026-10-23T13:51:40.492Z",
+     "evidence": {
+      "draft": {
+       "title": "مقارنة مصدرين في درس العلوم",
+       "status": "planned",
+       "current": "يعيد الطلاب كتابة ما ورد في مصدرين.",
+       "need": "أريد أن يحكموا على المصدرين بمعيارين."
+      },
+      "check": null
+     }
+    }
+   ]
+  },
+  "t07": {
+   "at": "2026-10-23T13:51:42.020Z",
+   "version": "0.1",
+   "screen": "09",
+   "evidence": {
+    "draft": {
+     "performance": "يختار المتعلم المصدر الأنسب",
+     "conditions": "عرض مصدرين عن الموضوع نفسه",
+     "criterion": "ملاءمة المصدر وإمكانية تتبعه",
+     "statement": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+     "rv1": "partly",
+     "rv2": "partly",
+     "rv3": "partly",
+     "rv4": "partly"
+    },
+    "check": null
+   }
+  },
+  "t08": {
+   "at": "2026-10-23T13:51:43.969Z",
+   "version": "0.1",
+   "screen": "10",
+   "evidence": {
+    "draft": {
+     "priority": "n2",
+     "step": "أعدل هدف المهمة",
+     "return": "قبل الدرس المقبل",
+     "specific": true
+    },
+    "check": null
+   }
+  },
+  "t03": {
+   "at": "2026-10-23T13:51:45.746Z",
+   "version": "0.1",
+   "screen": "05",
+   "evidence": {
+    "draft": {},
+    "check": {
+     "attempts": [
+      {
+       "answers": {
+        "judge": "no",
+        "reason": "act"
+       },
+       "correct": {
+        "judge": true,
+        "reason": true
+       },
+       "allCorrect": true,
+       "at": "2026-10-23T13:51:45.740Z"
+      }
+     ],
+     "solvedAt": "2026-10-23T13:51:45.740Z"
+    }
+   }
+  },
+  "t04": {
+   "at": "2026-10-23T13:51:46.238Z",
+   "version": "0.1",
+   "screen": "06",
+   "evidence": {
+    "draft": {},
+    "check": {
+     "attempts": [
+      {
+       "answers": {
+        "m1": "remember",
+        "m2": "understand",
+        "m3": "apply"
+       },
+       "correct": {
+        "m1": true,
+        "m2": true,
+        "m3": true
+       },
+       "allCorrect": true,
+       "at": "2026-10-23T13:51:46.235Z"
+      }
+     ],
+     "solvedAt": "2026-10-23T13:51:46.235Z"
+    }
+   }
+  },
+  "t05": {
+   "at": "2026-10-23T13:51:47.267Z",
+   "version": "0.1",
+   "screen": "07",
+   "evidence": {
+    "draft": {
+     "paraphrase": "يحكم المتعلم على مصدرين بمعيارين.",
+     "rv1": "yes",
+     "rv2": "yes",
+     "rv3": "yes"
+    },
+    "check": {
+     "attempts": [
+      {
+       "answers": {
+        "m1": "analyze",
+        "m2": "evaluate",
+        "m3": "create"
+       },
+       "correct": {
+        "m1": true,
+        "m2": true,
+        "m3": true
+       },
+       "allCorrect": true,
+       "at": "2026-10-23T13:51:46.703Z"
+      }
+     ],
+     "solvedAt": "2026-10-23T13:51:46.703Z"
+    }
+   }
+  },
+  "t06": {
+   "at": "2026-10-23T13:51:48.235Z",
+   "version": "0.1",
+   "screen": "08",
+   "evidence": {
+    "draft": {
+     "means": "جدول مقارنة في مستند",
+     "alternative": "ورقة مطبوعة",
+     "rv1": "yes",
+     "rv2": "yes"
+    },
+    "check": {
+     "attempts": [
+      {
+       "answers": {
+        "fn": "compare"
+       },
+       "correct": {
+        "fn": true
+       },
+       "allCorrect": true,
+       "at": "2026-10-23T13:51:47.721Z"
+      }
+     ],
+     "solvedAt": "2026-10-23T13:51:47.721Z"
+    }
+   }
+  },
+  "t09": {
+   "at": "2026-10-23T13:51:52.006Z",
+   "version": "0.1",
+   "screen": "13",
+   "evidence": {
+    "draft": {},
+    "check": {
+     "attempts": [
+      {
+       "answers": {
+        "pick": "b"
+       },
+       "correct": {
+        "pick": true
+       },
+       "allCorrect": true,
+       "at": "2026-10-23T13:51:51.557Z"
+      }
+     ],
+     "solvedAt": "2026-10-23T13:51:51.557Z"
+    }
+   }
+  },
+  "t10": {
+   "at": "2026-10-23T13:51:53.254Z",
+   "version": "0.1",
+   "screen": "14",
+   "evidence": {
+    "draft": {
+     "v1": "اكتب عن الخطتين.",
+     "v1evidence": "نص مكتوب",
+     "exampleOpened": true,
+     "c1": "missing",
+     "c2": "missing",
+     "c3": "present",
+     "v2": "قارن الخطتين وفق المعيارين واحكم بشاهد."
+    },
+    "check": null
+   }
+  },
+  "t11": {
+   "at": "2026-10-23T13:51:54.128Z",
+   "version": "0.1",
+   "screen": "15",
+   "evidence": {
+    "draft": {
+     "goal": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+     "action": "يقارن المصدرين ويختار الأنسب مع التعليل",
+     "evidence": "جدول مقارنة وتعليل",
+     "function": "جدول مشترك",
+     "level": "evaluate",
+     "alternative": "ورقة مطبوعة",
+     "reason": "الهدف يطلب حكمًا بمعيار",
+     "rv1": "yes",
+     "rv2": "yes",
+     "changed": "صار المطلوب حكمًا"
+    },
+    "check": null
+   }
+  },
+  "t12": {
+   "at": "2026-10-23T13:51:55.138Z",
+   "version": "0.1",
+   "screen": "16",
+   "evidence": {
+    "draft": {
+     "before": "يعيد الطلاب كتابة ما ورد في مصدرين.",
+     "after": "يقارن المصدرين ويختار الأنسب مع التعليل",
+     "explain": "تغير المطلوب من نقل إلى حكم.",
+     "kind": "display",
+     "deficits": [
+      "tool"
+     ]
+    },
+    "check": null
+   }
+  },
+  "t13": {
+   "at": "2026-10-23T13:51:55.842Z",
+   "version": "0.1",
+   "screen": "17",
+   "evidence": {
+    "draft": {
+     "audience": "طلاب المرحلة المتوسطة",
+     "prereqStatus": "tbd",
+     "goal": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+     "constraintsStatus": "na",
+     "goalReview": "improve"
+    },
+    "check": null
+   }
+  },
+  "t14": {
+   "at": "2026-10-23T13:51:58.176Z",
+   "version": "0.1",
+   "screen": "18",
+   "evidence": {
+    "draft": {
+     "process": "evaluate",
+     "task": "يقارن المصدرين ويختار الأنسب مع التعليل",
+     "means": "جدول مشترك",
+     "alternative": "ورقة مطبوعة",
+     "sources": "مصدران مطبوعان",
+     "rationale": "الجدول يظهر المقارنة",
+     "processQuote": "اختر الأنسب وعلل",
+     "previewChecked": true
+    },
+    "check": null
+   }
+  },
+  "t15": {
+   "at": "2026-10-23T13:52:00.085Z",
+   "version": "0.1",
+   "screen": "19",
+   "evidence": {
+    "draft": {
+     "rows": [
+      {
+       "desc": "يطبق المعيارين",
+       "evidence": "جدول",
+       "remedy": "أضف المعيار الثاني",
+       "next": "أعيد قراءة الجدول"
+      }
+     ],
+     "compared": true
+    },
+    "check": null
+   }
+  },
+  "t16": {
+   "at": "2026-10-23T13:52:03.006Z",
+   "version": "0.1",
+   "screen": "20",
+   "evidence": {
+    "draft": {
+     "level_goal": "improve",
+     "evidence_goal": "شاهد من عملي",
+     "level_alignment": "improve",
+     "evidence_alignment": "شاهد من عملي",
+     "level_clarity": "improve",
+     "evidence_clarity": "شاهد من عملي",
+     "level_digital": "improve",
+     "evidence_digital": "شاهد من عملي",
+     "level_feedback": "improve",
+     "evidence_feedback": "شاهد من عملي",
+     "level_sources": "na",
+     "evidence_sources": "لم أستخدم مصادر خارجية بعد",
+     "level_trial": "improve",
+     "evidence_trial": "شاهد من عملي"
+    },
+    "check": null
+   }
+  },
+  "t18": {
+   "at": "2026-10-23T13:52:05.095Z",
+   "version": "0.1",
+   "screen": "25",
+   "evidence": {
+    "draft": {},
+    "check": null
+   }
+  },
+  "t19": {
+   "at": "2026-10-23T13:52:06.122Z",
+   "version": "0.1",
+   "screen": "26",
+   "evidence": {
+    "draft": {
+     "use": "أستخدم معاييره في جدول المقارنة",
+     "limit": "عينته طلاب لا معلمون",
+     "reviewed": true
+    },
+    "check": {
+     "attempts": [
+      {
+       "answers": {
+        "judge": "context"
+       },
+       "correct": {
+        "judge": true
+       },
+       "allCorrect": true,
+       "at": "2026-10-23T13:52:05.620Z"
+      }
+     ],
+     "solvedAt": "2026-10-23T13:52:05.620Z"
+    }
+   }
+  },
+  "t20": {
+   "at": "2026-10-23T13:52:07.871Z",
+   "version": "0.1",
+   "screen": "27",
+   "evidence": {
+    "draft": {
+     "type": "sim",
+     "context": "أنفذ المهمة بنفسي",
+     "evidence": "مواضع الغموض",
+     "criterion": "أي تعليمات احتجت تفسيرها",
+     "return": "الأسبوع المقبل"
+    },
+    "check": null
+   }
+  },
+  "t17": {
+   "at": "2026-10-23T13:52:15.089Z",
+   "version": "0.1",
+   "screen": "24",
+   "evidence": {
+    "draft": {
+     "conclusion": "أراجع الربط بين الدليل والهدف",
+     "concept": "A2",
+     "step": "أعدل المحك في مشروعي"
+    },
+    "check": null
+   }
+  }
+ },
+ "history": {
+  "needCard": [],
+  "plan": [
+   {
+    "priority": "n2",
+    "step": "أعدل هدف المهمة",
+    "return": "قبل الدرس المقبل",
+    "reason": "الخطة الأولى",
+    "at": "2026-10-23T13:51:43.973Z"
+   },
+   {
+    "priority": "n2",
+    "step": "أجرب المهمة في محاكاة",
+    "return": "قبل الدرس المقبل",
+    "reason": "أخطأت في بند الهدف",
+    "at": "2026-10-23T13:51:49.878Z"
+   }
+  ]
+ },
+ "project": {
+  "versions": [
+   {
+    "id": "v1",
+    "n": 1,
+    "label": "النسخة 1 (للمراجعة)",
+    "kind": "review",
+    "at": "2026-10-23T13:52:03.004Z",
+    "contentVersion": "0.1",
+    "data": {
+     "title": "مقارنة مصدرين في درس العلوم",
+     "audience": "طلاب المرحلة المتوسطة",
+     "prereq": "لم أحدده بعد",
+     "goal": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+     "constraints": "لا ينطبق",
+     "task": "يقارن المصدرين ويختار الأنسب مع التعليل",
+     "sources": "مصدران مطبوعان",
+     "means": "جدول مشترك",
+     "alternative": "ورقة مطبوعة",
+     "rationale": "الجدول يظهر المقارنة",
+     "process": "التقييم — «اختر الأنسب وعلل»",
+     "criteria": "1) يطبق المعيارين | الدليل: جدول | العلاج: أضف المعيار الثاني | المحاولة التالية: أعيد قراءة الجدول",
+     "change": ""
+    },
+    "review": {
+     "levels": {
+      "goal": "improve",
+      "alignment": "improve",
+      "clarity": "improve",
+      "digital": "improve",
+      "feedback": "improve",
+      "sources": "na",
+      "trial": "improve"
+     },
+     "evidence": {
+      "goal": "شاهد من عملي",
+      "alignment": "شاهد من عملي",
+      "clarity": "شاهد من عملي",
+      "digital": "شاهد من عملي",
+      "feedback": "شاهد من عملي",
+      "sources": "لم أستخدم مصادر خارجية بعد",
+      "trial": "شاهد من عملي"
+     },
+     "unresolved": ""
+    }
+   },
+   {
+    "id": "v2",
+    "n": 2,
+    "label": "النسخة 2 (بعد تجربة)",
+    "kind": "cycle",
+    "at": "2026-10-23T13:52:17.320Z",
+    "contentVersion": "0.1",
+    "data": {
+     "title": "مقارنة مصدرين في درس العلوم",
+     "audience": "طلاب المرحلة المتوسطة",
+     "prereq": "لم أحدده بعد",
+     "goal": "عند عرض مصدرين عن الموضوع نفسه، يختار المتعلم المصدر الأنسب، وفق ملاءمة المصدر وإمكانية تتبعه.",
+     "constraints": "لا ينطبق",
+     "task": "يقارن المصدرين ويختار الأنسب مع التعليل",
+     "sources": "مصدران مطبوعان",
+     "means": "جدول مشترك",
+     "alternative": "ورقة مطبوعة",
+     "rationale": "الجدول يظهر المقارنة",
+     "process": "التقييم — «اختر الأنسب وعلل»",
+     "criteria": "1) يطبق المعيارين | الدليل: جدول | العلاج: أضف المعيار الثاني | المحاولة التالية: أعيد قراءة الجدول",
+     "change": "أضيف مثالًا للمعيار"
+    },
+    "review": null
+   }
+  ]
+ },
+ "sources": [
+  {
+   "id": "src1792763525093",
+   "title": "دليل المعلم",
+   "author": "جهة تعليمية",
+   "locator": "ملف PDF في مجلد المدرسة",
+   "accessed": "2026-10-20",
+   "location": "ص12",
+   "purpose": "معايير اختيار المصدر",
+   "use": "summary",
+   "part": "task",
+   "license": "غير معلوم",
+   "createdAt": "2026-10-23T13:52:05.093Z"
+  }
+ ],
+ "trials": [
+  {
+   "id": "tr1792763537321",
+   "type": "sim",
+   "evidence": "احتجت تفسير كلمة «معيار»",
+   "observation": "التعليمات غامضة في الخطوة الثانية",
+   "alt": "قد أكون متعبًا",
+   "decision": "أضيف مثالًا للمعيار",
+   "at": "2026-10-23T13:52:17.321Z",
+   "versionId": "v2"
+  }
+ ],
+ "test": {
+  "attempts": [
+   {
+    "id": "a1",
+    "form": "A",
+    "contentVersion": "0.1",
+    "seed": 1171533110,
+    "order": {
+     "A1": [
+      "c",
+      "b",
+      "a"
+     ],
+     "A2": [
+      "a",
+      "b",
+      "c"
+     ],
+     "A3": [
+      "c",
+      "b",
+      "a"
+     ],
+     "A4": [
+      "c",
+      "a",
+      "b"
+     ],
+     "A5": [
+      "b",
+      "a",
+      "c"
+     ],
+     "A6": [
+      "b",
+      "a",
+      "c"
+     ],
+     "A7": [
+      "b",
+      "c",
+      "a"
+     ],
+     "A8": [
+      "b",
+      "c",
+      "a"
+     ],
+     "A9": [
+      "b",
+      "a",
+      "c"
+     ],
+     "A10": [
+      "a",
+      "c",
+      "b"
+     ]
+    },
+    "answers": {
+     "A1": "b",
+     "A2": "a",
+     "A3": "a",
+     "A4": "b",
+     "A5": "c",
+     "A6": "a",
+     "A7": "a",
+     "A8": "c",
+     "A9": "b",
+     "A10": "a"
+    },
+    "itemScores": {
+     "A1": 10,
+     "A2": 0,
+     "A3": 10,
+     "A4": 10,
+     "A5": 10,
+     "A6": 10,
+     "A7": 0,
+     "A8": 10,
+     "A9": 0,
+     "A10": 0
+    },
+    "correct": {
+     "A1": true,
+     "A2": false,
+     "A3": true,
+     "A4": true,
+     "A5": true,
+     "A6": true,
+     "A7": false,
+     "A8": true,
+     "A9": false,
+     "A10": false
+    },
+    "total": 60,
+    "review": [
+     "07",
+     "19",
+     "11",
+     "27"
+    ],
+    "startedAt": "2026-10-23T13:52:09.869Z",
+    "submittedAt": "2026-10-23T13:52:12.624Z"
+   }
+  ],
+  "draft": null,
+  "reportViewedAt": "2026-10-23T13:52:12.656Z"
+ },
+ "probe": null,
+ "legacy": null
+}

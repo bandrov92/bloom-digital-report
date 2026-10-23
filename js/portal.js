@@ -47,8 +47,12 @@
     const record = raw ? JSON.parse(raw) : null;
     const screen = record && record.position && record.position.screen;
     const done = record && record.elements ? Object.values(record.elements).filter((e) => e && e.at).length : 0;
+    // "20-5" is part 5 of screen 20: shown as "20 هـ", as on the screen itself.
+    const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح', 'ط', 'ي'];
+    const [group, part] = String(screen || '').split('-');
+    const label = part ? `${group} ${letters[Number(part) - 1] || part}` : group;
     resume.textContent = screen
-      ? `في هذا المتصفح عمل محفوظ. آخر موضع: الشاشة ${screen}. العناصر المكتملة: ${done} من 20.`
+      ? `في هذا المتصفح عمل محفوظ. آخر موضع: الشاشة ${label}. العناصر المكتملة: ${done} من 20.`
       : 'لا يوجد عمل محفوظ في هذا المتصفح بعد. يُحفظ عملك على هذا الجهاز فقط.';
   } catch {
     resume.textContent = 'هذا المتصفح يمنع الحفظ المحلي الآن؛ اقرأ «كيف أحفظ عملي» قبل البدء.';

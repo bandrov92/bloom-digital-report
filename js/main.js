@@ -1,6 +1,6 @@
 /**
- * @file main.js — page structure for trainee.html: hash router, lesson drawer,
- * screens inside each unit, accordions, tabs and the video dialog.
+ * @file main.js — page structure for trainee.html: hash router, lesson drawer
+ * and the screens inside each unit.
  *
  * AI usage note (Claude Code): refactored from the original inline script, then
  * redesigned as a lesson player. Self-learning redesign (2026-10-23):
@@ -10,6 +10,8 @@
  *    progress is recorded by js/learning.js when the learner performs an activity.
  *  - The old knowledge check, lesson template, reflections and Gemini suggestion
  *    were replaced by the scenario's screens (see docs/implementation-log.md).
+ *  - The library appendices moved to trainer.html#library; their old ids are
+ *    forwarded there (MOVED_TO_TRAINER).
  *
  * Load order (all deferred): core.js, course-data.js, store.js, learning.js, main.js.
  * learning.js may expose window.BloomLearning.resolveAlias() for #continue and #next.
@@ -21,26 +23,17 @@
   const byId = (id) => document.getElementById(id);
 
   // ---------------------------------------------------------------------------
-  // Accordions (library appendices)
+  // Views, units and screens
   // ---------------------------------------------------------------------------
 
   /**
-   * Expands or collapses one accordion panel and keeps its trigger's ARIA state in sync.
-   * @param {string} id Suffix shared by "content-{id}" and data-accordion.
-   * @param {boolean} [force] true to open, false to close, omitted to toggle.
+   * Ids that moved to trainer.html (library appendices, 2026-10-23). Old links
+   * such as trainee.html#content-res-tools are forwarded there.
    */
-  function toggleAccordion(id, force) {
-    const content = byId(`content-${id}`);
-    const trigger = document.querySelector(`[data-accordion="${CSS.escape(id)}"]`);
-    if (!content) return;
-    const willOpen = typeof force === 'boolean' ? force : content.classList.contains('hidden');
-    content.classList.toggle('hidden', !willOpen);
-    if (trigger) trigger.setAttribute('aria-expanded', String(willOpen));
-  }
-
-  // ---------------------------------------------------------------------------
-  // Views, units and screens
-  // ---------------------------------------------------------------------------
+  const MOVED_TO_TRAINER = Object.freeze([
+    'library', 'content-res-tools', 'content-res-case-studies', 'content-res-assessment',
+    'content-res-challenges', 'content-res-further-learning', 'content-foundation',
+  ]);
 
   /** Large-screen breakpoint (Tailwind lg). The drawer is a sidebar from here up. */
   const desktopQuery = window.matchMedia('(min-width: 1024px)');
@@ -59,33 +52,81 @@
    * Builds the step list at the top of each unit from its screens' titles, so
    * every screen is one action away (click budget in CLAUDE.md).
    */
+  /** Part letters for screens split into short parts (أ، ب، ج). */
+  const PART_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح', 'ط', 'ي'];
+
+  /** @param {HTMLElement} screen @returns {string} The design-document screen number ("07" for "07-2"). */
+  const groupOf = (screen) => screen.dataset.group || screen.dataset.screen || '';
+
+  /**
+   * Builds the step list at the top of each unit: one step per design-document
+   * screen (parts open from inside the screen), so the list stays at four steps.
+   * Screens split into parts get a small parts bar under their kicker.
+   * Click budget (CLAUDE.md): unit 2 actions, screen +1, part +1.
+   */
   function buildSteppers() {
     lessons.forEach((lesson) => {
       const holder = lesson.querySelector('[data-stepper]');
-      const screens = [...lesson.querySelectorAll('[data-screen]')];
+      const screens = /** @type {HTMLElement[]} */ ([...lesson.querySelectorAll('[data-screen]')]);
       if (!holder || !screens.length) return;
+      const groups = new Map();
+      screens.forEach((screen) => {
+        const g = groupOf(screen);
+        if (!groups.has(g)) groups.set(g, []);
+        groups.get(g).push(screen);
+      });
       const list = document.createElement('ol');
       list.className = 'stepper-list';
-      screens.forEach((screen) => {
+      groups.forEach((parts, g) => {
+        const first = parts[0];
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = `#${screen.id}`;
+        a.href = `#${first.id}`;
         a.className = 'stepper-link';
-        a.dataset.stepLink = screen.dataset.screen;
+        a.dataset.stepLink = g;
         const n = document.createElement('span');
         n.className = 'stepper-n';
-        n.textContent = screen.dataset.screen;
+        n.textContent = g;
         const t = document.createElement('span');
         t.className = 'stepper-title';
-        t.textContent = screen.querySelector('.screen-title')?.textContent.trim() || '';
+        t.textContent = first.dataset.stepTitle || first.querySelector('.screen-title')?.textContent.trim() || '';
         const s = document.createElement('span');
         s.className = 'sr-only';
-        s.dataset.stepState = screen.dataset.screen;
+        s.dataset.stepState = g;
         a.append(n, t, s);
         li.append(a);
         list.append(li);
+        if (parts.length > 1) buildPartsBar(parts);
       });
       holder.append(list);
+    });
+  }
+
+  /**
+   * Adds "الجزء أ · ب · ج" links to every part of a split screen.
+   * @param {HTMLElement[]} parts
+   */
+  function buildPartsBar(parts) {
+    parts.forEach((part, index) => {
+      const nav = document.createElement('nav');
+      nav.className = 'parts-bar';
+      nav.setAttribute('aria-label', `أجزاء الشاشة ${groupOf(part)}`);
+      const label = document.createElement('span');
+      label.className = 'parts-label';
+      label.textContent = `الجزء ${index + 1} من ${parts.length}`;
+      nav.append(label);
+      parts.forEach((target, k) => {
+        const link = document.createElement('a');
+        link.href = `#${target.id}`;
+        link.className = 'parts-link';
+        link.textContent = PART_LETTERS[k] || String(k + 1);
+        const title = target.querySelector('.screen-title')?.textContent.trim() || '';
+        link.setAttribute('aria-label', `الجزء ${PART_LETTERS[k]}: ${title}`);
+        link.title = title;
+        if (k === index) link.setAttribute('aria-current', 'step');
+        nav.append(link);
+      });
+      part.querySelector('.screen-kicker')?.after(nav);
     });
   }
 
@@ -106,6 +147,10 @@
     const fallback = { view: lessons[0] || null, screen: null, target: null };
     if (!id) return fallback;
     const element = byId(id);
+    if (!element && MOVED_TO_TRAINER.includes(id)) {
+      window.location.replace(`trainer.html#${encodeURIComponent(id)}`);
+      return { view: null, screen: null, target: null };
+    }
     if (!element) return fallback;
     if (element.matches('[data-view]')) return { view: element, screen: null, target: null };
     const view = element.closest('[data-view]');
@@ -115,22 +160,17 @@
   }
 
   /**
-   * Opens every <details> around an element, selects its tab or accordion, then scrolls to it.
+   * Opens every <details> around an element, then scrolls to it.
    * @param {HTMLElement} target
    */
   function revealTarget(target) {
+    // A target inside a paged list (js/learning.js paginate) opens its page first.
+    if (target.closest('[data-pager-page]')) target.dispatchEvent(new CustomEvent('bloom:reveal', { bubbles: true }));
     let details = target.closest('details');
     while (details) {
       details.open = true;
       details = details.parentElement?.closest('details') || null;
     }
-    const panel = target.closest('[role="tabpanel"]');
-    if (panel) {
-      const tab = document.querySelector(`[role="tab"][aria-controls="${CSS.escape(panel.id)}"]`);
-      if (tab) selectTab(tab);
-    }
-    const accordionPanel = target.closest('[id^="content-"]');
-    if (accordionPanel) toggleAccordion(accordionPanel.id.replace(/^content-/, ''), true);
     requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
   }
 
@@ -148,7 +188,7 @@
     screens.forEach((s) => { s.hidden = s !== chosen; });
     view.dataset.activeScreen = chosen.id;
     view.querySelectorAll('[data-step-link]').forEach((link) => {
-      if (link.dataset.stepLink === chosen.dataset.screen) link.setAttribute('aria-current', 'step');
+      if (link.dataset.stepLink === groupOf(chosen)) link.setAttribute('aria-current', 'step');
       else link.removeAttribute('aria-current');
     });
     // The bar to the next unit only appears on the unit's last screen.
@@ -275,138 +315,17 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Tabs (WAI-ARIA tabs pattern, automatic activation)
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Selects a tab, shows its panel and hides the sibling panels (roving tabindex).
-   * @param {HTMLElement} tab
-   */
-  function selectTab(tab) {
-    const list = tab.closest('[role="tablist"]');
-    if (!list) return;
-    list.querySelectorAll('[role="tab"]').forEach((item) => {
-      const selected = item === tab;
-      const panel = byId(item.getAttribute('aria-controls') || '');
-      item.setAttribute('aria-selected', String(selected));
-      /** @type {HTMLElement} */ (item).tabIndex = selected ? 0 : -1;
-      if (panel) panel.hidden = !selected;
-    });
-  }
-
-  /** Click selects; arrows follow the reading direction; Home/End jump. */
-  function initTabs() {
-    document.querySelectorAll('[role="tablist"]').forEach((list) => {
-      const tabs = /** @type {HTMLElement[]} */ ([...list.querySelectorAll('[role="tab"]')]);
-      list.addEventListener('click', (event) => {
-        const tab = /** @type {HTMLElement} */ (event.target).closest('[role="tab"]');
-        if (tab) selectTab(/** @type {HTMLElement} */ (tab));
-      });
-      list.addEventListener('keydown', (event) => {
-        const index = tabs.indexOf(/** @type {HTMLElement} */ (document.activeElement));
-        if (index < 0) return;
-        const rtl = getComputedStyle(list).direction === 'rtl';
-        const step = { ArrowLeft: rtl ? 1 : -1, ArrowRight: rtl ? -1 : 1 }[event.key];
-        let next = null;
-        if (step) next = (index + step + tabs.length) % tabs.length;
-        else if (event.key === 'Home') next = 0;
-        else if (event.key === 'End') next = tabs.length - 1;
-        if (next === null) return;
-        event.preventDefault();
-        selectTab(tabs[next]);
-        tabs[next].focus();
-      });
-    });
-  }
-
-  // ---------------------------------------------------------------------------
-  // Video dialog (the only optional external media; loaded on request)
-  // ---------------------------------------------------------------------------
-
-  /** Element that had focus before the dialog opened. */
-  let modalOpener = null;
-
-  /**
-   * @param {string} videoId 11-character YouTube id.
-   * @param {HTMLElement|null} opener
-   */
-  function openVideoModal(videoId, opener) {
-    const modal = byId('video-modal');
-    const iframe = byId('video-iframe');
-    if (!modal || !iframe || !/^[\w-]{11}$/.test(videoId)) return;
-    modalOpener = opener;
-    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-    iframe.setAttribute('allowfullscreen', '');
-    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
-    modal.hidden = false;
-    document.body.classList.add('modal-open');
-    byId('video-modal-close')?.focus();
-  }
-
-  function closeVideoModal() {
-    const modal = byId('video-modal');
-    const iframe = byId('video-iframe');
-    if (!modal || modal.hidden) return;
-    modal.hidden = true;
-    if (iframe) iframe.removeAttribute('src');
-    document.body.classList.remove('modal-open');
-    modalOpener?.focus();
-    modalOpener = null;
-  }
-
-  /** Keeps Tab inside the open dialog and closes it on Escape. @param {KeyboardEvent} event */
-  function handleModalKeydown(event) {
-    const modal = byId('video-modal');
-    if (!modal || modal.hidden) return;
-    if (event.key === 'Escape') {
-      closeVideoModal();
-      return;
-    }
-    if (event.key !== 'Tab') return;
-    const focusable = [...modal.querySelectorAll('button, iframe, [href], [tabindex]:not([tabindex="-1"])')];
-    if (!focusable.length) return;
-    const first = /** @type {HTMLElement} */ (focusable[0]);
-    const last = /** @type {HTMLElement} */ (focusable[focusable.length - 1]);
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
-  // ---------------------------------------------------------------------------
   // Wiring
   // ---------------------------------------------------------------------------
-
-  document.addEventListener('click', (event) => {
-    const target = /** @type {HTMLElement} */ (event.target);
-    const accordionTrigger = target.closest('[data-accordion]');
-    if (accordionTrigger) {
-      toggleAccordion(/** @type {HTMLElement} */ (accordionTrigger).dataset.accordion || '');
-      return;
-    }
-    const videoButton = target.closest('[data-video-id]');
-    if (videoButton) {
-      openVideoModal(/** @type {HTMLElement} */ (videoButton).dataset.videoId || '', /** @type {HTMLElement} */ (videoButton));
-      return;
-    }
-    if (target.closest('#video-modal-close') || target.id === 'video-modal') closeVideoModal();
-  });
-
-  document.addEventListener('keydown', handleModalKeydown);
 
   // Escape closes the overlay drawer (phones/tablets) when no dialog is open.
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape' || desktopQuery.matches) return;
-    if (!byId('video-modal')?.hidden) return;
     if (document.querySelector('dialog[open]')) return;
     if (!document.body.classList.contains('drawer-open')) return;
     setDrawer(false);
     byId('drawer-toggle')?.focus();
   });
 
-  initTabs();
   initPlayer();
 })();

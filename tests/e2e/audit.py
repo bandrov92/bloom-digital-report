@@ -11,6 +11,7 @@ from playwright.sync_api import sync_playwright
 ROOT = str(ROOT)
 srv = subprocess.Popen([sys.executable, '-m', 'http.server', '8722', '-d', ROOT], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
 B = 'http://localhost:8722/'
+SCREENS = 58  # screen sections and parts in trainee.html (28 design-document screens)
 fails = []
 def check(c, m):
     print(('PASS ' if c else 'FAIL ') + m)
@@ -48,13 +49,18 @@ try:
         pg.goto(B + 'trainee.html#' + l); pg.wait_for_timeout(200)
         vis = pg.evaluate(f"(() => {{ const e=document.getElementById('{l}'); return !!e && e.getClientRects().length>0; }})()")
         check(vis, f'deep link #{l} visible after navigation')
+    for moved in ['content-res-tools', 'content-foundation', 'library']:
+        pg.goto(B + 'trainee.html#' + moved); pg.wait_for_timeout(400)
+        check(pg.url.endswith('trainer.html#' + moved) and pg.locator('#' + moved).count() == 1, f'old trainee.html#{moved} forwards to the trainer library')
     pg.goto(B + 'index.html#map'); pg.wait_for_timeout(400)
     check(pg.url.endswith('trainee.html#map') and pg.is_visible('#map'), 'legacy index.html#map forwards to the unit')
     # 375 and 1280 overflow for every view/screen
     for w in (375, 1280):
         c = b.new_context(viewport={'width': w, 'height': 800}); q = c.new_page()
         bad = []
-        targets = [f'screen-{n:02d}' for n in range(1, 29)] + ['dashboard']
+        q.goto(f'{B}trainee.html'); q.wait_for_timeout(200)
+        targets = q.evaluate("[...document.querySelectorAll('[data-screen]')].map(s => s.id)") + ['dashboard']
+        check(len(targets) == SCREENS + 1, f'all {len(targets) - 1} screens and parts measured')
         for t in targets:
             q.goto(f'{B}trainee.html#{t}'); q.wait_for_timeout(120)
             # Open every collapsible so hidden long content is measured too.
@@ -70,7 +76,7 @@ try:
     # print media shows all screens
     q = b.new_page(); q.goto(B + 'trainee.html'); q.emulate_media(media='print'); q.wait_for_timeout(200)
     shown = q.evaluate("[...document.querySelectorAll('[data-screen]')].filter(s=>getComputedStyle(s).display!=='none').length")
-    check(shown == 28, f'print shows all 28 screens ({shown})')
+    check(shown == SCREENS, f'print shows all {SCREENS} screens and parts ({shown})')
     b.close()
 finally:
     srv.terminate()

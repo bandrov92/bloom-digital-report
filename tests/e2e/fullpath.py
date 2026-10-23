@@ -3,6 +3,8 @@
 Optional browser checks (not part of the site). Requirements: Python 3 and
 `pip install playwright` then `python -m playwright install chromium`.
 Run from the repository root: python tests/e2e/fullpath.py
+With BLOOM_WRITE_FIXTURES=1 it also rewrites the learner states in
+tests/e2e/fixtures/ that tests/e2e/lengths.py measures.
 """
 import pathlib
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -15,11 +17,18 @@ def check(cond, msg):
     print(('PASS ' if cond else 'FAIL ') + msg)
     if not cond: fails.append(msg)
 def st(pg): return pg.evaluate("JSON.parse(localStorage.getItem('bloomLearning.v1') || 'null')")
+def save_fixture(pg, name):
+    import os
+    if os.environ.get('BLOOM_WRITE_FIXTURES'):
+        (ROOT / 'tests' / 'e2e' / 'fixtures' / name).write_text(json.dumps(st(pg), ensure_ascii=False, indent=1), encoding='utf-8')
 def done(pg): return sorted(k for k, v in (st(pg) or {}).get('elements', {}).items() if v.get('at'))
 def go(pg, n): pg.goto(f'{SITE}#screen-{n}'); pg.wait_for_timeout(150)
 def fill(pg, sel, text): pg.fill(sel, text)
 def review(pg, path, val='yes'): pg.locator(f'input[data-field="{path}"][value="{val}"]').check()
 def complete(pg, el): pg.click(f'[data-action="complete"][data-element="{el}"]'); pg.wait_for_timeout(150)
+def reveal(pg, sel):
+    """Opens the page of a paged list that holds the element (same as following a link to it)."""
+    pg.evaluate("(s) => document.querySelector(s).dispatchEvent(new CustomEvent('bloom:reveal', { bubbles: true }))", sel); pg.wait_for_timeout(30)
 def chk(pg, cid, answers):
     f = pg.locator(f'[data-check-form="{cid}"]')
     for part, val in answers.items():
@@ -41,35 +50,40 @@ with sync_playwright() as p:
     pg.goto(SITE); pg.wait_for_timeout(300)
     check(not any('test-forms' in u or 'test-keys' in u for u in reqs), 'test files not loaded on page open')
     # 01
-    go(pg, '01'); pg.locator('input[data-field="s01.context"][value="own"]').check(); fill(pg, '#s01-title', 'مقارنة مصدرين في درس العلوم')
+    go(pg, '01-3'); pg.locator('input[data-field="s01.context"][value="own"]').check(); fill(pg, '#s01-title', 'مقارنة مصدرين في درس العلوم')
     # 02 diagnostic: leave one empty first
     go(pg, '02')
     ans = {'q1': 'f', 'q2': 'a', 'q3': 'b', 'q4': 'b', 'q5': 'b'}
-    for q, v in ans.items(): pg.locator(f'input[data-field="s02.{q}"][value="{v}"]').check()
+    check(pg.locator('#diag-items [data-pager-page]:not([hidden]) fieldset').count() == 2, 'diagnostic shows two items per page')
+    for q, v in ans.items(): reveal(pg, f'#diag-{q}'); pg.locator(f'input[data-field="s02.{q}"][value="{v}"]').check()
     pg.click('#diag-submit'); pg.wait_for_timeout(100)
     check('لم تُجب عن' in pg.inner_text('#diag-warning'), 'diagnostic warns about unanswered item')
     check(pg.evaluate('document.activeElement.name') == 's02-q6', 'focus moves to unanswered item')
     pg.locator('input[data-field="s02.q6"][value="f"]').check(); pg.click('#diag-submit'); pg.wait_for_timeout(150)
-    check(pg.is_visible('#diagnostic-report'), 'diagnostic report shown')
+    check(pg.is_visible('#diagnostic-report') and pg.locator('#diag-report-list [data-pager-page]:not([hidden]) .diag-item').count() == 2, 'diagnostic report shown, two items per page')
     check('t01' in done(pg), 't01 complete after all answered + report')
     check(st(pg)['test']['attempts'] == [], 'diagnostic does not create test attempt')
     # 03
     go(pg, '03')
     check(pg.input_value('#s03-title') == 'مقارنة مصدرين في درس العلوم', 'need card title prefilled from screen 01')
-    complete(pg, 't02')
-    check('أكمل وصف ما يفعله المتعلم' in pg.inner_text('#screen-03'), 'custom required message for current performance')
-    pg.locator('input[data-field="s03.status"][value="planned"]').check()
-    fill(pg, '#s03-current', 'يعيد الطلاب كتابة ما ورد في مصدرين.'); fill(pg, '#s03-need', 'أريد أن يحكموا على المصدرين بمعيار.')
+    go(pg, '03-2'); complete(pg, 't02')
+    check(pg.locator('[data-result="t02"] a[href="#screen-03"]').count() == 1, 'missing fields on part أ are linked from part ب')
+    check('أكمل وصف ما يفعله المتعلم' in pg.text_content('#screen-03'), 'custom required message for current performance')
+    go(pg, '03'); pg.locator('input[data-field="s03.status"][value="planned"]').check()
+    fill(pg, '#s03-current', 'يعيد الطلاب كتابة ما ورد في مصدرين.'); go(pg, '03-2'); fill(pg, '#s03-need', 'أريد أن يحكموا على المصدرين بمعيار.')
     complete(pg, 't02'); check('t02' in done(pg), 't02 complete')
     fill(pg, '#s03-need', 'أريد أن يحكموا على المصدرين بمعيارين.'); complete(pg, 't02')
     check(len(st(pg)['elements']['t02'].get('revisions', [])) == 1, 'need card edit kept as revision')
     # 04
     go(pg, '04'); check(pg.locator('#s04-review li').count() >= 1, 'path shows review places from diagnostic')
+    check(pg.locator('#program-map li').count() == 7 and 'عناصر الوحدة: 2 من 2' in pg.inner_text('#program-map'), 'program map lists 7 units with completed elements')
     check(pg.get_attribute('#s04-review-link', 'href') == '#screen-09', 'review link goes to first error screen (09)')
     # 09
     go(pg, '09'); fill(pg, '#s09-performance', 'يختار المتعلم المصدر الأنسب'); fill(pg, '#s09-conditions', 'عرض مصدرين عن الموضوع نفسه'); fill(pg, '#s09-criterion', 'ملاءمة المصدر وإمكانية تتبعه')
-    pg.click('[data-action="compose-goal"]'); pg.wait_for_timeout(100)
+    go(pg, '09-2'); pg.click('[data-action="compose-goal"]'); pg.wait_for_timeout(100)
     check(pg.input_value('#s09-statement').startswith('عند عرض مصدرين'), 'goal draft composed from parts')
+    go(pg, '09-3'); complete(pg, 't07')
+    check('t07' not in done(pg) and pg.evaluate("document.activeElement.name") == 's09-rv1', 't07 waits for the review on part ج; focus on first question')
     for i in range(1, 5): review(pg, f's09.rv{i}', 'partly')
     complete(pg, 't07'); check('t07' in done(pg), 't07 complete')
     # 10
@@ -80,10 +94,10 @@ with sync_playwright() as p:
     # 05-08
     go(pg, '05'); chk(pg, 's05', {'judge': 'no', 'reason': 'act'})
     go(pg, '06'); chk(pg, 's06', {'m1': 'remember', 'm2': 'understand', 'm3': 'apply'})
-    go(pg, '07'); chk(pg, 's07', {'m1': 'analyze', 'm2': 'evaluate', 'm3': 'create'}); fill(pg, '#s07-paraphrase', 'يحكم المتعلم على مصدرين بمعيارين.')
+    go(pg, '07'); chk(pg, 's07', {'m1': 'analyze', 'm2': 'evaluate', 'm3': 'create'}); go(pg, '07-4'); fill(pg, '#s07-paraphrase', 'يحكم المتعلم على مصدرين بمعيارين.')
     for i in (1, 2, 3): review(pg, f's07.rv{i}')
     complete(pg, 't05')
-    go(pg, '08'); chk(pg, 's08', {'fn': 'compare'}); fill(pg, '#s08-means', 'جدول مقارنة في مستند'); fill(pg, '#s08-alternative', 'ورقة مطبوعة')
+    go(pg, '08'); chk(pg, 's08', {'fn': 'compare'}); go(pg, '08-2'); fill(pg, '#s08-means', 'جدول مقارنة في مستند'); fill(pg, '#s08-alternative', 'ورقة مطبوعة')
     review(pg, 's08.rv1'); review(pg, 's08.rv2'); complete(pg, 't06')
     check(all(e in done(pg) for e in ['t03', 't04', 't05', 't06']), 't03–t06 complete')
     # 11 (no element)
@@ -100,64 +114,77 @@ with sync_playwright() as p:
     s = st(pg); check(s['drafts']['s10']['step'] == 'أجرب المهمة في محاكاة' and len(s['history']['plan']) == 2, 'plan revision saved with history')
     before = len(done(pg))
     # 13
-    go(pg, '13'); chk(pg, 's13', {'pick': 'b', 'link1': 'resp', 'link2': 'track'}); check('t09' in done(pg), 't09 complete')
+    go(pg, '13'); chk(pg, 's13', {'pick': 'b'})
+    check('t09' not in done(pg) and pg.locator('[data-check-feedback="s13"] a[href="#screen-13-2"]').count() == 1, 't09 waits for the second check; part ب is linked')
+    go(pg, '13-2'); chk(pg, 's13b', {'link1': 'resp', 'link2': 'track'}); check('t09' in done(pg), 't09 complete')
     # 14
     go(pg, '14'); pg.click('#s14-open'); pg.wait_for_timeout(100)
     check(not pg.is_visible('#s14-compare'), 'example locked before first attempt')
     fill(pg, '#s14-v1', 'اكتب عن الخطتين.'); fill(pg, '#s14-v1evidence', 'نص مكتوب'); pg.click('#s14-open'); pg.wait_for_timeout(150)
-    check(pg.is_visible('#s14-compare') and pg.evaluate("document.getElementById('s14-v1').readOnly"), 'example opens and first attempt is kept read-only')
+    check(pg.evaluate('location.hash') == '#screen-14-2' and pg.is_visible('#s14-compare') and pg.evaluate("document.getElementById('s14-v1').readOnly"), 'example opens on part 2 and first attempt is kept read-only')
     for c, v in [('c1', 'missing'), ('c2', 'missing'), ('c3', 'present')]: pg.locator(f'input[data-field="s14.{c}"][value="{v}"]').check()
     complete(pg, 't10'); check('t10' not in done(pg), 't10 needs fix or reason')
     fill(pg, '#s14-v2', 'قارن الخطتين وفق المعيارين واحكم بشاهد.'); complete(pg, 't10'); check('t10' in done(pg), 't10 complete')
     # 15
     go(pg, '15')
     check(pg.input_value('#s15-goal').startswith('عند عرض مصدرين'), 'goal carried into workshop 3')
-    check(pg.input_value('#s15-alternative') == 'ورقة مطبوعة', 'alternative carried from screen 08')
-    fill(pg, '#s15-action', 'يقارن المصدرين ويختار الأنسب مع التعليل'); fill(pg, '#s15-evidence', 'جدول مقارنة وتعليل'); fill(pg, '#s15-function', 'جدول مشترك')
-    pg.select_option('#s15-level', 'evaluate'); fill(pg, '#s15-reason', 'الهدف يطلب حكمًا بمعيار'); review(pg, 's15.rv1'); review(pg, 's15.rv2'); fill(pg, '#s15-changed', 'صار المطلوب حكمًا')
+    fill(pg, '#s15-action', 'يقارن المصدرين ويختار الأنسب مع التعليل'); fill(pg, '#s15-evidence', 'جدول مقارنة وتعليل')
+    fill(pg, '#s15-function', 'جدول مشترك'); pg.select_option('#s15-level', 'evaluate')
+    go(pg, '15-2'); check(pg.input_value('#s15-alternative') == 'ورقة مطبوعة', 'alternative carried from screen 08')
+    fill(pg, '#s15-reason', 'الهدف يطلب حكمًا بمعيار'); review(pg, 's15.rv1'); review(pg, 's15.rv2'); fill(pg, '#s15-changed', 'صار المطلوب حكمًا')
     complete(pg, 't11'); check('t11' in done(pg), 't11 complete')
     # 16
     go(pg, '16'); check(pg.input_value('#s16-before').startswith('يعيد الطلاب'), 'before prefilled from need card')
-    fill(pg, '#s16-explain', 'تغير المطلوب من نقل إلى حكم.'); pg.locator('input[data-field="s16.kind"][value="display"]').check(); pg.wait_for_timeout(100)
-    check(pg.is_visible('#screen-16 [data-show-when="s16.kind=display"]'), 'display-only message shown')
+    fill(pg, '#s16-explain', 'تغير المطلوب من نقل إلى حكم.'); go(pg, '16-2'); pg.locator('input[data-field="s16.kind"][value="display"]').check(); pg.wait_for_timeout(100)
+    check(pg.is_visible('#screen-16-2 [data-show-when="s16.kind=display"]'), 'display-only message shown')
     pg.locator('input[data-field="s16.deficits"][value="tool"]').check(); pg.wait_for_timeout(100)
-    check(pg.is_visible('#screen-16 [data-show-when="s16.deficits=tool"]'), 'deficit message shown on selection')
+    check(pg.is_visible('#screen-16-2 [data-show-when="s16.deficits=tool"]'), 'deficit message shown on selection')
     complete(pg, 't12'); check('t12' in done(pg), 't12 complete')
     # 17
-    go(pg, '17'); check(pg.input_value('#s17-goal').startswith('عند عرض مصدرين'), 'goal prefilled in project')
-    fill(pg, '#s17-audience', 'طلاب المرحلة المتوسطة'); pg.select_option('[data-field="s17.prereqStatus"]', 'tbd'); pg.select_option('[data-field="s17.constraintsStatus"]', 'na')
+    go(pg, '17'); fill(pg, '#s17-audience', 'طلاب المرحلة المتوسطة'); pg.select_option('[data-field="s17.prereqStatus"]', 'tbd')
+    go(pg, '17-2'); check(pg.input_value('#s17-goal').startswith('عند عرض مصدرين'), 'goal prefilled in project')
+    pg.select_option('[data-field="s17.constraintsStatus"]', 'na')
     pg.locator('input[data-field="s17.goalReview"][value="improve"]').check(); complete(pg, 't13'); check('t13' in done(pg), 't13 complete with tbd/na')
     # 18
+    go(pg, '18-2'); complete(pg, 't14')
+    check(pg.locator('[data-result="t14"] a[href="#screen-18"]').count() == 1, 'missing fields on part أ are named with a link from part ب')
     go(pg, '18'); check(pg.input_value('#s18-means') == 'جدول مشترك', 'means prefilled from screen 15')
-    fill(pg, '#s18-sources', 'مصدران مطبوعان'); fill(pg, '#s18-rationale', 'الجدول يظهر المقارنة'); fill(pg, '#s18-processQuote', 'اختر الأنسب وعلل')
-    check('مصدران مطبوعان' in pg.inner_text('#s18-preview'), 'student preview updates')
+    fill(pg, '#s18-sources', 'مصدران مطبوعان'); fill(pg, '#s18-rationale', 'الجدول يظهر المقارنة')
+    go(pg, '18-2'); fill(pg, '#s18-processQuote', 'اختر الأنسب وعلل'); check('مصدران مطبوعان' in pg.inner_text('#s18-preview'), 'student preview on part 2 reflects part 1')
     pg.locator('input[data-field="s18.previewChecked"]').check(); complete(pg, 't14'); check('t14' in done(pg), 't14 complete')
     # 19
-    go(pg, '19'); complete(pg, 't15'); check('t15' not in done(pg), 't15 needs a full row')
+    go(pg, '19-2'); complete(pg, 't15'); check('t15' not in done(pg) and pg.locator('[data-result="t15"] a[href="#screen-19"]').count() == 1, 't15 needs a full row (named on part أ)'); go(pg, '19')
     for k, v in [('desc', 'يطبق المعيارين'), ('evidence', 'جدول'), ('remedy', 'أضف المعيار الثاني'), ('next', 'أعيد قراءة الجدول')]: fill(pg, f'#s19-0-{k}', v)
-    pg.wait_for_timeout(800); pg.locator('input[data-field="s19.compared"]').check(); complete(pg, 't15'); check('t15' in done(pg), 't15 complete')
+    pg.wait_for_timeout(800); go(pg, '19-2'); pg.locator('input[data-field="s19.compared"]').check(); complete(pg, 't15'); check('t15' in done(pg), 't15 complete')
     # 20
-    go(pg, '20'); pg.click('[data-action="save-version"][data-kind="review"]'); pg.wait_for_timeout(150)
+    go(pg, '20-8'); pg.click('[data-action="save-version"][data-kind="review"]'); pg.wait_for_timeout(150)
     check(st(pg)['project']['versions'] == [], 'no version saved without rubric evidence')
-    for cid in ['goal', 'alignment', 'clarity', 'digital', 'feedback', 'sources', 'trial']:
+    check(pg.locator('[data-result="t16"] a[href="#screen-20"]').count() == 1 and pg.locator('[data-result="t16"] a[href="#screen-20-7"]').count() == 1, 'missing rubric items point to their parts')
+    check('لم تحدد وصفًا بعد' in pg.inner_text('[data-rubric-summary]'), 'review summary lists criteria not yet judged')
+    go(pg, '20'); check('عند عرض مصدرين' in pg.inner_text('[data-work-excerpt="goal"]'), 'goal criterion shows the learner goal as an excerpt')
+    for i, cid in enumerate(['goal', 'alignment', 'clarity', 'digital', 'feedback', 'sources', 'trial']):
+        go(pg, '20' if i == 0 else f'20-{i + 1}')
         pg.locator(f'input[data-field="s20.level_{cid}"][value="{"na" if cid=="sources" else "improve"}"]').check()
         fill(pg, f'#s20-evidence-{cid}', 'شاهد من عملي' if cid != 'sources' else 'لم أستخدم مصادر خارجية بعد')
+    go(pg, '20-8'); check('لم تحدد وصفًا بعد' not in pg.inner_text('[data-rubric-summary]'), 'review summary shows every judgment')
     pg.click('[data-action="save-version"][data-kind="review"]'); pg.wait_for_timeout(150)
     res = pg.inner_text('[data-result="t16"]')
     check('اكتملت مراجعتك الذاتية لهذه النسخة' in res and 'إتقان' not in res, 'self-review message without mastery claim')
     check('t16' in done(pg) and len(st(pg)['project']['versions']) == 1, 't16 complete with a saved version')
     # 25-27 before test
-    go(pg, '25'); pg.click('#source-form button[type=submit]'); pg.wait_for_timeout(100)
-    check('t18' not in done(pg) and pg.locator('#source-form .field-error').count() > 0, 'empty source card rejected with errors')
-    for k, v in [('title', 'دليل المعلم'), ('author', 'جهة تعليمية'), ('locator', 'ملف PDF في مجلد المدرسة'), ('location', 'ص12'), ('purpose', 'معايير اختيار المصدر')]: fill(pg, f'#s25-{k}', v)
-    pg.fill('#s25-accessed', '2026-10-20'); pg.select_option('#s25-use', 'summary'); pg.select_option('#s25-part', 'task')
+    go(pg, '25-2'); pg.click('#source-form button[type=submit]'); pg.wait_for_timeout(100)
+    check('t18' not in done(pg) and pg.locator('#source-form .field-error').count() > 0 and pg.locator('#source-result a[href="#screen-25"]').count() == 1, 'empty source card rejected with errors; part أ linked')
+    go(pg, '25')
+    for k, v in [('title', 'دليل المعلم'), ('author', 'جهة تعليمية'), ('locator', 'ملف PDF في مجلد المدرسة'), ('location', 'ص12')]: fill(pg, f'#s25-{k}', v)
+    pg.fill('#s25-accessed', '2026-10-20'); go(pg, '25-2'); fill(pg, '#s25-purpose', 'معايير اختيار المصدر'); pg.select_option('#s25-use', 'summary'); pg.select_option('#s25-part', 'task')
     pg.click('#source-form button[type=submit]'); pg.wait_for_timeout(150)
     s = st(pg); check('t18' in done(pg) and s['sources'][0]['license'] == 'غير معلوم', 't18 complete; unknown licence recorded as unknown')
-    go(pg, '26'); chk(pg, 's26', {'judge': 'context'}); fill(pg, '#s26-use', 'أستخدم معاييره في جدول المقارنة'); fill(pg, '#s26-limit', 'عينته طلاب لا معلمون')
+    go(pg, '26'); chk(pg, 's26', {'judge': 'context'}); go(pg, '26-2'); fill(pg, '#s26-use', 'أستخدم معاييره في جدول المقارنة'); fill(pg, '#s26-limit', 'عينته طلاب لا معلمون')
     pg.locator('input[data-field="s26.reviewed"]').check(); complete(pg, 't19')
     go(pg, '27'); pg.locator('input[data-field="s27.type"][value="sim"]').check(); pg.wait_for_timeout(50)
     check(pg.is_visible('#screen-27 [data-show-when="s27.type=sim"]'), 'simulation limit message shown')
-    for k, v in [('context', 'أنفذ المهمة بنفسي'), ('evidence', 'مواضع الغموض'), ('criterion', 'أي تعليمات احتجت تفسيرها'), ('return', 'الأسبوع المقبل')]: fill(pg, f'#s27-{k}', v)
+    fill(pg, '#s27-context', 'أنفذ المهمة بنفسي'); go(pg, '27-2')
+    for k, v in [('evidence', 'مواضع الغموض'), ('criterion', 'أي تعليمات احتجت تفسيرها'), ('return', 'الأسبوع المقبل')]: fill(pg, f'#s27-{k}', v)
     complete(pg, 't20')
     check(len(done(pg)) == 19, f'19 elements before test ({len(done(pg))})')
     # dashboard: content met, test missing
@@ -168,7 +195,8 @@ with sync_playwright() as p:
     check('t17' not in done(pg) and 'أرسل محاولة الاختبار' in pg.inner_text('[data-result="t17"]'), 't17 blocked before test attempt')
     # 21-23 test
     go(pg, '21'); pg.click('#test-start'); pg.wait_for_timeout(500)
-    check(pg.evaluate('location.hash') == '#screen-22' and pg.locator('#test-player fieldset').count() == 10, 'test player shows 10 items')
+    check(pg.evaluate('location.hash') == '#screen-22' and pg.locator('#test-player fieldset').count() == 10, 'test player holds 10 items')
+    check(pg.locator('#test-player [data-pager-page]:not([hidden]) fieldset').count() == 2 and not pg.is_visible('#test-actions'), 'two questions per page; submit only on the last page')
     check(any('test-forms.js' in u for u in reqs) and not any('test-keys.js' in u for u in reqs), 'forms loaded on demand, keys not yet')
     keys = json.loads(pg.evaluate("""(() => { return '{}' })()"""))
     import re
@@ -177,18 +205,22 @@ with sync_playwright() as p:
     for item, a in A.items():
         if item == 'A10': continue
         v = a if item not in wrong else ('a' if a != 'a' else 'b')
-        pg.locator(f'input[name="test-{item}"][value="{v}"]').check(); pg.wait_for_timeout(30)
+        reveal(pg, f'#test-item-{item}'); pg.locator(f'input[name="test-{item}"][value="{v}"]').check(); pg.wait_for_timeout(30)
     pg.reload(); pg.wait_for_timeout(400)
     check(pg.locator('#test-player input:checked').count() == 9, 'unsubmitted answers restored after reload')
+    check(pg.is_visible('#test-item-A10'), 'player reopens on the page of the first unanswered question')
+    save_fixture(pg, 'state-test-active.json')
     pg.click('[data-action="test-submit"]'); pg.wait_for_timeout(150)
     check('السؤال 10' in pg.inner_text('#test-player-msg') and st(pg)['test']['attempts'] == [], 'empty question blocks submission and is named')
     pg.locator('input[name="test-A10"][value="a"]').check(); pg.wait_for_timeout(50)
     pg.click('[data-action="test-submit"]'); pg.wait_for_timeout(800)
     s = st(pg); a = s['test']['attempts'][0]
     check(a['total'] == 60 and s['test']['draft'] is None, f'attempt scored 60 and locked ({a["total"]})')
-    check(pg.evaluate('location.hash') == '#screen-23' and pg.locator('#test-report .diag-item').count() == 10, 'report lists 10 explained items')
+    check(pg.evaluate('location.hash') == '#screen-23', 'submission opens the result (23 أ)')
+    go(pg, '23-2'); pg.wait_for_timeout(300)
+    check(pg.locator('#test-explain .diag-item').count() == 10 and pg.locator('#test-explain [data-pager-page]:not([hidden]) .diag-item').count() == 3, 'explanations list 10 items, three per page')
     check(st(pg)['test']['reportViewedAt'] is not None, 'report opening recorded')
-    check('استوفيت شروط اجتياز الدورة' in pg.inner_text('#test-report'), '19/20 (95%) and score 60 -> passed (boundary score)')
+    check('استوفيت شروط اجتياز الدورة' in pg.text_content('#test-report'), '19/20 (95%) and score 60 -> passed (boundary score)')
     go(pg, '21'); check(not pg.is_visible('#test-start'), 'no retake button (single approved attempt)')
     check('محاولة مرسلة واحدة' in pg.inner_text('#test-status'), 'single-attempt message')
     # 24
@@ -201,13 +233,15 @@ with sync_playwright() as p:
     # 28 return cycle
     go(pg, '28'); pg.wait_for_timeout(150)
     check('خطتك جاهزة للعودة' in pg.inner_text('#s28-ready'), 'ready-to-return message without fabricated results')
-    pg.locator('input[data-field="s28.type"][value="sim"]').check()
-    for k, v in [('evidence', 'احتجت تفسير كلمة «معيار»'), ('observation', 'التعليمات غامضة في الخطوة الثانية'), ('alt', 'قد أكون متعبًا'), ('decision', 'أضيف مثالًا للمعيار')]: fill(pg, f'#s28-{k}', v)
+    pg.locator('input[data-field="s28.type"][value="sim"]').check(); fill(pg, '#s28-evidence', 'احتجت تفسير كلمة «معيار»')
+    go(pg, '28-2')
+    for k, v in [('observation', 'التعليمات غامضة في الخطوة الثانية'), ('alt', 'قد أكون متعبًا'), ('decision', 'أضيف مثالًا للمعيار')]: fill(pg, f'#s28-{k}', v)
     pg.click('#trial-form button[type=submit]'); pg.wait_for_timeout(200)
     s = st(pg); check(len(s['trials']) == 1 and s['trials'][0]['type'] == 'sim' and len(s['project']['versions']) == 2, 'trial logged as simulation with new version')
     check('محاكاة' in pg.inner_text('#trial-list'), 'simulation label on the record')
-    pg.click('[data-action="compare-versions"]'); pg.wait_for_timeout(100)
+    go(pg, '28-3'); pg.click('[data-action="compare-versions"]'); pg.wait_for_timeout(100)
     check(pg.locator('#version-compare .compare-col').count() == 2 and pg.locator('#version-compare dd.is-changed').count() >= 1, 'version comparison marks changes')
+    check(pg.locator('#version-compare .compare-col dd:not(.is-changed)').count() == 0 and pg.locator('#version-compare details dd').count() >= 1, 'changed fields side by side; unchanged fields listed once in a collapsible')
     # final pass status
     pg.goto(SITE + '#dashboard'); pg.wait_for_timeout(200)
     check('استوفيت شروط اجتياز الدورة' in pg.inner_text('#dash-summary'), 'dashboard: passed with 20 elements and 60')
@@ -216,6 +250,7 @@ with sync_playwright() as p:
     # continue alias
     go(pg, '26'); pg.goto(SITE.replace('trainee.html', 'trainee.html#continue')); pg.wait_for_timeout(300)
     check(pg.is_visible('#screen-26'), '#continue returns to last position')
+    save_fixture(pg, 'state-complete.json')
     check(errors == [], f'no console errors: {errors[:3]}')
     b.close()
 print('\nFAILED:', len(fails)); [print(' -', f) for f in fails]

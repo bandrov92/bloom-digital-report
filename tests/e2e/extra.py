@@ -48,9 +48,9 @@ with sync_playwright() as p:
     c3 = b.new_context(); r = c3.new_page(); r.goto(SITE); r.evaluate("""() => { localStorage.clear();
       localStorage.setItem('lessonTemplateDraft', JSON.stringify({'lt-lesson-title':'الدورة المائية','lt-original-goal':'أن يفهم الطالب الدورة','lt-task3':'تصميم ملصق'}));
       localStorage.setItem('reflectionsDraft', JSON.stringify({'reflection-ws2':'تعلمت الفرق بين المستويات'})); }""")
-    r.reload(); r.goto(SITE + '#screen-17'); r.wait_for_timeout(300)
-    txt = r.inner_text('#screen-17 [data-legacy-panel]')
-    check('أن يفهم الطالب الدورة' in txt and 'تعلمت الفرق' in txt, 'old template and reflections shown read-only on screen 17')
+    r.reload(); r.goto(SITE + '#screen-17-2'); r.wait_for_timeout(300)
+    txt = r.inner_text('#screen-17-2 [data-legacy-panel]')
+    check('أن يفهم الطالب الدورة' in txt and 'تعلمت الفرق' in txt, 'old template and reflections shown read-only on screen 17 ب')
     r.goto(SITE + '#screen-03'); r.wait_for_timeout(200)
     check(r.input_value('#s03-title') == 'الدورة المائية', 'old lesson title pre-filled on need card')
     # 4 keyboard-only check
@@ -60,6 +60,14 @@ with sync_playwright() as p:
     kp.keyboard.press('Tab'); kp.keyboard.press('ArrowDown'); kp.keyboard.press('Tab'); kp.keyboard.press('Enter'); kp.wait_for_timeout(200)
     st = kp.evaluate("JSON.parse(localStorage.getItem('bloomLearning.v1'))")
     check(st['elements'].get('t03'), 'check answered and submitted with keyboard only')
+    # 5 embedded video on screen 01 loads only on demand
+    v = b.new_context(); vp = v.new_page(); reqs = []
+    vp.on('request', lambda r: reqs.append(r.url))
+    vp.goto(SITE + '#screen-01'); vp.wait_for_timeout(400)
+    check(not any('youtube' in u for u in reqs) and vp.locator('#screen-01 iframe').count() == 0, 'no YouTube request before play')
+    vp.click('#screen-01 [data-action="play-video"]'); vp.wait_for_timeout(200)
+    src = vp.get_attribute('#screen-01 .video-frame iframe', 'src') or ''
+    check('youtube-nocookie.com/embed/fqgTBwElPzU' in src, 'player embedded in screen 01 after play')
     b.close()
 print('\nFAILED:', len(fails)); [print(' -', f) for f in fails]
 raise SystemExit(1 if fails else 0)

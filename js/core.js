@@ -56,7 +56,7 @@
     t06: { checks: ['s08'], fields: ['s08.means', 's08.alternative', 's08.rv1', 's08.rv2'] },
     t07: { fields: ['s09.performance', 's09.conditions', 's09.criterion', 's09.statement', 's09.rv1', 's09.rv2', 's09.rv3', 's09.rv4'] },
     t08: { fields: ['s10.priority', 's10.step', 's10.return', 's10.specific'] },
-    t09: { checks: ['s13'] },
+    t09: { checks: ['s13', 's13b'] },
     t10: { custom: workshopTwoMissing },
     t11: { fields: ['s15.goal', 's15.action', 's15.evidence', 's15.function', 's15.level', 's15.reason', 's15.alternative', 's15.rv1', 's15.rv2', 's15.changed'] },
     t12: { fields: ['s16.before', 's16.after', 's16.explain', 's16.kind'] },

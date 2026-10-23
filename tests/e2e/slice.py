@@ -65,6 +65,7 @@ with sync_playwright() as p:
     check('تفسير العلاقات يختلف' in pg.inner_text('[data-check-feedback="s07"]'), 'analysis/evaluation confusion message')
     f7.locator('select').nth(0).select_option('analyze'); f7.locator('select').nth(1).select_option('evaluate'); f7.locator('button[type=submit]').click(); pg.wait_for_timeout(100)
     check(not state(pg)['elements'].get('t05'), 't05 not complete with check only')
+    go_part = pg.goto(SITE + '#screen-07-4'); pg.wait_for_timeout(100)
     pg.click('[data-action="complete"][data-element="t05"]'); pg.wait_for_timeout(100)
     check(pg.evaluate("document.activeElement.id") == 's07-paraphrase', 'focus moves to first missing field')
     check(pg.get_attribute('#s07-paraphrase', 'aria-invalid') == 'true', 'missing field marked aria-invalid')
@@ -77,15 +78,16 @@ with sync_playwright() as p:
     check('لا حكمًا على جودة عملك' in pg.inner_text('[data-result="t05"]'), 'completion message avoids mastery claim')
     # reload restores
     pg.reload(); pg.wait_for_timeout(300)
-    pg.goto(SITE + '#screen-07'); pg.wait_for_timeout(100)
+    pg.goto(SITE + '#screen-07-4'); pg.wait_for_timeout(100)
     check(pg.input_value('#s07-paraphrase').startswith('في مهمة'), 'draft restored after reload')
+    pg.goto(SITE + '#screen-07'); pg.wait_for_timeout(100)
     check(pg.locator('[data-check-form="s07"] .feedback.is-correct').is_visible(), 'solved check restored after reload')
     # editing after completion does not remove completion
-    pg.fill('#s07-paraphrase', ''); pg.wait_for_timeout(900)
+    pg.goto(SITE + '#screen-07-4'); pg.wait_for_timeout(100); pg.fill('#s07-paraphrase', ''); pg.wait_for_timeout(900)
     check(state(pg)['elements'].get('t05'), 'clearing a field later keeps the recorded element')
     pg.fill('#s07-paraphrase', 'نص جديد'); pg.wait_for_timeout(900)
     # save failure
-    pg.goto(SITE + '#screen-08'); pg.wait_for_timeout(100)
+    pg.goto(SITE + '#screen-08-2'); pg.wait_for_timeout(100)
     pg.evaluate("() => { window.__orig = Storage.prototype.setItem; Storage.prototype.setItem = function(){ const e = new Error('full'); e.name='QuotaExceededError'; throw e; }; }")
     pg.fill('#s08-means', 'جدول في مستند'); pg.wait_for_timeout(1000)
     check(pg.is_visible('#save-alert'), 'failure banner shown')
@@ -99,7 +101,7 @@ with sync_playwright() as p:
     check(state(pg)['drafts']['s08']['means'] == 'جدول في مستند', 'retried save persisted')
     # deep link into reference
     pg.goto(SITE + '#level-apply'); pg.wait_for_timeout(300)
-    check(pg.is_visible('#screen-08') and pg.evaluate("document.getElementById('level-apply').open"), 'deep link #level-apply opens screen 08 and level')
+    check(pg.is_visible('#screen-08-3') and pg.evaluate("document.getElementById('level-apply').open"), 'deep link #level-apply opens screen 08 ج and the level')
     # keyboard: focus stepper link and Enter
     pg.goto(SITE + '#screen-05'); pg.wait_for_timeout(100)
     pg.focus('#map [data-step-link="06"]'); pg.keyboard.press('Enter'); pg.wait_for_timeout(200)
@@ -112,7 +114,7 @@ with sync_playwright() as p:
     check(errors == [], f'no console errors: {errors}')
     # mobile
     m = b.new_context(viewport={'width': 375, 'height': 800}); mp = m.new_page()
-    for h in ['#screen-05', '#screen-06', '#screen-07', '#screen-08', '#dashboard', '#intro']:
+    for h in ['#screen-05', '#screen-06', '#screen-07', '#screen-07-2', '#screen-07-3', '#screen-07-4', '#screen-08', '#screen-08-2', '#screen-08-3', '#dashboard', '#intro']:
         mp.goto(SITE + h); mp.wait_for_timeout(150)
         ov = mp.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth')
         check(ov <= 0, f'375px no horizontal scroll at {h} ({ov})')

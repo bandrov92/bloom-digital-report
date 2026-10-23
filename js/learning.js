@@ -90,15 +90,22 @@
   /** @param {string} n Screen number "05". */
   const screenEl = (n) => byId(`screen-${n}`);
   /** @param {string} n */
-  const screenTitle = (n) => screenEl(n)?.querySelector('.screen-title')?.textContent.trim() || `الشاشة ${n}`;
+  /** Title of a screen; a design-document number ("20") gives the whole screen's title, not its first part's. */
+  const screenTitle = (n) => {
+    const el = screenEl(n);
+    return (!n.includes('-') && el?.dataset.stepTitle) || el?.querySelector('.screen-title')?.textContent.trim() || `الشاشة ${n}`;
+  };
   /** @param {string} n @returns {string} */
   const screenHref = (n) => `#screen-${n}`;
   /** @param {string} elementId */
   const elementDef = (elementId) => D.ELEMENTS.find((e) => e.id === elementId);
   /** @param {string} n @returns {string|undefined} */
   const elementForScreen = (n) => D.ELEMENTS.find((e) => e.screen === n)?.id;
-  /** "t05" -> "ت05" for display, isolated so digits do not reorder the sentence. */
-  const elementLabel = (id) => `\u2068ت${id.slice(1)}\u2069`;
+  /**
+   * "t05" -> «ت05» for display. Guillemets keep the code visibly apart from the
+   * preceding word: with the Thmanyah word space, «عنصر ت05» read as one word.
+   */
+  const elementLabel = (id) => `«ت${id.slice(1)}»`;
   /** Percent as plain text; Arabic bidi shows it as in the static pages of the site. */
   const pct = (n) => `${n}%`;
   const isDone = (id) => !!store.state.elements[id]?.at;
@@ -106,11 +113,90 @@
   /** All screen numbers in page order. */
   const SCREEN_ORDER = $$('[data-screen]').map((s) => s.dataset.screen || '');
 
+  /** @param {string} key Screen key ("07" or "07-2") @returns {string} Design-document screen number. */
+  const groupOfKey = (key) => key.split('-')[0];
+  /** @param {string} group @returns {string[]} Screen keys of a document screen, in order. */
+  const partsOf = (group) => SCREEN_ORDER.filter((k) => groupOfKey(k) === group);
+  const PART_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح', 'ط', 'ي'];
+  /**
+   * Display label of a screen key: "07" stays "07"; a split screen shows its part ("07 ب").
+   * @param {string} key
+   */
+  function screenLabel(key) {
+    const parts = partsOf(groupOfKey(key));
+    return parts.length > 1 ? `${groupOfKey(key)} ${PART_LETTERS[parts.indexOf(key)]}` : key;
+  }
+
   /** Unit (lesson id) of a screen. @param {string} n */
   const unitOf = (n) => screenEl(n)?.closest('[data-lesson]')?.id || '';
 
   /** Short link to a screen with its number and title. @param {string} n */
   const screenLink = (n, label) => h('a', { href: screenHref(n), class: 'inline-link' }, label || `الشاشة ${n}: ${screenTitle(n)}`);
+
+  /**
+   * Shows a long generated list (diagnostic items, test questions, explanations)
+   * a few items at a time, so a screen keeps a length close to the others.
+   * Every item stays in the DOM: answers keep their state, print shows all pages,
+   * and a link or focus to a hidden item opens its page (event "bloom:reveal").
+   * @param {HTMLElement} list Container whose element children are the items.
+   * @param {{perPage: number, label: string, lastOnly?: Array<HTMLElement|null>, start?: number, lastPage?: number}} opts
+   *   perPage: the most items on a page; pages are filled evenly (10 items, 3 per page: 3, 3, 2, 2).
+   *   lastPage: at most this many items on the last page, which also shows lastOnly.
+   *   lastOnly: nodes shown only on the last page (for example the submit button).
+   * @returns {{show: (page: number) => void, showItem: (node: Element|null) => void, pages: number}}
+   */
+  function paginate(list, { perPage, label, lastOnly = [], start = 0, lastPage = perPage }) {
+    list.parentElement?.querySelector(`:scope > .pager[data-pager-for="${list.id}"]`)?.remove();
+    const items = [...list.children].filter((n) => !n.matches('[data-pager-page]'));
+    // Page sizes: a short last page when it carries extra content, the rest filled evenly.
+    const tail = items.length > perPage ? Math.min(lastPage, perPage) : items.length;
+    const restCount = items.length - tail;
+    const restPages = Math.ceil(restCount / perPage);
+    const sizes = Array.from({ length: restPages }, (_, i) => Math.floor(restCount / restPages) + (i < restCount % restPages ? 1 : 0));
+    sizes.push(tail);
+    const pages = sizes.length;
+    const groups = [];
+    let from = 0;
+    sizes.forEach((size, p) => {
+      const page = h('div', { class: 'pager-page', dataset: { pagerPage: String(p) } });
+      items.slice(from, from + size).forEach((item) => page.append(item));
+      from += size;
+      groups.push(page);
+    });
+    list.replaceChildren(...groups);
+    const status = h('span', { class: 'pager-status', role: 'status' });
+    const prev = h('button', { type: 'button', class: 'btn btn-secondary pager-btn' }, 'السابق');
+    const next = h('button', { type: 'button', class: 'btn btn-secondary pager-btn' }, 'التالي');
+    const nav = h('nav', { class: 'pager', 'aria-label': `صفحات ${label}`, dataset: { pagerFor: list.id || '' } }, [prev, status, next]);
+    let current = 0;
+    const show = (page, { focus = false } = {}) => {
+      current = Math.min(Math.max(page, 0), pages - 1);
+      groups.forEach((g, i) => { g.hidden = i !== current; });
+      status.textContent = `${label}: الصفحة ${current + 1} من ${pages}`;
+      prev.disabled = current === 0;
+      next.disabled = current === pages - 1;
+      lastOnly.forEach((node) => { if (node) node.hidden = current !== pages - 1; });
+      if (focus) {
+        /** @type {HTMLElement|null} */ (groups[current].querySelector('legend, .diag-head, h4, p'))?.setAttribute('tabindex', '-1');
+        /** @type {HTMLElement|null} */ (groups[current].querySelector('[tabindex="-1"]'))?.focus({ preventScroll: true });
+        list.scrollIntoView({ block: 'start' });
+      }
+    };
+    prev.addEventListener('click', () => show(current - 1, { focus: true }));
+    next.addEventListener('click', () => show(current + 1, { focus: true }));
+    list.addEventListener('bloom:reveal', (event) => {
+      const page = /** @type {HTMLElement} */ (event.target).closest('[data-pager-page]');
+      if (page) show(Number(page.getAttribute('data-pager-page')));
+    });
+    list.after(nav);
+    nav.hidden = pages < 2;
+    show(start);
+    const showItem = (node) => {
+      const page = node?.closest('[data-pager-page]');
+      if (page) show(Number(page.getAttribute('data-pager-page')));
+    };
+    return { show, showItem, pages };
+  }
 
   // ---------------------------------------------------------------------------
   // Save status (never shows success when saving failed)
@@ -300,6 +386,12 @@
     'sources.card': 'أضف بطاقة مصدر واحدة على الأقل بحقولها المطلوبة.',
   };
 
+  /** Screen key holding the work behind a non-field rule key (for "ما زال ناقصًا في"). */
+  const MISSING_WHERE = {
+    'diagnostic.submit': '02', 'diagnostic.allAnswered': '02', 'diagnostic.report': '02',
+    's14.exampleOpened': '14', 's19.rows': '19', 'test.attempt': '21', 'test.report': '23', 'sources.card': '25-2',
+  };
+
   /** @param {HTMLElement} control */
   function clearFieldError(control) {
     const wrap = control.closest('.field, .review-q, .check-part, [data-field-wrap]');
@@ -371,12 +463,24 @@
   function tryComplete(id, { silent = false } = {}) {
     const def = elementDef(id);
     if (!def) return false;
-    const screen = screenEl(def.screen);
-    const result = screen?.querySelector(`[data-result="${id}"]`);
-    $$('.has-error', screen || document).forEach((w) => {
-      w.classList.remove('has-error');
-      w.querySelector('.field-error')?.remove();
+    // The result line sits in the part where the element is recorded; its fields
+    // may sit in earlier parts of the same document screen.
+    const result = /** @type {HTMLElement|null} */ (document.querySelector(`[data-result="${id}"]`));
+    const screen = /** @type {HTMLElement|null} */ (result?.closest('[data-screen]') || screenEl(def.screen));
+    partsOf(def.screen).forEach((key) => {
+      $$('.has-error', screenEl(key) || document).forEach((w) => {
+        w.classList.remove('has-error');
+        w.querySelector('.field-error')?.remove();
+      });
     });
+    // Parts not opened yet have no widgets; build them so their gaps can be marked.
+    partsOf(def.screen).forEach((key) => buildScreen(screenEl(key)));
+    /** Screen keys (other than this one) that hold missing work. */
+    const elsewhere = new Set();
+    const noteElsewhere = (node) => {
+      const host = /** @type {HTMLElement|null} */ (node?.closest('[data-screen]') || null);
+      if (host && host !== screen) elsewhere.add(host.dataset.screen || '');
+    };
     const missing = C.missingForElement(id, store.state);
     if (missing.length) {
       if (silent) return false;
@@ -385,19 +489,26 @@
       missing.forEach((key) => {
         if (key.startsWith('check:')) {
           notes.push('أجب عن سؤال التحقق حتى تصل إلى الإجابة الصحيحة.');
-          focusTarget = focusTarget || screen?.querySelector('[data-check] input, [data-check] select') || null;
+          const checkMount = document.querySelector(`[data-check="${key.slice(6)}"]`);
+          noteElsewhere(checkMount);
+          if (checkMount && checkMount.closest('[data-screen]') === screen) focusTarget = focusTarget || checkMount.querySelector('input, select');
           return;
         }
         if (MISSING_TEXT[key]) {
           notes.push(MISSING_TEXT[key]);
+          if (MISSING_WHERE[key]) noteElsewhere(screenEl(MISSING_WHERE[key]));
           return;
         }
         const control = markFieldMissing(key);
-        focusTarget = focusTarget || control;
+        noteElsewhere(control);
+        if (control && control.closest('[data-screen]') === screen) focusTarget = focusTarget || control;
       });
       if (result) {
         result.className = 'result is-missing';
-        result.textContent = notes.length ? `لم يُسجَّل بعد. ${[...new Set(notes)].join(' ')}` : 'لم يُسجَّل بعد. أكمل الحقول المشار إليها.';
+        result.replaceChildren(notes.length ? `لم يُسجَّل بعد. ${[...new Set(notes)].join(' ')}` : 'لم يُسجَّل بعد. أكمل الحقول المشار إليها.');
+        if (elsewhere.size) {
+          result.append(' ما زال ناقصًا في: ', ...[...elsewhere].flatMap((key, k) => [k ? '، ' : '', h('a', { href: screenHref(key), class: 'inline-link' }, `الشاشة ${screenLabel(key)}`)]), '.');
+        }
       }
       /** @type {HTMLElement|null} */ (focusTarget)?.focus();
       return false;
@@ -573,6 +684,16 @@
       // Completes at once when the check is the whole rule (e.g. t03); otherwise waits for "سجّل عملي".
       if (tryComplete(def.element, { silent: true })) {
         feedback.append(h('p', { class: 'feedback-note' }, `سُجّل عنصر ${elementLabel(def.element)} مكتملًا.`));
+      } else {
+        // The element needs another check on a later part (screen 13): say where.
+        const parts = C.missingForElement(def.element, store.state)
+          .filter((k) => k.startsWith('check:'))
+          .map((k) => /** @type {HTMLElement|null} */ (document.querySelector(`[data-check="${k.slice(6)}"]`)?.closest('[data-screen]') || null))
+          .filter((sc) => sc && sc !== form.closest('[data-screen]'));
+        if (parts.length) {
+          feedback.append(h('p', { class: 'feedback-note' }, [`يكتمل عنصر ${elementLabel(def.element)} بعد سؤال التحقق في `,
+            ...parts.flatMap((sc, k) => [k ? '، ' : '', h('a', { href: `#${sc.id}`, class: 'inline-link' }, `الشاشة ${screenLabel(sc.dataset.screen || '')}`)]), '.']));
+        }
       }
     }
     renderProgress();
@@ -589,15 +710,18 @@
       const n = screen.dataset.screen || '';
       const i = SCREEN_ORDER.indexOf(n);
       const prev = SCREEN_ORDER[i - 1];
-      const next = D.NEXT_OVERRIDES[n] || SCREEN_ORDER[i + 1];
+      // A document-level "next" (e.g. 20 -> 21) applies after the screen's last part.
+      const parts = partsOf(groupOfKey(n));
+      const isLastPart = parts[parts.length - 1] === n;
+      const next = (isLastPart && D.NEXT_OVERRIDES[groupOfKey(n)]) || SCREEN_ORDER[i + 1];
       const stopPanel = h('div', { class: 'stop-panel', role: 'status', hidden: true, dataset: { stopPanel: n } });
-      const nav = h('nav', { class: 'screen-nav', 'aria-label': `التنقل من الشاشة ${n}` }, [
-        prev ? h('a', { href: screenHref(prev), class: 'btn btn-ghost', rel: 'prev' }, `السابق: ${prev}`) : h('span'),
+      const nav = h('nav', { class: 'screen-nav', 'aria-label': `التنقل من الشاشة ${screenLabel(n)}` }, [
+        prev ? h('a', { href: screenHref(prev), class: 'btn btn-ghost', rel: 'prev' }, `السابق: ${screenLabel(prev)}`) : h('span'),
         h('div', { class: 'screen-nav-save' }, [
           h('button', { type: 'button', class: 'btn btn-secondary', dataset: { action: 'save-draft' } }, 'احفظ المسودة'),
           h('button', { type: 'button', class: 'btn btn-secondary', dataset: { action: 'save-stop', stopScreen: n } }, 'احفظ وتوقف'),
         ]),
-        next ? h('a', { href: screenHref(next), class: 'btn btn-primary', rel: 'next' }, `التالي: ${next}`) : h('a', { href: '#dashboard', class: 'btn btn-primary' }, 'لوحتي'),
+        next ? h('a', { href: screenHref(next), class: 'btn btn-primary', rel: 'next' }, `التالي: ${screenLabel(next)}`) : h('a', { href: '#dashboard', class: 'btn btn-primary' }, 'لوحتي'),
       ]);
       screen.append(h('div', { class: 'screen-foot' }, [nav, stopPanel]));
     });
@@ -980,9 +1104,13 @@
   /** Screen 20: the seven-criterion rubric as one fieldset per criterion (readable on phones). */
   /** @param {ParentNode} [root] */
   function renderRubric(root = document) {
-    const holder = root.querySelector('[data-rubric]');
-    if (!holder) return;
-    D.RUBRIC.forEach((c) => {
+    $$('[data-rubric]', root).forEach((holder) => renderRubricInto(holder));
+  }
+
+  /** @param {HTMLElement} holder Mount whose data-rubric lists the criterion ids to show. */
+  function renderRubricInto(holder) {
+    const ids = (holder.dataset.rubric || '').split(/\s+/).filter(Boolean);
+    D.RUBRIC.filter((c) => !ids.length || ids.includes(c.id)).forEach((c) => {
       const name = `s20-level-${c.id}`;
       const evidenceId = `s20-evidence-${c.id}`;
       holder.append(h('fieldset', { class: 'rubric-item', dataset: { fieldWrap: '' } }, [
@@ -1074,8 +1202,10 @@
     const mount = root.querySelector('[data-diagnostic]');
     if (!mount) return;
     const form = h('form', { class: 'check', novalidate: true, id: 'diagnostic-form' });
+    const list = h('div', { id: 'diag-items' });
+    form.append(list);
     D.DIAGNOSTIC.forEach((item, i) => {
-      form.append(h('fieldset', { class: 'check-part', id: `diag-${item.id}`, dataset: { fieldWrap: '' } }, [
+      list.append(h('fieldset', { class: 'check-part', id: `diag-${item.id}`, dataset: { fieldWrap: '' } }, [
         h('legend', { class: 'check-prompt' }, `ق${i + 1}. ${item.stem}${item.hint ? ` ${item.hint}` : ''}`),
         h('div', { class: 'choice-list' }, item.options.map((o) => h('label', { class: 'choice' }, [
           h('input', { type: 'radio', name: `s02-${item.id}`, value: o.id, dataset: { field: `s02.${item.id}` } }),
@@ -1083,16 +1213,22 @@
         ]))),
       ]));
     });
-    form.append(
-      h('p', { id: 'diag-warning', class: 'result is-missing', role: 'alert' }),
-      h('div', { class: 'actions' }, h('button', { type: 'submit', class: 'btn btn-primary', id: 'diag-submit' }, 'اعرض التوجيه')),
-    );
+    const submitBar = h('div', { class: 'actions' }, h('button', { type: 'submit', class: 'btn btn-primary', id: 'diag-submit' }, 'اعرض التوجيه'));
+    form.append(h('p', { id: 'diag-warning', class: 'result is-missing', role: 'alert' }), submitBar);
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       submitDiagnostic(form);
     });
     mount.append(form);
+    diagPager = paginate(list, { perPage: PAGE_SIZE.diagnostic, label: 'بنود التشخيص', lastOnly: [submitBar] });
   }
+
+  /** Items per page in generated lists (keeps screens of comparable length). */
+  const PAGE_SIZE = { diagnostic: 2, diagnosticReport: 2, test: 2, testReport: 3 };
+  /** @type {ReturnType<typeof paginate>|null} */
+  let diagPager = null;
+  /** @type {ReturnType<typeof paginate>|null} */
+  let testPager = null;
 
   /** @param {HTMLFormElement} form */
   function submitDiagnostic(form) {
@@ -1104,7 +1240,9 @@
       if (warning) warning.textContent = `لم تُجب عن: ${empty.map(({ i }) => `ق${i + 1}`).join('، ')}. أجب عنها، أو أرسل كما هي؛ لن يكتمل عنصر التشخيص إلا بالإجابة عن جميع البنود.`;
       const button = byId('diag-submit');
       if (button) button.textContent = 'أرسل رغم البنود الفارغة';
-      /** @type {HTMLElement|null} */ (byId(`diag-${empty[0].q.id}`)?.querySelector('input'))?.focus();
+      const firstEmpty = byId(`diag-${empty[0].q.id}`);
+      diagPager?.showItem(firstEmpty);
+      /** @type {HTMLElement|null} */ (firstEmpty?.querySelector('input'))?.focus();
       return;
     }
     store.update((st) => {
@@ -1138,10 +1276,8 @@
           : h('p', {}, ['راجع: ', ...q.review.flatMap((n, k) => [k ? '، ثم ' : '', screenLink(n)])]),
       ]);
     });
-    report.replaceChildren(
-      h('h4', { class: 'section-title' }, 'تقرير التشخيص'),
-      h('p', { class: 'field-hint' }, `أُرسل في ${fmtDateTime(last.submittedAt)}. هذا التقرير يوجه مراجعتك، ولا يقيس مستواك قياسًا شاملًا، ولا يدخل في درجة الاجتياز ولا يعفيك من قاعدة الاستكمال.`),
-      h('ol', { class: 'diag-list' }, items),
+    const list = h('ol', { class: 'diag-list', id: 'diag-report-list' }, items);
+    const closing = h('div', {}, [
       h('h4', { class: 'section-title' }, 'أحتاج أن أراجع'),
       reviewScreens.length
         ? h('ul', { class: 'dash-list prose' }, reviewScreens.map((n) => h('li', {}, screenLink(n))))
@@ -1150,7 +1286,14 @@
         h('a', { href: '#screen-04', class: 'btn btn-primary' }, 'التالي: مساري ونقطة العودة'),
         h('button', { type: 'button', class: 'btn btn-secondary', dataset: { action: 'diag-again' } }, 'أجب مرة أخرى'),
       ]),
+    ]);
+    report.replaceChildren(
+      h('h4', { class: 'section-title' }, 'تقرير التشخيص'),
+      h('p', { class: 'field-hint' }, `أُرسل في ${fmtDateTime(last.submittedAt)}. هذا التقرير يوجه مراجعتك، ولا يقيس مستواك قياسًا شاملًا، ولا يدخل في درجة الاجتياز ولا يعفيك من قاعدة الاستكمال.`),
+      list,
+      closing,
     );
+    paginate(list, { perPage: PAGE_SIZE.diagnosticReport, lastPage: 1, label: 'تقرير التشخيص', lastOnly: [closing] });
     report.hidden = false;
     if (form) form.hidden = true;
     if (!last.reportViewedAt) {
@@ -1300,7 +1443,10 @@
     });
   }
 
-  /** Side-by-side comparison of two versions; changed fields are marked. */
+  /**
+   * Comparison of two versions: the changed fields side by side (the point of the
+   * comparison), then the unchanged fields once, in a collapsible list.
+   */
   function compareVersions() {
     const out = byId('version-compare');
     const a = store.state.project.versions.find((v) => v.id === /** @type {HTMLSelectElement} */ (byId('compare-a'))?.value);
@@ -1310,16 +1456,25 @@
       out.replaceChildren(h('p', { class: 'compare-empty' }, 'تحتاج نسختين محفوظتين على الأقل للمقارنة.'));
       return;
     }
-    const col = (v, other) => h('div', { class: 'compare-col' }, [
+    const val = (v, k) => v.data?.[k] || '';
+    const used = PROJECT_FIELDS.filter(([k]) => val(a, k) || val(b, k));
+    const changed = used.filter(([k]) => val(a, k) !== val(b, k));
+    const same = used.filter(([k]) => val(a, k) === val(b, k));
+    const col = (v) => h('div', { class: 'compare-col' }, [
       h('h4', {}, `${v.label} — ${fmtDateTime(v.at)}`),
-      h('dl', {}, PROJECT_FIELDS.flatMap(([k, label]) => {
-        const value = v.data?.[k] || '';
-        if (!value && !(other.data?.[k])) return [];
-        return [h('dt', {}, label), h('dd', { class: value !== (other.data?.[k] || '') ? 'is-changed' : '' }, value || '—')];
-      })),
+      changed.length
+        ? h('dl', {}, changed.flatMap(([k, label]) => [h('dt', {}, label), h('dd', { class: 'is-changed' }, val(v, k) || '—')]))
+        : h('p', { class: 'compare-empty' }, 'لا فرق في الحقول بين النسختين.'),
     ]);
-    out.replaceChildren(col(a, b), col(b, a));
-    out.prepend(h('p', { class: 'field-hint', style: 'grid-column: 1 / -1' }, 'الحقول المعلَّمة بخط جانبي تغيرت بين النسختين.'));
+    out.replaceChildren(
+      h('p', { class: 'field-hint', style: 'grid-column: 1 / -1' }, `تغير ${changed.length} من ${used.length} حقلًا بين النسختين؛ تظهر الحقول المتغيرة هنا بخط جانبي.`),
+      col(a),
+      col(b),
+      same.length ? h('details', { class: 'hint', style: 'grid-column: 1 / -1' }, [
+        h('summary', {}, h('span', {}, `الحقول التي لم تتغير (${same.length})`)),
+        h('div', { class: 'hint-body' }, h('dl', { class: 'legacy-list' }, same.flatMap(([k, label]) => [h('dt', {}, label), h('dd', {}, val(a, k))]))),
+      ]) : null,
+    );
   }
 
   /** Text view of the current project for review or copying (screen 20). */
@@ -1461,6 +1616,7 @@
     const { draft, attempts } = store.state.test;
     if (!draft) {
       player.replaceChildren();
+      player.parentElement?.querySelector(':scope > .pager[data-pager-for="test-player"]')?.remove();
       actionsBar.hidden = true;
       if (msg) {
         msg.className = 'result';
@@ -1488,7 +1644,10 @@
       ]))),
     ])));
     player.setAttribute('aria-busy', 'false');
-    actionsBar.hidden = false;
+    // Open on the page of the first unanswered question (all pages when printing).
+    const firstOpen = items.findIndex((item) => !draft.answers?.[item.id]);
+    testPager = paginate(player, { perPage: PAGE_SIZE.test, label: 'أسئلة الاختبار', lastOnly: [actionsBar] });
+    if (firstOpen > 0) testPager.showItem(player.querySelector(`#test-item-${items[firstOpen].id}`));
     renderTestCount();
   }
 
@@ -1512,7 +1671,9 @@
         msg.className = 'result is-missing';
         msg.replaceChildren('أجب عن جميع الأسئلة قبل الإرسال. الأسئلة الفارغة: ', ...missing.flatMap((item, k) => [k ? '، ' : '', h('a', { href: `#test-item-${item.id}`, class: 'inline-link' }, `السؤال ${items.indexOf(item) + 1}`)]));
       }
-      byId(`test-item-${missing[0].id}`)?.querySelector('input')?.focus();
+      const firstMissing = byId(`test-item-${missing[0].id}`);
+      testPager?.showItem(firstMissing);
+      firstMissing?.querySelector('input')?.focus();
       return;
     }
     if (!window.confirm('للاختبار محاولة مرسلة واحدة. بعد الإرسال تُقفل إجاباتك وتُحسب الدرجة، ولا تتاح إعادة. هل تريد الإرسال؟')) return;
@@ -1551,15 +1712,22 @@
     window.location.hash = '#screen-23';
   }
 
+  /**
+   * Screen 23: part أ shows the two pass conditions and what is missing; part ب
+   * explains every answer (paged, a few items at a time).
+   */
   async function renderTestReport() {
     const holder = byId('test-report');
+    const explain = byId('test-explain');
     if (!holder) return;
     const attempts = store.state.test.attempts;
     const pass = passState();
     const conditions = h('div', { class: 'dash-grid' }, byId('dash-conditions') ? [...byId('dash-conditions').children].map((n) => n.cloneNode(true)) : []);
     const summary = h('p', { class: `dash-summary ${pass.passed ? 'is-passed' : ''}` }, passSummary(pass));
+    const notSent = () => h('p', {}, ['لم تُرسل محاولة بعد. ', h('a', { href: '#screen-21', class: 'inline-link' }, 'ابدأ من تعليمات الاختبار')]);
     if (!attempts.length) {
-      holder.replaceChildren(conditions, summary, h('p', {}, ['لم تُرسل محاولة بعد. ', h('a', { href: '#screen-21', class: 'inline-link' }, 'ابدأ من تعليمات الاختبار')]));
+      holder.replaceChildren(conditions, summary, notSent());
+      explain?.replaceChildren(notSent());
       return;
     }
     try {
@@ -1574,6 +1742,7 @@
     const items = forms[last.form] || [];
     const missingEls = D.ELEMENTS.filter((e) => !isDone(e.id));
     const retake = C.retakeStatus(attempts, C.RETAKE_POLICY);
+    const wrongCount = items.filter((item) => !last.correct[item.id]).length;
     holder.replaceChildren(
       conditions,
       summary,
@@ -1581,8 +1750,13 @@
         h('h4', { class: 'section-title' }, 'العناصر الناقصة'),
         h('ul', { class: 'dash-list prose' }, missingEls.map((e) => h('li', {}, [screenLink(e.screen, `${elementLabel(e.id)} · الشاشة ${e.screen}: ${screenTitle(e.screen)}`), ` — ${e.condition}`]))),
       ]) : null,
-      h('h4', { class: 'section-title' }, `تفسير الإجابات — النموذج ${last.form === 'A' ? 'أ' : 'ب'}، أُرسل في ${fmtDateTime(last.submittedAt)}`),
-      h('ol', { class: 'diag-list' }, items.map((item) => {
+      h('p', {}, `أُرسلت المحاولة في ${fmtDateTime(last.submittedAt)} (النموذج ${last.form === 'A' ? 'أ' : 'ب'}). أجبت إجابة صحيحة عن ${items.length - wrongCount} من ${items.length} أسئلة.`),
+      h('p', { class: 'note' }, 'لا يُستنتج من بند واحد مستوى ثابت لك؛ البند الخاطئ إشارة إلى موضع يحتاج مراجعة. لا تمنح هذه النتيجة شهادة اعتماد أو حكمًا بالإتقان المهني.'),
+      retake.allowed ? null : h('p', { class: 'note' }, D.MESSAGES.singleAttempt),
+      h('div', { class: 'actions' }, h('a', { href: '#screen-23-2', class: 'btn btn-primary' }, 'التالي: تفسير كل إجابة')),
+    );
+    if (explain) {
+      const list = h('ol', { class: 'diag-list', id: 'test-explain-list' }, items.map((item) => {
         const key = keys[item.id];
         const ok = last.correct[item.id];
         const chosen = item.options.find((o) => o.id === last.answers[item.id]);
@@ -1594,11 +1768,15 @@
           h('p', {}, `لماذا: ${key.feedback} (الناتج ${key.outcome})`),
           h('p', {}, ['موضع المراجعة: ', screenLink(key.review)]),
         ]);
-      })),
-      h('p', { class: 'note' }, 'لا يُستنتج من بند واحد مستوى ثابت لك؛ البند الخاطئ إشارة إلى موضع يحتاج مراجعة. لا تمنح هذه النتيجة شهادة اعتماد أو حكمًا بالإتقان المهني.'),
-      retake.allowed ? null : h('p', { class: 'note' }, D.MESSAGES.singleAttempt),
-      h('div', { class: 'actions' }, h('a', { href: '#screen-24', class: 'btn btn-primary' }, 'التالي: من النتيجة إلى خطوة تعلم')),
-    );
+      }));
+      const closing = h('div', { class: 'actions' }, h('a', { href: '#screen-24', class: 'btn btn-primary' }, 'التالي: من النتيجة إلى خطوة تعلم'));
+      explain.replaceChildren(
+        h('h4', { class: 'section-title' }, `تفسير الإجابات — النموذج ${last.form === 'A' ? 'أ' : 'ب'}`),
+        list,
+        closing,
+      );
+      paginate(list, { perPage: PAGE_SIZE.testReport, lastPage: 2, label: 'تفسير الإجابات', lastOnly: [closing] });
+    }
     if (!store.state.test.reportViewedAt) store.update((st) => { st.test.reportViewedAt = nowIso(); });
   }
 
@@ -1635,6 +1813,22 @@
   const USE_TEXT = { quote: 'نقل نص', summary: 'تلخيص', own: 'مثال من بنائي' };
   const PART_TEXT = { goal: 'الهدف', task: 'المهمة', sources: 'مصادر المتعلم', assessment: 'المحك والتغذية الراجعة', trial: 'التجربة', other: 'جزء آخر' };
 
+  /**
+   * For a form split over two parts: focuses the first missing control on this
+   * part, and links the other parts that still hold missing controls.
+   * @param {string} resultId @param {Array<HTMLElement|null>} controls
+   */
+  function focusOrLinkMissing(resultId, controls) {
+    const result = byId(resultId);
+    const here = result?.closest('[data-screen]');
+    const local = controls.find((c) => c && c.closest('[data-screen]') === here);
+    const others = [...new Set(controls.map((c) => /** @type {HTMLElement|null} */ (c?.closest('[data-screen]') || null)).filter((sc) => sc && sc !== here).map((sc) => sc.dataset.screen || ''))];
+    if (result && others.length) {
+      result.append(' ما زال ناقصًا في: ', ...others.flatMap((key, k) => [k ? '، ' : '', h('a', { href: screenHref(key), class: 'inline-link' }, `الشاشة ${screenLabel(key)}`)]), '.');
+    }
+    /** @type {HTMLElement|undefined|null} */ (local)?.focus();
+  }
+
   function renderSources() {
     const list = byId('source-list');
     if (!list) return;
@@ -1651,13 +1845,12 @@
   function addSource(event) {
     event.preventDefault();
     const d = store.state.drafts.s25 || {};
-    $$('.has-error', byId('source-form') || document).forEach((w) => { w.classList.remove('has-error'); w.querySelector('.field-error')?.remove(); });
+    $$('[data-field^="s25."]').forEach((c) => clearFieldError(c));
     const missing = C.SOURCE_REQUIRED.filter((k) => C.isBlank(d[k]));
     if (missing.length) {
-      let first = null;
-      missing.forEach((k) => { first = first || markFieldMissing(`s25.${k}`); });
+      const controls = missing.map((k) => markFieldMissing(`s25.${k}`));
       setResult('source-result', 'أكمل الحقول المشار إليها؛ تحتاج البطاقة ما يسمح بالرجوع إلى المادة.', false);
-      /** @type {HTMLElement|null} */ (first)?.focus();
+      focusOrLinkMissing('source-result', controls);
       return;
     }
     const card = { id: `src${Date.now()}`, title: d.title, author: d.author, locator: d.locator, accessed: d.accessed, location: d.location, purpose: d.purpose, use: d.use, part: d.part || '', license: C.isBlank(d.license) ? 'غير معلوم' : d.license, createdAt: nowIso() };
@@ -1690,20 +1883,19 @@
   function addTrial(event) {
     event.preventDefault();
     const d = store.state.drafts.s28 || {};
-    $$('.has-error', byId('trial-form') || document).forEach((w) => { w.classList.remove('has-error'); w.querySelector('.field-error')?.remove(); });
+    $$('[data-field^="s28."]').forEach((c) => clearFieldError(c));
     const required = ['type', 'evidence', 'observation', 'alt', 'decision'];
     const missing = required.filter((k) => C.isBlank(d[k]));
     if (missing.length) {
-      let first = null;
-      missing.forEach((k) => { first = first || markFieldMissing(`s28.${k}`); });
+      const controls = missing.map((k) => markFieldMissing(`s28.${k}`));
       setResult('trial-result', 'أكمل الحقول المشار إليها.', false);
-      /** @type {HTMLElement|null} */ (first)?.focus();
+      focusOrLinkMissing('trial-result', controls);
       return;
     }
     const version = addVersion('cycle', { change: d.decision });
     const trial = { id: `tr${Date.now()}`, type: d.type, evidence: d.evidence, observation: d.observation, alt: d.alt, decision: d.decision, at: nowIso(), versionId: version?.id || null };
     const ok = store.update((st) => { st.trials.push(trial); st.drafts.s28 = {}; });
-    $$('#trial-form [data-field]').forEach((c) => {
+    $$('[data-field^="s28."]').forEach((c) => {
       if (/** @type {HTMLInputElement} */ (c).type === 'radio') /** @type {HTMLInputElement} */ (c).checked = false;
       else /** @type {HTMLInputElement} */ (c).value = '';
     });
@@ -1711,7 +1903,7 @@
     renderVersions();
     renderProgress();
     setResult('trial-result', ok && version
-      ? `سُجلت ${trial.type === 'sim' ? 'المحاكاة' : 'التجربة'} وأُنشئت ${version.label}. عدّل مشروعك في الشاشات 17–19، ثم قارن النسختين أدناه.`
+      ? `سُجلت ${trial.type === 'sim' ? 'المحاكاة' : 'التجربة'} وأُنشئت ${version.label}. عدّل مشروعك في الشاشات 17–19، ثم قارن النسختين في الجزء ج من هذه الشاشة.`
       : 'لم يُحفظ السجل؛ راجع تنبيه الحفظ.', ok && !!version);
   }
 
@@ -1720,12 +1912,14 @@
   // ---------------------------------------------------------------------------
 
   Object.assign(actions, {
+    'play-video': (target) => playVideo(target),
     'diag-again': () => {
       store.update((st) => { st.drafts.s02 = {}; });
       $$('#diagnostic-form input').forEach((r) => { /** @type {HTMLInputElement} */ (r).checked = false; });
       const form = byId('diagnostic-form');
       const report = byId('diagnostic-report');
       if (report) report.hidden = true;
+      diagPager?.show(0);
       if (form) { form.hidden = false; /** @type {HTMLElement|null} */ (form.querySelector('input'))?.focus(); }
       const button = byId('diag-submit');
       if (button) button.textContent = 'اعرض التوجيه';
@@ -1795,7 +1989,8 @@
         return;
       }
       setDraft('s14.exampleOpened', true, { now: true });
-      showWorkshopTwoCompare({ focus: true });
+      showWorkshopTwoCompare();
+      window.location.hash = '#screen-14-2';
     },
     'add-criterion': () => {
       const rows = criterionRows().map((r) => ({ ...r }));
@@ -1815,9 +2010,13 @@
       const kind = target.dataset.kind === 'trial' ? 'trial' : 'review';
       const missing = C.missingForElement('t16', store.state).filter((m) => m !== 'project.version');
       if (missing.length) {
-        tryComplete('t16'); // marks the criteria that still need a level or evidence
+        tryComplete('t16'); // marks the criteria that still need a level or evidence, with links to their parts
         const res = document.querySelector('[data-result="t16"]');
-        if (res) res.textContent = 'لم تُحفظ النسخة بعد. لكل محك اختر وصفًا وأرفق شاهدًا من عملك (أو سبب «لا ينطبق»).';
+        if (res) {
+          const links = [...res.querySelectorAll('a')];
+          res.replaceChildren('لم تُحفظ النسخة بعد. لكل محك اختر وصفًا وأرفق شاهدًا من عملك (أو سبب «لا ينطبق»).');
+          if (links.length) res.append(' ما زال ناقصًا في: ', ...links.flatMap((link, k) => [k ? '، ' : '', link]), '.');
+        }
         return;
       }
       const d = store.state.drafts.s20 || {};
@@ -1862,6 +2061,26 @@
     'compare-versions': () => compareVersions(),
   });
 
+  /**
+   * Replaces the play button with the YouTube player. Nothing is requested from
+   * YouTube until the learner presses play (privacy-enhanced domain).
+   * @param {HTMLElement} button
+   */
+  function playVideo(button) {
+    const figure = button.closest('[data-video]');
+    const id = figure?.getAttribute('data-video') || '';
+    if (!figure || !/^[\w-]{11}$/.test(id)) return;
+    const iframe = h('iframe', {
+      src: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`,
+      title: figure.getAttribute('data-video-title') || 'YouTube',
+      allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+      referrerpolicy: 'strict-origin-when-cross-origin',
+      allowfullscreen: true,
+    });
+    button.replaceWith(iframe);
+    iframe.focus();
+  }
+
   /** Screen 14: reveals the example and criteria once the first attempt exists, and keeps that attempt unchanged. */
   function showWorkshopTwoCompare({ focus = false } = {}) {
     if (!C.getField(store.state, 's14.exampleOpened')) return;
@@ -1874,9 +2093,11 @@
         control.setAttribute('aria-readonly', 'true');
       }
     });
-    setResult('s14-gate', 'حُفظت محاولتك الأولى كما كتبتها قبل فتح المثال. اكتب أي تعديل في «نسختي بعد إصلاح النقص».');
+    setResult('s14-gate', 'حُفظت محاولتك الأولى كما كتبتها قبل فتح المثال. اكتب أي تعديل في «نسختي بعد إصلاح النقص» في الجزء ب.');
     const open = byId('s14-open');
     if (open) open.hidden = true;
+    const gate = byId('s14-gate');
+    if (gate && !gate.querySelector('a')) gate.append(' ', h('a', { href: '#screen-14-2', class: 'inline-link' }, 'انتقل إلى الجزء ب'));
     if (focus) /** @type {HTMLElement|null} */ (box?.querySelector('.example'))?.scrollIntoView({ block: 'start' });
   }
 
@@ -1904,9 +2125,75 @@
     if (reviewLink) reviewLink.href = screenHref(screens[0] || '05');
   }
 
-  /** Per-screen refresh when a screen becomes visible. */
-  const ON_SHOW = {
-    '02': () => {
+  /**
+   * Screen 04: the seven units with their screens and the learner's completed
+   * elements, built from the unit banners so it never drifts from the page.
+   */
+  function renderProgramMap() {
+    const list = byId('program-map');
+    if (!list) return;
+    list.replaceChildren(...$$('[data-lesson]').map((lesson) => {
+      const kicker = lesson.querySelector('.lesson-kicker')?.textContent.trim() || '';
+      const title = lesson.querySelector('.lesson-title')?.textContent.trim() || lesson.id;
+      const sub = lesson.querySelector('.lesson-sub')?.textContent.trim() || '';
+      const els = D.ELEMENTS.filter((e) => unitOf(e.screen) === lesson.id);
+      const done = els.filter((e) => isDone(e.id)).length;
+      const screens = kicker.split('·')[1]?.trim() || '';
+      return h('li', { title: sub }, [
+        h('a', { href: `#${lesson.id}`, class: 'inline-link' }, title),
+        h('span', { class: 'dash-item-cond' }, [screens, els.length ? `عناصر الوحدة: ${done} من ${els.length} مكتملة` : ''].filter(Boolean).join(' · ')),
+      ]);
+    }));
+  }
+
+  /**
+   * Screen 20: a read-only excerpt of the learner's own work next to each rubric
+   * criterion, so the evidence can be cited without leaving the screen.
+   */
+  function renderWorkExcerpts() {
+    const snap = projectSnapshot();
+    const s27 = store.state.drafts.s27 || {};
+    const sources = store.state.sources;
+    /** @type {Record<string, Array<[string, string]>>} */
+    const map = {
+      goal: [['الهدف', snap.goal]],
+      alignment: [['الهدف', snap.goal], ['نص المهمة', snap.task], ['العملية المستهدفة', snap.process]],
+      clarity: [['نص المهمة', snap.task], ['المصادر المتاحة', snap.sources]],
+      digital: [['وسيلة الاستجابة', snap.means], ['مبرر الوسيلة', snap.rationale], ['البديل', snap.alternative]],
+      feedback: [['المحكات والتغذية الراجعة', snap.criteria]],
+      sources: [['بطاقات المصادر', sources.map((c) => `${c.title} — ${c.author}`).join('\n')]],
+      trial: [['نوع التجربة', s27.type === 'sim' ? 'محاكاة موثقة' : s27.type === 'class' ? 'تطبيق صفي' : ''], ['الدليل المتوقع', s27.evidence || ''], ['محك المراجعة', s27.criterion || '']],
+    };
+    $$('[data-work-excerpt]').forEach((box) => {
+      const rows = map[box.dataset.workExcerpt || ''] || [];
+      box.replaceChildren(
+        h('span', { class: 'example-label' }, 'من عملك (للقراءة فقط)'),
+        h('dl', { class: 'legacy-list' }, rows.flatMap(([label, value]) => [h('dt', {}, label), h('dd', {}, value && value.trim() ? value : 'لم يُكتب بعد')])),
+      );
+    });
+  }
+
+  /** Screen 20 ح: the learner's judgment on each criterion before saving a version. */
+  function renderRubricSummary() {
+    $$('[data-rubric-summary]').forEach((list) => {
+      list.replaceChildren(...D.RUBRIC.map((c) => {
+        const level = D.RUBRIC_LEVELS.find((lv) => lv.id === C.getField(store.state, `s20.level_${c.id}`));
+        const host = /** @type {HTMLElement|null} */ (document.querySelector(`[data-rubric~="${c.id}"]`)?.closest('[data-screen]') || null);
+        return h('li', {}, [
+          host ? h('a', { href: `#${host.id}`, class: 'inline-link' }, c.name) : c.name,
+          `: ${level ? level.text : 'لم تحدد وصفًا بعد'}`,
+        ]);
+      }));
+    });
+  }
+
+  /**
+   * Per-screen refresh when a screen becomes visible, keyed by what the screen
+   * contains (not by its number), so moving a block to another part keeps it working.
+   * @type {Array<[string, () => void]>}
+   */
+  const ON_SHOW = [
+    ['[data-diagnostic]', () => {
       if (store.state.diagnostic.attempts.length && byId('diagnostic-report')?.hidden) showDiagnosticReport();
       const probe = store.state.probe;
       if (probe && probe.savedAt < pageLoadedAt) {
@@ -1914,28 +2201,33 @@
         if (input && !input.value) input.value = probe.text;
         setResult('probe-status', `استعدنا مسودتك: «${probe.text}» (حُفظت في ${fmtDateTime(probe.savedAt)}). الحفظ يعمل في هذا المتصفح.`);
       }
-    },
-    '04': renderPath,
-    '12': () => { renderCurrentPlan(); renderHistories(); },
-    '14': () => showWorkshopTwoCompare(),
-    '18': renderTaskPreview,
-    '19': renderCriterionRows,
-    '20': renderVersions,
-    '21': renderTestStatus,
-    '22': () => { renderTestPlayer(); },
-    '23': () => { renderTestReport(); },
-    '24': () => { renderRemediation(); },
-    '25': renderSources,
-    '28': () => { renderTrials(); renderVersions(); },
-  };
+    }],
+    ['#s04-review', renderPath],
+    ['#program-map', renderProgramMap],
+    ['#s12-current', () => { renderCurrentPlan(); renderHistories(); }],
+    ['#s14-open, #s14-compare', () => showWorkshopTwoCompare()],
+    ['#s18-preview', renderTaskPreview],
+    ['#s19-rows', renderCriterionRows],
+    ['[data-work-excerpt]', renderWorkExcerpts],
+    ['[data-rubric-summary]', renderRubricSummary],
+    ['#s20-versions', renderVersions],
+    ['#test-start', renderTestStatus],
+    ['#test-player', () => { renderTestPlayer(); }],
+    ['#test-report, #test-explain', () => { renderTestReport(); }],
+    ['#s24-concept', () => { renderRemediation(); }],
+    ['#source-list', renderSources],
+    ['#trial-list, #s28-ready', () => { renderTrials(); }],
+    ['[data-version-select]', () => { renderVersions(); }],
+  ];
 
   document.addEventListener('bloom:screen', (event) => {
     const n = /** @type {CustomEvent} */ (event).detail.screen;
     if (!n) return;
     const screen = screenEl(n);
     buildScreen(screen); // widgets first, then prefill and per-screen refresh
-    if (screen) applyPrefill(screen);
-    ON_SHOW[n]?.();
+    if (!screen) return;
+    applyPrefill(screen);
+    ON_SHOW.forEach(([selector, refresh]) => { if (screen.querySelector(selector)) refresh(); });
   });
 
   document.addEventListener('bloom:draft', (event) => {

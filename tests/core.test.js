@@ -82,6 +82,16 @@ test('checks must be solved; a wrong first attempt stays in history', () => {
   assert.equal(state.checks.s05.attempts[0].allCorrect, false);
 });
 
+test('t09 needs both halves of the screen 13 check (parts أ and ب)', () => {
+  const state = { drafts: {}, checks: { s13: { attempts: [{ allCorrect: true }], solvedAt: 'now' } } };
+  assert.deepEqual(core.missingForElement('t09', state), ['check:s13b']);
+  state.checks.s13b = { attempts: [{ allCorrect: true }], solvedAt: 'now' };
+  assert.deepEqual(core.missingForElement('t09', state), []);
+  assert.ok(data.CHECKS.s13 && data.CHECKS.s13b, 'both checks defined');
+  assert.equal(data.CHECKS.s13.element, 't09');
+  assert.equal(data.CHECKS.s13b.element, 't09');
+});
+
 test('t13 accepts "not decided yet" or "not applicable" only where allowed', () => {
   const state = { drafts: { s17: { goal: 'هدف', goalReview: 'met', audienceStatus: 'tbd', prereqStatus: 'na', constraintsStatus: 'tbd' } } };
   assert.deepEqual(core.missingForElement('t13', state), []);
