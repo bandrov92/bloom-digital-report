@@ -3,7 +3,8 @@
   "private": true,
   "description": "حقيبة هرم بلوم الرقمية — موقع ثابت على GitHub Pages",
   "scripts": {
-    "build:css": "tailwindcss -i ./src/tailwind.css -o ./css/tailwind.css --minify"
+    "build:css": "tailwindcss -i ./src/tailwind.css -o ./css/tailwind.css --minify",
+    "test": "node --test tests/core.test.js tests/store.test.js"
   },
   "devDependencies": {
     "tailwindcss": "3.4.19"

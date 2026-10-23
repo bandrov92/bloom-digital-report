@@ -11,7 +11,7 @@
 
 (() => {
   /** Section ids of the trainee page that old links may target. Keep in sync with trainee.html. */
-  const LEGACY_SECTION_IDS = Object.freeze(['intro', 'map', 'plan', 'activities', 'resources', 'main-content']);
+  const LEGACY_SECTION_IDS = Object.freeze(['intro', 'map', 'plan', 'activities', 'template', 'check', 'resources', 'main-content']);
 
   /**
    * Returns the trainee.html URL for a legacy section hash, or null if the hash
@@ -33,5 +33,24 @@
   if (target) {
     // replace() keeps the portal out of history, so Back does not loop.
     window.location.replace(target);
+    return;
+  }
+
+  /**
+   * Says whether this browser holds saved work, so "تابع تعلمي" is honest about
+   * what it will find. Reads only; the record is owned by js/store.js.
+   */
+  const resume = document.getElementById('portal-resume');
+  if (!resume) return;
+  try {
+    const raw = window.localStorage.getItem('bloomLearning.v1');
+    const record = raw ? JSON.parse(raw) : null;
+    const screen = record && record.position && record.position.screen;
+    const done = record && record.elements ? Object.values(record.elements).filter((e) => e && e.at).length : 0;
+    resume.textContent = screen
+      ? `في هذا المتصفح عمل محفوظ. آخر موضع: الشاشة ${screen}. العناصر المكتملة: ${done} من 20.`
+      : 'لا يوجد عمل محفوظ في هذا المتصفح بعد. يُحفظ عملك على هذا الجهاز فقط.';
+  } catch {
+    resume.textContent = 'هذا المتصفح يمنع الحفظ المحلي الآن؛ اقرأ «كيف أحفظ عملي» قبل البدء.';
   }
 })();

@@ -1,226 +1,98 @@
 /**
- * @file main.js — interactivity for حقيبة هرم بلوم الرقمية.
+ * @file main.js — page structure for trainee.html: hash router, lesson drawer,
+ * screens inside each unit, accordions, tabs and the video dialog.
  *
- * AI usage note: this module was refactored with Claude Code (AI-assisted) from the
- * original inline <script>. Changes made by the AI refactor:
- *  - All inline on* handlers replaced by delegated addEventListener calls (data-* hooks).
- *  - Accordions, Bloom map and modal made keyboard/screen-reader accessible (ARIA state).
- *  - Tool cards rendered with DOM APIs instead of innerHTML string templates.
- *  - Storage access wrapped in safe helpers; trainee reflections now auto-save.
- *  - The AI suggestion flow asks before overwriting the trainee's work and reports
- *    a clear message when no API key is available (e.g. on GitHub Pages).
- *  - LMS redesign: the Bloom levels moved from JS-rendered cards to static
- *    <details> in trainee.html; printing is handled by js/print-expand.js.
- *  - Lesson-player redesign: one lesson on screen at a time behind a hash router
- *    (initPlayer), a lesson drawer with saved completion progress, accessible tabs
- *    for the workshops (initTabs) and a formative knowledge check
- *    (initKnowledgeChecks).
+ * AI usage note (Claude Code): refactored from the original inline script, then
+ * redesigned as a lesson player. Self-learning redesign (2026-10-23):
+ *  - Each unit (<section data-lesson>) now holds screens (<section data-screen>);
+ *    one screen is shown at a time and the URL names it (trainee.html#screen-05).
+ *  - Completion is NOT given for reaching the end of a page any more; learning
+ *    progress is recorded by js/learning.js when the learner performs an activity.
+ *  - The old knowledge check, lesson template, reflections and Gemini suggestion
+ *    were replaced by the scenario's screens (see docs/implementation-log.md).
  *
- * Data compatibility: the lesson draft is still stored under "lessonTemplateDraft"
- * with the original field ids as keys, so drafts saved by the old page still load.
+ * Load order (all deferred): core.js, course-data.js, store.js, learning.js, main.js.
+ * learning.js may expose window.BloomLearning.resolveAlias() for #continue and #next.
  */
 'use strict';
 
 (() => {
-  // ---------------------------------------------------------------------------
-  // Constants
-  // ---------------------------------------------------------------------------
-
-  /** localStorage keys. Do not rename: users' saved work lives under them. */
-  const STORAGE_KEYS = Object.freeze({
-    lessonDraft: 'lessonTemplateDraft',
-    reflections: 'reflectionsDraft',
-    progress: 'lessonProgress', // array of completed lesson ids
-  });
-
-  /** Lesson template field ids; also the keys inside the saved draft object. */
-  const TEMPLATE_FIELDS = Object.freeze([
-    'lt-teacher-name', 'lt-subject', 'lt-lesson-title', 'lt-original-goal',
-    'lt-level1', 'lt-task1', 'lt-tool1',
-    'lt-level2', 'lt-task2', 'lt-tool2',
-    'lt-level3', 'lt-task3', 'lt-tool3',
-    'lt-justification',
-  ]);
-
-  /** Fields the AI suggestion fills (and may overwrite). */
-  const AI_FILLED_FIELDS = Object.freeze([
-    'lt-level1', 'lt-task1', 'lt-tool1',
-    'lt-level2', 'lt-task2', 'lt-tool2',
-    'lt-level3', 'lt-task3', 'lt-tool3',
-    'lt-justification',
-  ]);
-
-  const REFLECTION_FIELDS = Object.freeze(['reflection-ws1', 'reflection-ws2', 'reflection-ws3']);
-
-  // Gemini API. The key is intentionally empty: the Gemini Canvas environment injects it.
-  // Never commit a real key here — anything in this file is public on GitHub Pages.
-  const GEMINI_API_KEY = '';
-  const GEMINI_MODEL = 'gemini-2.5-flash-preview-09-2025';
-  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-  // ---------------------------------------------------------------------------
-  // Small helpers
-  // ---------------------------------------------------------------------------
-
   /** @param {string} id @returns {HTMLElement|null} */
   const byId = (id) => document.getElementById(id);
 
-  /**
-   * Reads and parses a JSON value from localStorage without ever throwing
-   * (storage can be blocked in private mode or by browser settings).
-   * @param {string} key
-   * @returns {Record<string, string>|null} The parsed object, or null if missing/unreadable.
-   */
-  function readStorage(key) {
-    try {
-      const raw = window.localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : null;
-    } catch (error) {
-      console.error(`Could not read "${key}" from localStorage:`, error);
-      return null;
-    }
-  }
-
-  /**
-   * Serialises a value to localStorage without throwing.
-   * @param {string} key
-   * @param {unknown} value
-   * @returns {boolean} true when the value was stored.
-   */
-  function writeStorage(key, value) {
-    try {
-      window.localStorage.setItem(key, JSON.stringify(value));
-      return true;
-    } catch (error) {
-      console.error(`Could not write "${key}" to localStorage:`, error);
-      return false;
-    }
-  }
-
-  const statusTimers = new WeakMap();
-
-  /**
-   * Shows a transient message in a live region and clears it after a delay.
-   * A newer message cancels the pending clear of an older one.
-   * @param {HTMLElement|null} element
-   * @param {string} message
-   * @param {number} [durationMs=3000]
-   */
-  function flashMessage(element, message, durationMs = 3000) {
-    if (!element) return;
-    clearTimeout(statusTimers.get(element));
-    element.textContent = message;
-    statusTimers.set(element, setTimeout(() => { element.textContent = ''; }, durationMs));
-  }
-
-  /**
-   * Returns a debounced version of fn that runs after `wait` ms of inactivity.
-   * @template {(...args: any[]) => void} F
-   * @param {F} fn
-   * @param {number} wait
-   * @returns {(...args: Parameters<F>) => void}
-   */
-  function debounce(fn, wait) {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn(...args), wait);
-    };
-  }
-
   // ---------------------------------------------------------------------------
-  // Accordions
+  // Accordions (library appendices)
   // ---------------------------------------------------------------------------
 
   /**
-   * Expands or collapses one accordion panel and keeps its trigger's ARIA state
-   * in sync. The chevron rotation is pure CSS ([aria-expanded="true"]).
+   * Expands or collapses one accordion panel and keeps its trigger's ARIA state in sync.
    * @param {string} id Suffix shared by "content-{id}" and data-accordion.
    * @param {boolean} [force] true to open, false to close, omitted to toggle.
    */
   function toggleAccordion(id, force) {
     const content = byId(`content-${id}`);
     const trigger = document.querySelector(`[data-accordion="${CSS.escape(id)}"]`);
-    if (!content) {
-      console.error('Accordion panel not found for id:', id);
-      return;
-    }
+    if (!content) return;
     const willOpen = typeof force === 'boolean' ? force : content.classList.contains('hidden');
     content.classList.toggle('hidden', !willOpen);
     if (trigger) trigger.setAttribute('aria-expanded', String(willOpen));
   }
 
   // ---------------------------------------------------------------------------
-  // Lesson player: hash router, drawer and progress
-  //
-  // AI-assisted (Claude Code). Design notes:
-  //  - One lesson (<section data-lesson>) is visible at a time; the URL hash names it,
-  //    so trainee.html#map, Back/Forward and links from trainer.html all work.
-  //  - A hash that names an element INSIDE a lesson (#level-apply, #workshop-2,
-  //    #content-res-tools) opens that lesson, then reveals the element (opens the
-  //    <details>, selects the tab or expands the accordion) and scrolls to it.
-  //  - A lesson counts as complete once its end marker scrolls into view, so
-  //    progress costs the learner no extra click.
+  // Views, units and screens
   // ---------------------------------------------------------------------------
 
   /** Large-screen breakpoint (Tailwind lg). The drawer is a sidebar from here up. */
   const desktopQuery = window.matchMedia('(min-width: 1024px)');
 
-  /** @type {HTMLElement[]} */
-  const lessons = [...document.querySelectorAll('[data-lesson]')];
-  /** @type {HTMLAnchorElement[]} */
-  const lessonLinks = [...document.querySelectorAll('[data-lesson-link]')];
-  const lessonIds = lessons.map((lesson) => lesson.id);
+  /** Every routable view: the seven units plus the learner dashboard. */
+  const views = /** @type {HTMLElement[]} */ ([...document.querySelectorAll('[data-view]')]);
+  const lessons = views.filter((v) => v.hasAttribute('data-lesson'));
+  const lessonLinks = /** @type {HTMLAnchorElement[]} */ ([...document.querySelectorAll('[data-lesson-link]')]);
 
   /** @type {HTMLElement|null} */
-  let currentLesson = null;
+  let currentView = null;
+  /** @type {HTMLElement|null} */
+  let currentScreen = null;
 
   /**
-   * Reads the completed lesson ids, keeping only ids that still exist on the page.
-   * @returns {Set<string>}
+   * Builds the step list at the top of each unit from its screens' titles, so
+   * every screen is one action away (click budget in CLAUDE.md).
    */
-  function readProgress() {
-    const saved = readStorage(STORAGE_KEYS.progress);
-    const list = Array.isArray(saved) ? saved : [];
-    return new Set(list.filter((id) => lessonIds.includes(id)));
-  }
-
-  const completed = readProgress();
-
-  /** Repaints the drawer marks, the progress bars and their ARIA values. */
-  function renderProgress() {
-    const percent = lessonIds.length ? Math.round((completed.size / lessonIds.length) * 100) : 0;
-    lessonLinks.forEach((link) => {
-      const done = completed.has(link.hash.slice(1));
-      link.toggleAttribute('data-complete', done);
-      const status = link.querySelector('[data-status-text]');
-      if (status) status.textContent = done ? ' (مكتمل)' : '';
+  function buildSteppers() {
+    lessons.forEach((lesson) => {
+      const holder = lesson.querySelector('[data-stepper]');
+      const screens = [...lesson.querySelectorAll('[data-screen]')];
+      if (!holder || !screens.length) return;
+      const list = document.createElement('ol');
+      list.className = 'stepper-list';
+      screens.forEach((screen) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${screen.id}`;
+        a.className = 'stepper-link';
+        a.dataset.stepLink = screen.dataset.screen;
+        const n = document.createElement('span');
+        n.className = 'stepper-n';
+        n.textContent = screen.dataset.screen;
+        const t = document.createElement('span');
+        t.className = 'stepper-title';
+        t.textContent = screen.querySelector('.screen-title')?.textContent.trim() || '';
+        const s = document.createElement('span');
+        s.className = 'sr-only';
+        s.dataset.stepState = screen.dataset.screen;
+        a.append(n, t, s);
+        li.append(a);
+        list.append(li);
+      });
+      holder.append(list);
     });
-    const label = byId('progress-percent');
-    if (label) label.textContent = `${percent}%`;
-    byId('progress-bar')?.setAttribute('aria-valuenow', String(percent));
-    const fill = byId('progress-fill');
-    if (fill) fill.style.width = `${percent}%`;
-    const topFill = byId('topbar-progress-fill');
-    if (topFill) topFill.style.width = `${percent}%`;
   }
 
   /**
-   * Marks a lesson as complete and saves the progress.
-   * @param {string} id Lesson id.
-   */
-  function completeLesson(id) {
-    if (!lessonIds.includes(id) || completed.has(id)) return;
-    completed.add(id);
-    writeStorage(STORAGE_KEYS.progress, [...completed]);
-    renderProgress();
-  }
-
-  /**
-   * Resolves a URL hash to the lesson to show and an optional element inside it.
-   * @param {string} hash e.g. "#map" or "#level-apply".
-   * @returns {{lesson: HTMLElement|null, target: HTMLElement|null}}
-   *   lesson is null when the hash should not change the lesson (e.g. #main-content).
+   * Resolves a URL hash to the view, screen and element to show.
+   * @param {string} hash
+   * @returns {{view: HTMLElement|null, screen: HTMLElement|null, target: HTMLElement|null}}
    */
   function resolveHash(hash) {
     let id = '';
@@ -229,22 +101,29 @@
     } catch {
       id = '';
     }
-    if (!id) return { lesson: lessons[0] || null, target: null };
+    const alias = window.BloomLearning?.resolveAlias?.(id);
+    if (alias) id = alias;
+    const fallback = { view: lessons[0] || null, screen: null, target: null };
+    if (!id) return fallback;
     const element = byId(id);
-    if (!element) return { lesson: lessons[0] || null, target: null };
-    if (element.matches('[data-lesson]')) return { lesson: element, target: null };
-    const lesson = element.closest('[data-lesson]');
-    return lesson ? { lesson, target: element } : { lesson: null, target: null };
+    if (!element) return fallback;
+    if (element.matches('[data-view]')) return { view: element, screen: null, target: null };
+    const view = element.closest('[data-view]');
+    if (!view) return { view: null, screen: null, target: null }; // e.g. #main-content
+    const screen = element.closest('[data-screen]');
+    return { view, screen, target: element.matches('[data-screen]') ? null : element };
   }
 
   /**
-   * Makes an element inside the current lesson visible: opens its <details>,
-   * selects its tab or expands its accordion panel, then scrolls to it.
+   * Opens every <details> around an element, selects its tab or accordion, then scrolls to it.
    * @param {HTMLElement} target
    */
   function revealTarget(target) {
-    const details = target.closest('details');
-    if (details) details.open = true;
+    let details = target.closest('details');
+    while (details) {
+      details.open = true;
+      details = details.parentElement?.closest('details') || null;
+    }
     const panel = target.closest('[role="tabpanel"]');
     if (panel) {
       const tab = document.querySelector(`[role="tab"][aria-controls="${CSS.escape(panel.id)}"]`);
@@ -252,38 +131,75 @@
     }
     const accordionPanel = target.closest('[id^="content-"]');
     if (accordionPanel) toggleAccordion(accordionPanel.id.replace(/^content-/, ''), true);
-    // Wait one frame so the newly shown content has a layout box.
     requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
   }
 
   /**
-   * Shows one lesson, hides the others and updates every piece of state that
-   * depends on the current lesson (drawer, counter, title, focus, scroll).
-   * @param {HTMLElement} lesson
-   * @param {{focus?: boolean}} [options] focus: move focus to the lesson title
-   *   (true for user navigation, false on first load).
+   * Shows one screen of a unit and hides the others.
+   * @param {HTMLElement} view
+   * @param {HTMLElement|null} screen null = the unit's last active (or first) screen.
+   * @returns {HTMLElement|null} The screen shown.
    */
-  function showLesson(lesson, { focus = false } = {}) {
-    const changed = lesson !== currentLesson;
-    if (changed) {
-      lessons.forEach((item) => { item.hidden = item !== lesson; });
-      lesson.classList.remove('is-entering');
-      void lesson.offsetWidth; // restart the entrance animation
-      lesson.classList.add('is-entering');
-      currentLesson = lesson;
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
+  function activateScreen(view, screen) {
+    const screens = [...view.querySelectorAll('[data-screen]')];
+    if (!screens.length) return null;
+    const remembered = view.dataset.activeScreen && byId(view.dataset.activeScreen);
+    const chosen = screen || remembered || screens[0];
+    screens.forEach((s) => { s.hidden = s !== chosen; });
+    view.dataset.activeScreen = chosen.id;
+    view.querySelectorAll('[data-step-link]').forEach((link) => {
+      if (link.dataset.stepLink === chosen.dataset.screen) link.setAttribute('aria-current', 'step');
+      else link.removeAttribute('aria-current');
+    });
+    // The bar to the next unit only appears on the unit's last screen.
+    const bar = view.querySelector('[data-next-lesson]');
+    if (bar) bar.hidden = chosen !== screens[screens.length - 1];
+    return chosen;
+  }
 
-    const index = lessons.indexOf(lesson);
+  /**
+   * Shows a view (unit or dashboard) and one of its screens, and updates the
+   * drawer, counter, document title and focus.
+   * @param {HTMLElement} view
+   * @param {HTMLElement|null} screen
+   * @param {{focus?: boolean}} [options]
+   */
+  function showView(view, screen, { focus = false } = {}) {
+    const viewChanged = view !== currentView;
+    if (viewChanged) {
+      const firstView = currentView === null;
+      views.forEach((item) => { item.hidden = item !== view; });
+      if (!firstView) {
+        // Restarting the entrance animation forces a synchronous layout; skip it on page load.
+        view.classList.remove('is-entering');
+        void view.offsetWidth;
+        view.classList.add('is-entering');
+      }
+      currentView = view;
+    }
+    const shown = activateScreen(view, screen);
+    const screenChanged = shown !== currentScreen;
+    currentScreen = shown;
+    if (viewChanged || screenChanged) window.scrollTo({ top: 0, behavior: 'instant' });
+
     lessonLinks.forEach((link) => {
-      if (link.hash === `#${lesson.id}`) link.setAttribute('aria-current', 'page');
+      if (link.hash === `#${view.id}`) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
     const counter = byId('lesson-counter');
-    if (counter) counter.textContent = `${index + 1} من ${lessons.length}`; // Arabic order, no bidi flip
-    const title = lesson.querySelector('.lesson-title');
-    if (title) document.title = `${title.textContent.trim()} | مساحة المتدرب`;
-    if (focus && changed) title?.focus({ preventScroll: true });
+    const index = lessons.indexOf(view);
+    if (counter) counter.textContent = index >= 0 ? `الوحدة ${index + 1} من ${lessons.length}` : '';
+    const viewTitle = view.querySelector('.lesson-title')?.textContent.trim() || '';
+    const screenTitle = shown?.querySelector('.screen-title')?.textContent.trim();
+    document.title = `${screenTitle ? `${screenTitle} | ` : ''}${viewTitle} | حقيبة هرم بلوم الرقمية`;
+
+    if (focus && (viewChanged || screenChanged)) {
+      const heading = /** @type {HTMLElement|null} */ (shown?.querySelector('.screen-title') || view.querySelector('.lesson-title'));
+      heading?.focus({ preventScroll: true });
+    }
+    document.dispatchEvent(new CustomEvent('bloom:screen', {
+      detail: { view: view.id, screen: shown ? shown.dataset.screen : null },
+    }));
   }
 
   /**
@@ -291,8 +207,8 @@
    * @param {{initial?: boolean}} [options]
    */
   function route({ initial = false } = {}) {
-    const { lesson, target } = resolveHash(window.location.hash);
-    if (lesson) showLesson(lesson, { focus: !initial && !target });
+    const { view, screen, target } = resolveHash(window.location.hash);
+    if (view) showView(view, screen, { focus: !initial && !target });
     if (target) revealTarget(target);
     if (!desktopQuery.matches) setDrawer(false);
   }
@@ -305,8 +221,7 @@
   }
 
   /**
-   * Opens or closes the lesson drawer. Below lg it is an overlay with a backdrop;
-   * from lg it is a sidebar that the same button collapses.
+   * Opens or closes the drawer. Below lg it is an overlay; from lg a sidebar.
    * @param {boolean} [open] true to open, false to close, omitted to toggle.
    */
   function setDrawer(open) {
@@ -321,18 +236,14 @@
     if (backdrop) backdrop.hidden = !(show && !desktopQuery.matches);
     const toggle = byId('drawer-toggle');
     toggle?.setAttribute('aria-expanded', String(show));
-    toggle?.setAttribute('aria-label', show ? 'إخفاء قائمة الدروس' : 'قائمة الدروس');
+    toggle?.setAttribute('aria-label', show ? 'إخفاء قائمة الوحدات' : 'قائمة الوحدات');
   }
 
-  /**
-   * Wires the drawer, the router and lesson completion.
-   * Interaction budget: lesson = 2 actions (menu + lesson), 1 on desktop.
-   */
+  /** Wires the drawer and the router. Interaction budget: unit = 2 actions, screen = +1. */
   function initPlayer() {
-    if (lessons.length === 0) return;
-
-    renderProgress();
-    setDrawer(desktopQuery.matches); // sidebar open on desktop, closed on phones
+    if (!views.length) return;
+    buildSteppers();
+    setDrawer(desktopQuery.matches);
     desktopQuery.addEventListener('change', () => setDrawer(desktopQuery.matches));
 
     byId('drawer-toggle')?.addEventListener('click', () => {
@@ -349,38 +260,15 @@
     });
     byId('drawer-backdrop')?.addEventListener('click', () => setDrawer(false));
 
-    // Picking the lesson already on screen does not fire hashchange: close and go to top.
-    lessonLinks.forEach((link) => {
+    // Picking the view already on screen does not fire hashchange: close and go to top.
+    document.querySelectorAll('.drawer a[href^="#"]').forEach((link) => {
       link.addEventListener('click', () => {
-        if (currentLesson && link.hash === `#${currentLesson.id}`) {
+        if (currentView && /** @type {HTMLAnchorElement} */ (link).hash === `#${currentView.id}`) {
           if (!desktopQuery.matches) setDrawer(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       });
     });
-
-    // The "next lesson" bar also completes the lesson it closes.
-    document.querySelectorAll('[data-next-lesson]').forEach((bar) => {
-      bar.addEventListener('click', () => {
-        const lesson = bar.closest('[data-lesson]');
-        if (lesson) completeLesson(lesson.id);
-      });
-    });
-    // Leaving the last lesson through its finish bar completes it too.
-    document.querySelector('.next-lesson--finish')?.addEventListener('click', () => {
-      const last = lessons[lessons.length - 1];
-      if (last) completeLesson(last.id);
-    });
-
-    if ('IntersectionObserver' in window) {
-      const endObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const lesson = entry.target.closest('[data-lesson]');
-          if (entry.isIntersecting && lesson && !lesson.hidden) completeLesson(lesson.id);
-        });
-      }, { threshold: 0.6 });
-      document.querySelectorAll('[data-lesson-end]').forEach((end) => endObserver.observe(end));
-    }
 
     window.addEventListener('hashchange', () => route());
     route({ initial: true });
@@ -391,8 +279,7 @@
   // ---------------------------------------------------------------------------
 
   /**
-   * Selects a tab, shows its panel and hides the sibling panels.
-   * Only the selected tab is in the Tab order (roving tabindex).
+   * Selects a tab, shows its panel and hides the sibling panels (roving tabindex).
    * @param {HTMLElement} tab
    */
   function selectTab(tab) {
@@ -401,29 +288,19 @@
     list.querySelectorAll('[role="tab"]').forEach((item) => {
       const selected = item === tab;
       const panel = byId(item.getAttribute('aria-controls') || '');
-      const wasHidden = panel?.hidden;
       item.setAttribute('aria-selected', String(selected));
-      item.tabIndex = selected ? 0 : -1;
-      if (!panel) return;
-      panel.hidden = !selected;
-      if (selected && wasHidden) {
-        panel.classList.remove('is-entering');
-        void panel.offsetWidth;
-        panel.classList.add('is-entering');
-      }
+      /** @type {HTMLElement} */ (item).tabIndex = selected ? 0 : -1;
+      if (panel) panel.hidden = !selected;
     });
   }
 
-  /**
-   * Wires every tablist: click selects; arrow keys move in the reading direction
-   * (ArrowLeft = next in RTL); Home/End jump to the first/last tab.
-   */
+  /** Click selects; arrows follow the reading direction; Home/End jump. */
   function initTabs() {
     document.querySelectorAll('[role="tablist"]').forEach((list) => {
       const tabs = /** @type {HTMLElement[]} */ ([...list.querySelectorAll('[role="tab"]')]);
       list.addEventListener('click', (event) => {
         const tab = /** @type {HTMLElement} */ (event.target).closest('[role="tab"]');
-        if (tab) selectTab(tab);
+        if (tab) selectTab(/** @type {HTMLElement} */ (tab));
       });
       list.addEventListener('keydown', (event) => {
         const index = tabs.indexOf(/** @type {HTMLElement} */ (document.activeElement));
@@ -443,72 +320,21 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Knowledge check (formative; nothing is stored or sent)
+  // Video dialog (the only optional external media; loaded on request)
   // ---------------------------------------------------------------------------
 
-  /**
-   * Wires every <form data-kc data-answer="x">: the submit button is enabled once
-   * an option is chosen; submitting marks the choice, reveals the explanation and
-   * locks the options until "أعد المحاولة" resets the question.
-   */
-  function initKnowledgeChecks() {
-    document.querySelectorAll('form[data-kc]').forEach((form) => {
-      const fieldset = form.querySelector('fieldset');
-      const submit = /** @type {HTMLButtonElement|null} */ (form.querySelector('.kc-submit'));
-      const feedback = /** @type {HTMLElement|null} */ (form.querySelector('.kc-feedback'));
-      const verdict = form.querySelector('.kc-verdict');
-      const retry = /** @type {HTMLButtonElement|null} */ (form.querySelector('.kc-retry'));
-      if (!fieldset || !submit || !feedback || !verdict) return;
-
-      form.addEventListener('change', () => { submit.disabled = false; });
-
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const chosen = /** @type {HTMLInputElement|null} */ (form.querySelector('input:checked'));
-        if (!chosen) return;
-        const correct = chosen.value === form.dataset.answer;
-        form.classList.toggle('is-correct', correct);
-        form.classList.toggle('is-wrong', !correct);
-        chosen.closest('.kc-option')?.classList.add(correct ? 'is-correct' : 'is-wrong');
-        verdict.textContent = correct ? 'إجابة صحيحة.' : 'ليست الإجابة الصحيحة.';
-        fieldset.disabled = true;
-        submit.hidden = true;
-        feedback.hidden = false;
-        retry?.focus();
-      });
-
-      retry?.addEventListener('click', () => {
-        form.reset();
-        form.classList.remove('is-correct', 'is-wrong');
-        form.querySelectorAll('.kc-option').forEach((option) => option.classList.remove('is-correct', 'is-wrong'));
-        fieldset.disabled = false;
-        submit.hidden = false;
-        submit.disabled = true;
-        feedback.hidden = true;
-        verdict.textContent = '';
-        /** @type {HTMLInputElement|null} */ (form.querySelector('input'))?.focus();
-      });
-    });
-  }
-
-  // ---------------------------------------------------------------------------
-  // Video modal
-  // ---------------------------------------------------------------------------
-
-  /** Element that had focus before the modal opened; focus returns there on close. */
+  /** Element that had focus before the dialog opened. */
   let modalOpener = null;
 
   /**
-   * Opens the YouTube video dialog.
    * @param {string} videoId 11-character YouTube id.
-   * @param {HTMLElement|null} opener The control that opened it.
+   * @param {HTMLElement|null} opener
    */
   function openVideoModal(videoId, opener) {
     const modal = byId('video-modal');
     const iframe = byId('video-iframe');
     if (!modal || !iframe || !/^[\w-]{11}$/.test(videoId)) return;
     modalOpener = opener;
-    // Permissions are granted only when a video is actually loaded (avoids policy warnings on an empty frame).
     iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
     iframe.setAttribute('allowfullscreen', '');
     iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
@@ -517,22 +343,18 @@
     byId('video-modal-close')?.focus();
   }
 
-  /** Closes the video dialog, stops playback and restores focus. */
   function closeVideoModal() {
     const modal = byId('video-modal');
     const iframe = byId('video-iframe');
     if (!modal || modal.hidden) return;
     modal.hidden = true;
-    if (iframe) iframe.removeAttribute('src'); // stops the video
+    if (iframe) iframe.removeAttribute('src');
     document.body.classList.remove('modal-open');
     modalOpener?.focus();
     modalOpener = null;
   }
 
-  /**
-   * Keeps Tab / Shift+Tab inside the open dialog and closes it on Escape.
-   * @param {KeyboardEvent} event
-   */
+  /** Keeps Tab inside the open dialog and closes it on Escape. @param {KeyboardEvent} event */
   function handleModalKeydown(event) {
     const modal = byId('video-modal');
     if (!modal || modal.hidden) return;
@@ -542,9 +364,9 @@
     }
     if (event.key !== 'Tab') return;
     const focusable = [...modal.querySelectorAll('button, iframe, [href], [tabindex]:not([tabindex="-1"])')];
-    if (focusable.length === 0) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
+    if (!focusable.length) return;
+    const first = /** @type {HTMLElement} */ (focusable[0]);
+    const last = /** @type {HTMLElement} */ (focusable[focusable.length - 1]);
     if (event.shiftKey && document.activeElement === first) {
       event.preventDefault();
       last.focus();
@@ -555,228 +377,22 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Lesson template draft (localStorage key: "lessonTemplateDraft")
-  // ---------------------------------------------------------------------------
-
-  /** Saves every lesson template field to localStorage and reports the result. */
-  function saveLessonTemplate() {
-    const saveStatus = byId('save-status');
-    /** @type {Record<string, string>} */
-    const templateData = {};
-    TEMPLATE_FIELDS.forEach((id) => {
-      const element = byId(id);
-      if (element) templateData[id] = element.value;
-    });
-    if (writeStorage(STORAGE_KEYS.lessonDraft, templateData)) {
-      flashMessage(saveStatus, 'تم حفظ المسودة بنجاح!');
-    } else {
-      flashMessage(saveStatus, 'خطأ: لم يتم حفظ المسودة (قد تكون السعة ممتلئة أو التخزين محظوراً).', 5000);
-    }
-  }
-
-  /**
-   * Restores the saved lesson draft into the form.
-   * @param {{silent?: boolean}} [options] silent: no message when nothing is saved (used on page load).
-   */
-  function loadLessonTemplate({ silent = false } = {}) {
-    const saveStatus = byId('save-status');
-    const templateData = readStorage(STORAGE_KEYS.lessonDraft);
-    if (!templateData || typeof templateData !== 'object') {
-      if (!silent) flashMessage(saveStatus, 'لا توجد مسودة محفوظة.');
-      return;
-    }
-    TEMPLATE_FIELDS.forEach((id) => {
-      const element = byId(id);
-      if (element && typeof templateData[id] === 'string') element.value = templateData[id];
-    });
-    if (!silent) flashMessage(saveStatus, 'تم استعادة المسودة.');
-  }
-
-  // ---------------------------------------------------------------------------
-  // Trainee reflections (auto-saved, localStorage key: "reflectionsDraft")
-  // ---------------------------------------------------------------------------
-
-  /** Restores saved reflections and auto-saves them while the trainee types. */
-  function initReflections() {
-    const saved = readStorage(STORAGE_KEYS.reflections) || {};
-    const saveAll = debounce(() => {
-      /** @type {Record<string, string>} */
-      const data = {};
-      REFLECTION_FIELDS.forEach((id) => {
-        const element = byId(id);
-        if (element) data[id] = element.value;
-      });
-      writeStorage(STORAGE_KEYS.reflections, data);
-    }, 400);
-
-    REFLECTION_FIELDS.forEach((id) => {
-      const element = byId(id);
-      if (!element) return;
-      if (typeof saved[id] === 'string') element.value = saved[id];
-      element.addEventListener('input', saveAll);
-    });
-  }
-
-  // ---------------------------------------------------------------------------
-  // AI lesson suggestions (Gemini)
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Turns an HTTP status from the Gemini API into an Arabic message for the trainee.
-   * @param {number} status
-   * @returns {string}
-   */
-  function describeApiError(status) {
-    if ([400, 401, 403].includes(status)) {
-      return 'ميزة الاقتراح بالذكاء الاصطناعي غير مفعّلة في هذه النسخة من الموقع (لا يوجد مفتاح API). يمكنك تعبئة القالب يدوياً.';
-    }
-    if (status === 429) return 'تم تجاوز عدد الطلبات المسموح. حاول مرة أخرى بعد قليل.';
-    if (status >= 500) return 'خدمة الذكاء الاصطناعي غير متاحة حالياً. حاول لاحقاً.';
-    return `تعذر الاتصال بخدمة الذكاء الاصطناعي (رمز ${status}).`;
-  }
-
-  /**
-   * Sends a prompt to Gemini and returns the parsed JSON answer.
-   * Retries HTTP 429 with exponential backoff (1s, 2s, 4s).
-   * @param {string} prompt User prompt.
-   * @param {object} schema Gemini responseSchema describing the expected JSON.
-   * @param {number} [retries=3] Remaining retries for HTTP 429.
-   * @param {number} [delay=1000] Current backoff delay in ms.
-   * @returns {Promise<any>} Parsed JSON returned by the model.
-   * @throws {Error} With an Arabic, user-facing message.
-   */
-  async function callGeminiApi(prompt, schema, retries = 3, delay = 1000) {
-    const systemInstruction = 'أنت خبير في التصميم التعليمي وتطبيقات هرم بلوم الرقمي. مهمتك هي مساعدة المعلمين على إنشاء خطط دروس مبتكرة. قدم إجابات باللغة العربية.';
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      systemInstruction: { parts: [{ text: systemInstruction }] },
-      generationConfig: {
-        responseMimeType: 'application/json',
-        responseSchema: schema,
-        temperature: 0.8,
-      },
-    };
-
-    let response;
-    try {
-      response = await fetch(GEMINI_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-    } catch (networkError) {
-      console.error('Network error calling Gemini API:', networkError);
-      throw new Error('تعذر الاتصال بالإنترنت أو بخدمة الذكاء الاصطناعي.');
-    }
-
-    if (!response.ok) {
-      if (response.status === 429 && retries > 0) {
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        return callGeminiApi(prompt, schema, retries - 1, delay * 2);
-      }
-      throw new Error(describeApiError(response.status));
-    }
-
-    const result = await response.json();
-    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) {
-      console.error('Unexpected Gemini response structure:', result);
-      throw new Error('لم يتمكن الذكاء الاصطناعي من توليد استجابة صالحة.');
-    }
-    try {
-      return JSON.parse(text);
-    } catch (parseError) {
-      console.error('Gemini returned invalid JSON:', text);
-      throw new Error('لم يتمكن الذكاء الاصطناعي من توليد استجابة صالحة.');
-    }
-  }
-
-  /**
-   * Fills the redesign table with three AI-suggested activities.
-   * Asks for confirmation first if the trainee has already written in those fields.
-   */
-  async function suggestLessonIdeas() {
-    const loader = byId('gemini-loader');
-    const button = byId('gemini-suggest-button');
-    const errorEl = byId('gemini-error');
-    const saveStatus = byId('save-status');
-
-    const lessonTitle = byId('lt-lesson-title')?.value.trim() || '';
-    const originalGoal = byId('lt-original-goal')?.value.trim() || '';
-    if (errorEl) errorEl.textContent = '';
-
-    if (!lessonTitle || !originalGoal) {
-      if (errorEl) errorEl.textContent = 'خطأ: الرجاء إدخال (عنوان الدرس) و (الهدف التقليدي) أولاً.';
-      return;
-    }
-
-    const hasWork = AI_FILLED_FIELDS.some((id) => byId(id)?.value.trim());
-    if (hasWork && !window.confirm('سيستبدل الاقتراح ما كتبته في جدول إعادة التصميم والتبرير. هل تريد المتابعة؟')) {
-      return;
-    }
-
-    loader?.classList.remove('hidden');
-    if (button) button.disabled = true;
-    if (saveStatus) saveStatus.textContent = '';
-
-    const userQuery = `بالنسبة لدرس بعنوان "${lessonTitle}" وهدفه التقليدي هو "${originalGoal}"، قم بإنشاء خطة درس من 3 أنشطة تغطي المستويات التالية: 1. التذكر (Remembering)، 2. التطبيق (Applying)، 3. الإبداع (Creating). لكل نشاط، قدم وصفاً للمهمة من جملة واحدة، واقترح أداة رقمية مناسبة.`;
-    const schema = {
-      type: 'ARRAY',
-      maxItems: 3,
-      items: {
-        type: 'OBJECT',
-        properties: {
-          level: { type: 'STRING' },
-          task: { type: 'STRING' },
-          tool: { type: 'STRING' },
-        },
-        required: ['level', 'task', 'tool'],
-      },
-    };
-
-    try {
-      const activities = await callGeminiApi(userQuery, schema);
-      const valid = Array.isArray(activities) && activities.length === 3 &&
-        activities.every((a) => a && typeof a.level === 'string' && typeof a.task === 'string' && typeof a.tool === 'string');
-      if (!valid) throw new Error('الاستجابة المستلمة من الذكاء الاصطناعي غير مكتملة.');
-
-      activities.forEach((activity, index) => {
-        const row = index + 1;
-        byId(`lt-level${row}`).value = activity.level;
-        byId(`lt-task${row}`).value = activity.task;
-        byId(`lt-tool${row}`).value = activity.tool;
-      });
-      byId('lt-justification').value = 'تم إنشاء هذه الخطة بواسطة Gemini. الرجاء مراجعتها وتبرير الاختيارات.';
-    } catch (error) {
-      if (errorEl) errorEl.textContent = `خطأ: ${error.message}`;
-    } finally {
-      loader?.classList.add('hidden');
-      if (button) button.disabled = false;
-    }
-  }
-
-  // ---------------------------------------------------------------------------
-  // Wiring (single delegated click listener instead of inline onclick attributes)
+  // Wiring
   // ---------------------------------------------------------------------------
 
   document.addEventListener('click', (event) => {
     const target = /** @type {HTMLElement} */ (event.target);
-
     const accordionTrigger = target.closest('[data-accordion]');
     if (accordionTrigger) {
-      toggleAccordion(accordionTrigger.dataset.accordion);
+      toggleAccordion(/** @type {HTMLElement} */ (accordionTrigger).dataset.accordion || '');
       return;
     }
-
     const videoButton = target.closest('[data-video-id]');
     if (videoButton) {
-      openVideoModal(videoButton.dataset.videoId, videoButton);
+      openVideoModal(/** @type {HTMLElement} */ (videoButton).dataset.videoId || '', /** @type {HTMLElement} */ (videoButton));
       return;
     }
-
-    if (target.closest('#video-modal-close') || target.id === 'video-modal') {
-      closeVideoModal(); // close button or click on the dark backdrop
-    }
+    if (target.closest('#video-modal-close') || target.id === 'video-modal') closeVideoModal();
   });
 
   document.addEventListener('keydown', handleModalKeydown);
@@ -785,19 +401,12 @@
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape' || desktopQuery.matches) return;
     if (!byId('video-modal')?.hidden) return;
+    if (document.querySelector('dialog[open]')) return;
     if (!document.body.classList.contains('drawer-open')) return;
     setDrawer(false);
     byId('drawer-toggle')?.focus();
   });
 
-  byId('save-draft-button')?.addEventListener('click', saveLessonTemplate);
-  byId('load-draft-button')?.addEventListener('click', () => loadLessonTemplate());
-  byId('gemini-suggest-button')?.addEventListener('click', suggestLessonIdeas);
-
-  // Restore saved work on load (the script is deferred, so the DOM is ready).
-  loadLessonTemplate({ silent: true });
-  initReflections();
   initTabs();
-  initKnowledgeChecks();
   initPlayer();
 })();

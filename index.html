@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="بوابة الدخول إلى حقيبة هرم بلوم الرقمية: اختر مساحة المدرب أو مساحة المتدرب.">
+<meta name="description" content="حقيبة هرم بلوم الرقمية: برنامج تعلم ذاتي للمعلمين. طور مهمة من دروسك، واختبر فهمك، وراجع أثر التعديل.">
 <meta name="theme-color" content="#0b1f52">
 <title>حقيبة هرم بلوم الرقمية</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -17,8 +17,9 @@
 </head>
 <!--
   Entry portal (role split). Built with Claude Code (AI-assisted):
-  the former single page now lives unchanged in trainee.html; this page only
-  routes each role to its own space. Relative links keep it working on GitHub Pages.
+  the former single page now lives in trainee.html. Self-learning redesign (2026-10-23):
+  the learner enters without choosing a role; the trainer guide is a secondary link.
+  Relative links keep it working on GitHub Pages.
 -->
 <body class="min-h-full bg-[#0b1f52] text-white antialiased">
 
@@ -46,29 +47,34 @@
       <span class="flex-1 rounded-full bg-white"></span>
     </div>
 
-    <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed text-blue-100 sm:text-lg">حقيبة تدريبية رقمية تفاعلية تُمكّن المعلمين من توظيف الأدوات الرقمية وفق مستويات هرم بلوم، من التذكر إلى الإبداع.</p>
+    <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed text-blue-100 sm:text-lg">طور مهمة من دروسك، واختبر فهمك، وراجع أثر التعديل. ابدأ تجربة تعلم جديدة أو تابع من حيث توقفت.</p>
 
-    <nav class="mt-10" aria-label="اختيار نوع الدخول">
+    <!-- Learner entry (no role choice needed). Hash aliases are resolved by js/learning.js. -->
+    <nav class="mt-10" aria-label="الدخول إلى التعلم">
       <ul class="grid gap-4 sm:grid-cols-2">
         <li>
-          <a href="trainer.html" class="group flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 py-5 text-lg font-bold text-[#0b1f52] shadow-lg shadow-black/25 transition duration-200 hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-            <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-              <rect x="3" y="4" width="18" height="12" rx="2"/>
-              <path d="M8 20h8M12 16v4"/>
-            </svg>
-            <span>دخول كمدرب</span>
-          </a>
-        </li>
-        <li>
-          <a href="trainee.html" class="group flex w-full items-center justify-center gap-3 rounded-2xl bg-cyan-400 px-6 py-5 text-lg font-bold text-[#0b1f52] shadow-lg shadow-black/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+          <a href="trainee.html#start" class="group flex w-full items-center justify-center gap-3 rounded-2xl bg-cyan-400 px-6 py-5 text-lg font-bold text-[#0b1f52] shadow-lg shadow-black/25 transition duration-200 hover:-translate-y-0.5 hover:bg-cyan-300 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
             <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M2 9l10-5 10 5-10 5z"/>
               <path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/>
             </svg>
-            <span>دخول كمتدرب</span>
+            <span>ابدأ</span>
+          </a>
+        </li>
+        <li>
+          <a href="trainee.html#continue" class="group flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 py-5 text-lg font-bold text-[#0b1f52] shadow-lg shadow-black/25 transition duration-200 hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+            <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M19 12H5M11 6l-6 6 6 6"/>
+            </svg>
+            <span>تابع تعلمي</span>
           </a>
         </li>
       </ul>
+      <p id="portal-resume" class="mt-4 text-sm text-blue-100" role="status"></p>
+      <p class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+        <a href="trainee.html#save-help" class="font-semibold text-white underline underline-offset-4 hover:text-cyan-200">كيف أحفظ عملي</a>
+        <a href="trainer.html" class="text-blue-200 underline underline-offset-4 hover:text-white">لوحة المدرب ودليل النسخة الحضورية</a>
+      </p>
     </nav>
 
   </div>
