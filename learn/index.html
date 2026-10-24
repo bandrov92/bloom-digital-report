@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="مساحة المتعلم في حقيبة هرم بلوم الرقمية، برنامج تعلم ذاتي: طور مهمة من دروسك، واختبر فهمك، وراجع أثر التعديل، واحفظ عملك وعد إليه.">
+<meta name="theme-color" content="#0b1f52">
+<title>مسار المتدرب | حقيبة هرم بلوم الرقمية</title>
+<link rel="icon" type="image/png" href="../assets/favicon.png">
+<!-- Preload the font files this page renders above the fold (see src/tailwind.css). -->
+<link rel="preload" href="../assets/fonts/thmanyah/thmanyahseriftext-Light.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/thmanyah/thmanyahserifdisplay-Black.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Tailwind is pre-compiled to a static file (no runtime CDN). Rebuild with: npm run build:css -->
+<link rel="stylesheet" href="../css/tailwind.css">
+<link rel="stylesheet" href="../css/styles.css">
+<!-- Order matters (all deferred): logic, data, storage, learning UI, then the router. -->
+<script src="../js/core.js" defer></script>
+<script src="../js/course-data.js" defer></script>
+<script src="../js/store.js" defer></script>
+<script src="../js/learning.js" defer></script>
+<script src="../js/main.js" defer></script>
+<script src="../js/print-expand.js" defer></script>
+</head>
+<!--
+  Self-learning player (Claude Code, AI-assisted redesign, 2026-10-23).
+  Seven units (<section data-lesson>, ids kept: intro, map, plan, activities,
+  template, check, resources) hold 28 screens (<section data-screen>, #screen-01..28).
+  One screen is shown at a time; the URL names it. Progress counts 20 elements
+  completed by activities only (js/core.js), never by visiting or scrolling.
+  Click budget: unit = 2 actions (menu, unit; 1 on desktop), screen = +1 (step list).
+-->
+<body class="player bg-gray-50 text-gray-800">
+
+<a href="#main-content" class="skip-link">تخطَّ إلى المحتوى</a>
+
+<!-- Drawer: fixed sidebar from lg, off-canvas panel below lg (js/main.js). -->
+<div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+<nav id="course-drawer" class="drawer" aria-labelledby="drawer-title">
+  <div class="drawer-head">
+    <div class="drawer-brand">
+      <img src="../assets/logo.png" alt="شعار Bandarov" width="40" height="40" class="drawer-logo">
+      <p id="drawer-title" class="drawer-course">حقيبة هرم بلوم الرقمية</p>
+      <button type="button" id="drawer-close" class="drawer-close" aria-label="إغلاق قائمة الوحدات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="drawer-progress">
+      <p id="progress-label" class="drawer-progress-label">المحتوى المكتمل: <span id="progress-percent">0%</span></p>
+      <div id="progress-bar" class="progress-track" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span id="progress-fill" class="progress-fill"></span>
+      </div>
+      <p id="progress-test" class="drawer-progress-label">الاختبار: لم تُرسل محاولة</p>
+    </div>
+  </div>
+
+  <ol class="lesson-list">
+    <li><a href="#dashboard" class="lesson-link lesson-link--dash" data-dash-link><span class="lesson-status" aria-hidden="true">◎</span><span class="lesson-link-text"><span class="lesson-link-title">لوحتي</span><span class="lesson-link-meta">شرطا الاجتياز والخطوة التالية وحفظ عملي</span></span></a></li>
+    <li><a href="#intro" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">1</span><span class="lesson-link-text"><span class="lesson-link-title">النظرة العامة والتشخيص</span><span class="lesson-link-meta" data-unit-meta></span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#map" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">2</span><span class="lesson-link-text"><span class="lesson-link-title">مستويات بلوم: فهم الطلب المعرفي</span><span class="lesson-link-meta" data-unit-meta></span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#plan" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">3</span><span class="lesson-link-text"><span class="lesson-link-title">الهدف والخطة الذاتية</span><span class="lesson-link-meta" data-unit-meta></span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#activities" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">4</span><span class="lesson-link-text"><span class="lesson-link-title">الورش: ممارسة موجهة ومستقلة</span><span class="lesson-link-meta" data-unit-meta></span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#template" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">5</span><span class="lesson-link-text"><span class="lesson-link-title">قالب الدرس: بناء المشروع</span><span class="lesson-link-meta" data-unit-meta></span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#check" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">6</span><span class="lesson-link-text"><span class="lesson-link-title">التحقق: الاختبار الختامي والنتائج</span><span class="lesson-link-meta" data-unit-meta></span></span><span class="sr-only" data-status-text></span></a></li>
+    <li><a href="#resources" class="lesson-link" data-lesson-link><span class="lesson-status" aria-hidden="true">7</span><span class="lesson-link-text"><span class="lesson-link-title">المصادر وحلقة التعلم المستمرة</span><span class="lesson-link-meta" data-unit-meta></span></span><span class="sr-only" data-status-text></span></a></li>
+  </ol>
+
+</nav>
+
+<div class="player-main">
+
+  <header class="topbar">
+    <button type="button" id="drawer-toggle" class="topbar-toggle" aria-controls="course-drawer" aria-expanded="false" aria-label="قائمة الوحدات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <p class="topbar-title">حقيبة هرم بلوم الرقمية</p>
+    <p id="save-indicator" class="save-indicator" role="status" aria-live="polite"></p>
+    <a href="#dashboard" class="topbar-dash">لوحتي</a>
+    <p class="topbar-counter"><span id="lesson-counter">الوحدة 1 من 7</span></p>
+    <div id="topbar-progress" class="topbar-progress" aria-hidden="true"><span id="topbar-progress-fill"></span></div>
+  </header>
+
+  <!-- Shown only when the last change could not be saved (never a false success). -->
+  <div id="save-alert" class="save-alert" role="alert" hidden>
+    <div class="save-alert-inner">
+      <p data-save-alert-text></p>
+      <button type="button" class="btn btn-secondary" data-action="retry-save">حاول الحفظ مرة أخرى</button>
+      <button type="button" class="btn btn-ghost" data-action="copy-work">انسخ نص هذه الشاشة</button>
+    </div>
+  </div>
+  <p id="app-status" class="app-status" role="status" aria-live="polite"></p>
+
+  <main id="main-content" tabindex="-1">
+
+  <!-- =========================== Unit 1: intro (screens 01–04) =========================== -->
+  <section id="intro" class="lesson" data-lesson data-view aria-labelledby="intro-title">
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الوحدة 1 من 7 · الشاشات 01–04</p>
+      <h2 id="intro-title" class="lesson-title" tabindex="-1">النظرة العامة والتشخيص</h2>
+      <p class="lesson-sub">تهيئة، وتشخيص أولي لا يدخل في الاجتياز، وتحديد المهمة التي سترافقك في البرنامج.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <nav class="stepper" data-stepper aria-label="شاشات الوحدة الأولى"></nav>
+
+    <div class="lesson-body">
+
+      <!-- Screen 01 -->
+      <section id="screen-01" class="screen" data-screen="01" data-group="01" data-part="1" data-step-title="المهمة التي ستطورها" aria-labelledby="screen-01-title">
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 01 أ · تمهيد</p>
+          <h3 id="screen-01-title" class="screen-title" tabindex="-1">تمهيد: كيف يعمل البرنامج</h3>
+          <p class="screen-purpose">الغرض: تنشيط معرفتك السابقة بتصنيف بلوم الرقمي، والتعرف على قواعد الاجتياز والحفظ قبل أن تبدأ.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <!-- Optional embedded video: the player loads only on "play" (js/learning.js -> playVideo). -->
+        <figure class="video-embed" data-video="fqgTBwElPzU" data-video-title="What is Bloom's Digital Taxonomy? — Common Sense Education (YouTube)">
+          <div class="video-frame">
+            <button type="button" class="video-play" data-action="play-video" aria-label="شغّل الفيديو: ما تصنيف بلوم الرقمي؟ (YouTube، بالإنجليزية)">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              <span>شاهد قبل أن تبدأ: ما تصنيف بلوم الرقمي؟</span>
+            </button>
+          </div>
+          <figcaption class="field-hint"><bdi>What is Bloom's Digital Taxonomy?</bdi> — <bdi>Common Sense Education</bdi> · بالإنجليزية · اختياري ولا يُحتسب في الاستكمال.</figcaption>
+        </figure>
+
+        <h4 class="section-title">كيف يعمل البرنامج</h4>
+        <div class="prose">
+          <ul>
+            <li>البرنامج سبع وحدات في 28 شاشة، قُسم بعضها إلى أجزاء قصيرة لكل منها غرض. تستطيع فتح أي وحدة في أي وقت دون فقد عملك.</li>
+            <li>يُحتسب عنصر المحتوى حين تنفذ نشاطه أو تحققه، لا حين تفتح الشاشة أو تمرر حتى نهايتها. في البرنامج 20 عنصرًا.</li>
+            <li>الاجتياز يتطلب الشرطين معًا: استكمال 80% على الأقل من العناصر، و60 من 100 فأكثر في الاختبار الختامي.</li>
+            <li>يُحفظ عملك في هذا المتصفح. اقرأ <a href="#save-help" class="inline-link">كيف أحفظ عملي</a>.</li>
+            <li>لا توجد مدة مقررة للبرنامج؛ تقدّر وقتك بنفسك.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="screen-01-2" class="screen" data-screen="01-2" data-group="01" data-part="2" aria-labelledby="screen-01-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 01 ب · ن1 إلى ن7</p>
+          <h3 id="screen-01-2-title" class="screen-title" tabindex="-1">ما ستتعلمه: نواتج البرنامج</h3>
+          <p class="screen-purpose">الغرض: معرفة ما ستستطيع أداءه في نهاية البرنامج، وربط كل شاشة بالناتج الذي تخدمه.</p>
+        </header>
+        <div class="display-text">
+          <p>ستطور مهمة تعلم، وتحدد كيف تلاحظ جودة استجابة طلابك، ثم تراجع تصميمك.</p>
+        </div>
+
+        <h4 class="section-title">النواتج السبعة</h4>
+        <ol class="outcome-list">
+          <li><span class="outcome-code">ن1</span> تحلل مهمة مكتوبة وتحدد طلبها المعرفي الغالب، معللًا بفعل المتعلم لا باسم الأداة.</li>
+          <li><span class="outcome-code">ن2</span> تصوغ هدفًا لمهمة تختارها يبين أداءً يمكن ملاحظته وشروطه ومعيار الحكم عليه.</li>
+          <li><span class="outcome-code">ن3</span> تختار وظيفة رقمية لمهمة محددة وتبررها وفق حاجة المتعلم وظروف الاستخدام.</li>
+          <li><span class="outcome-code">ن4</span> تعيد تصميم مهمة لتناسب هدفًا معرفيًا معلنًا، دون الاكتفاء بتغيير الوسيط.</li>
+          <li><span class="outcome-code">ن5</span> تبني تقويمًا وتغذية راجعة متسقين مع الهدف.</li>
+          <li><span class="outcome-code">ن6</span> توثق تطبيقًا أو تجربة محاكاة وتستخلص تعديلًا تدعمه شواهد.</li>
+          <li><span class="outcome-code">ن7</span> تنظم مصادرك وإصدارات مشروعك وتحدد سؤال دورتك التالية.</li>
+        </ol>
+        <p class="field-hint">يظهر رمز الناتج الذي تخدمه كل شاشة أعلاها.</p>
+      </section>
+
+      <section id="screen-01-3" class="screen" data-screen="01-3" data-group="01" data-part="3" aria-labelledby="screen-01-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 01 ج · ن7</p>
+          <h3 id="screen-01-3-title" class="screen-title" tabindex="-1">المهمة التي ستطورها</h3>
+          <p class="screen-purpose">الغرض: توضيح المخرج واختيار سياق واقعي دون فرض تخصص.</p>
+        </header>
+        <div class="display-text">
+          <p>تستطيع استخدام مهمة من دروسك أو المثال التدريبي المحايد.</p>
+        </div>
+
+        <fieldset class="plain">
+          <legend>من أين تأتي المهمة؟</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="s01-context" value="own" data-field="s01.context"><span>مهمة من عملي</span></label>
+            <label class="choice"><input type="radio" name="s01-context" value="example" data-field="s01.context"><span>مثال تدريبي</span></label>
+          </div>
+        </fieldset>
+        <div class="field" data-show-when="s01.context=own" hidden>
+          <label class="field-label" for="s01-title">عنوان المهمة</label>
+          <p class="field-hint" id="s01-title-hint">العنوان فقط في هذه الخطوة؛ ستصف المهمة في بطاقة الحاجة.</p>
+          <input id="s01-title" class="input" type="text" data-field="s01.title" aria-describedby="s01-title-hint">
+        </div>
+        <div class="example" data-show-when="s01.context=example" hidden>
+          <span class="example-label">مثال تدريبي مؤلف</span>
+          <p>يريد فريق افتراضي تنظيم معرض تعليمي في مشروع مدرسي. الخطة أ تسند كل مهمة إلى مسؤول معلوم، لكنها لا تحدد أين يسجل إنجاز العمل. الخطة ب تحدد لوحة لتسجيل الإنجاز، لكنها تسند بعض المهمات إلى الفريق كله دون مسؤول معلوم.</p>
+          <p>ستبني على هذا الموقف مهمة يقارن فيها المتعلم الخطتين، ويمكنك الانتقال إلى مهمة من عملك في أي وقت.</p>
+        </div>
+
+        <h4 class="section-title">مثال المخرج الذي ستصل إليه</h4>
+        <div class="example">
+          <span class="example-label">مثال مؤلف</span>
+          <p><strong>الهدف:</strong> عند عرض خطتين، يختار المتعلم الأنسب وفق وضوح المسؤوليات وقابلية التتبع، ويستشهد بمعلومة من كل خطة.</p>
+          <p><strong>المهمة:</strong> قارن الخطتين وفق وضوح المسؤوليات وقابلية التتبع، وبين قوة كل منهما ونقصها مستشهدًا بالنص.</p>
+          <p><strong>الدليل:</strong> مقارنة توضح تحقق كل معيار في كل خطة، مع تعليل الاختيار.</p>
+          <p><strong>المحك:</strong> يطبق المعيارين على الخطتين ويستشهد بالنص.</p>
+          <p><strong>خطة المراجعة:</strong> أقرأ تعليماتي وأتحقق مما إذا كانت الاستجابة المطلوبة ستكشف المعيارين.</p>
+        </div>
+      </section>
+
+      <!-- Screen 02 -->
+      <section id="screen-02" class="screen" data-screen="02" aria-labelledby="screen-02-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 02 · ن1 إلى ن6</p>
+          <h3 id="screen-02-title" class="screen-title" tabindex="-1">ما الذي تعرفه الآن</h3>
+          <p class="screen-purpose">الغرض: تشخيص أولي لفهمك قبل التعلم.</p>
+          <p class="element-status" data-element-status="t01"></p>
+        </header>
+        <div class="display-text">
+          <p>أجب وفق فهمك الحالي. لن تؤثر هذه المحاولة في درجة اجتيازك، وستساعدك على تحديد ما تحتاج إلى مراجعته.</p>
+        </div>
+        <div data-diagnostic></div>
+        <div id="diagnostic-report" class="diag-report" tabindex="-1" hidden></div>
+
+        <details class="hint">
+          <summary><span>فحص تقني اختياري: هل يحفظ متصفحك عملك؟</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body">
+            <p>اكتب عنوان مهمة تجريبية، احفظه، ثم أعد تحميل الصفحة وعد إلى هذه الشاشة. لا يُحتسب أي تعذر تقني ضعفًا تعليميًا.</p>
+            <div class="field">
+              <label class="field-label" for="probe-text">عنوان مهمة تجريبية</label>
+              <input id="probe-text" class="input" type="text">
+            </div>
+            <div class="actions"><button type="button" class="btn btn-secondary" data-action="probe-save">احفظ العنوان</button></div>
+            <p id="probe-status" class="result" role="status" aria-live="polite"></p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Screen 03 -->
+      <section id="screen-03" class="screen" data-screen="03" data-group="03" data-part="1" data-step-title="بطاقة حاجتي المهنية" aria-labelledby="screen-03-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 03 أ · ن7</p>
+          <h3 id="screen-03-title" class="screen-title" tabindex="-1">بطاقة حاجتي: المهمة كما هي الآن</h3>
+          <p class="screen-purpose">الغرض: تحديد نقطة بداية وربط التعلم بخبرتك.</p>
+          <p class="element-status" data-element-status="t02"></p>
+        </header>
+        <div class="display-text">
+          <p>ما المهمة التي تريد تحسينها؟ اكتب ما يفعله المتعلم فيها الآن، وما الدليل الذي تتمنى ملاحظته بعد التعديل. إن لم تنفذ المهمة سابقًا فاذكر ذلك.</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s03-title">عنوان المهمة</label>
+          <input id="s03-title" class="input" type="text" data-field="s03.title" data-prefill-from="s01.title" required>
+        </div>
+        <fieldset class="plain" data-field-wrap>
+          <legend>حالة خبرتك بالمهمة</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="s03-status" value="done" data-field="s03.status"><span>منفذة سابقًا</span></label>
+            <label class="choice"><input type="radio" name="s03-status" value="planned" data-field="s03.status"><span>مخططة ولم تنفذ بعد</span></label>
+            <label class="choice"><input type="radio" name="s03-status" value="example" data-field="s03.status"><span>مثال تدريبي</span></label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label class="field-label" for="s03-current">ما يفعله المتعلم في المهمة الآن (أو ما تتوقعه إن لم تنفذها)</label>
+          <textarea id="s03-current" class="input" data-field="s03.current" data-required-msg="أكمل وصف ما يفعله المتعلم حتى تستطيع مقارنة النسختين لاحقًا." required></textarea>
+        </div>
+      </section>
+
+      <section id="screen-03-2" class="screen" data-screen="03-2" data-group="03" data-part="2" aria-labelledby="screen-03-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 03 ب · ن7</p>
+          <h3 id="screen-03-2-title" class="screen-title" tabindex="-1">بطاقة حاجتي: ما تحتاج إليه والدليل</h3>
+          <p class="screen-purpose">الغرض: تحديد ما تريد تحسينه وما ستلاحظه بعد التعديل، ثم حفظ البطاقة.</p>
+          <p class="element-status" data-element-status="t02"></p>
+        </header>
+        <div class="field">
+          <label class="field-label" for="s03-need">ما الذي تحتاج إلى تحسينه</label>
+          <textarea id="s03-need" class="input" data-field="s03.need" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s03-evidence">الدليل الذي تتمنى ملاحظته بعد التعديل <span class="field-optional">(اختياري الآن)</span></label>
+          <textarea id="s03-evidence" class="input" data-field="s03.evidence"></textarea>
+        </div>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s03-stage">المرحلة الدراسية <span class="field-optional">(اختياري)</span></label>
+            <input id="s03-stage" class="input" type="text" data-field="s03.stage">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s03-subject">التخصص <span class="field-optional">(اختياري)</span></label>
+            <input id="s03-subject" class="input" type="text" data-field="s03.subject">
+          </div>
+        </div>
+        <details class="hint">
+          <summary><span>اعرض بطاقة مثال (ليست إجابة إلزامية)</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body">
+            <p><strong>العنوان:</strong> المقارنة بين خطتين لتنظيم معرض. <strong>الحالة:</strong> مثال تدريبي.</p>
+            <p><strong>الأداء الحالي في المهمة المقترحة:</strong> إعادة كتابة وصف الخطتين.</p>
+            <p><strong>الحاجة:</strong> بناء مهمة تظهر كيف يحكم المتعلم على الخطتين باستخدام محكات وشواهد.</p>
+            <p><strong>الدليل الذي أريد ملاحظته:</strong> مقارنة توضح تحقق كل معيار في كل خطة، مع تعليل الاختيار أو اقتراح تحسين مناسب.</p>
+          </div>
+        </details>
+        <div class="legacy-panel" data-legacy-panel hidden></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t02">سجّل البطاقة</button></div>
+        <p class="result" data-result="t02" role="status"></p>
+        <p class="field-hint">تُحفظ البطاقة نسخةً مرجعية، ويمكنك تعديلها لاحقًا مع حفظ أثر التعديل. تُستخدم معلوماتها في المشروع حتى لا تعيد إدخالها.</p>
+        <div data-history="needCard"></div>
+      </section>
+
+      <!-- Screen 04 -->
+      <section id="screen-04" class="screen" data-screen="04" aria-labelledby="screen-04-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 04 · ن7</p>
+          <h3 id="screen-04-title" class="screen-title" tabindex="-1">مساري ونقطة العودة</h3>
+          <p class="screen-purpose">الغرض: أن تتحكم في ترتيب تعلمك دون أن تخفى عليك متطلبات الاجتياز.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="display-text">
+          <p>اقترحنا هذه الخطوة التالية بناءً على إجاباتك. يمكنك تغيير ترتيب التعلم. الاجتياز يتطلب استكمال 80% من عناصر المحتوى المطلوبة و60 من 100 فأكثر في الاختبار الختامي.</p>
+        </div>
+        <h4 class="section-title">مواضع المراجعة من تشخيصك</h4>
+        <ul id="s04-review" class="dash-list prose"></ul>
+        <div class="actions">
+          <a href="#screen-09" class="btn btn-primary" data-path-choice="plan">أبدأ خطتي</a>
+          <a href="#screen-05" class="btn btn-secondary" data-path-choice="review" id="s04-review-link">أراجع بلوم</a>
+          <button type="button" class="btn btn-secondary" data-action="save-stop" data-stop-screen="04">أتوقف الآن</button>
+        </div>
+        <p class="field-hint">المسار المقترح: الخطة الأولية (09 و10) ثم مستويات بلوم (05–08) ثم الورش والقالب والاختبار والعودة للممارسة. لا تُقفل أي وحدة.</p>
+        <h4 class="section-title">خريطة البرنامج</h4>
+        <ol id="program-map" class="dash-list prose program-map"></ol>
+      </section>
+    </div>
+
+    <a href="#map" class="next-lesson" data-next-lesson hidden>
+      <span>الوحدة 2 — مستويات بلوم: فهم الطلب المعرفي</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Unit 2: map (screens 05–08) =========================== -->
+  <section id="map" class="lesson" data-lesson data-view aria-labelledby="map-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الوحدة 2 من 7 · الشاشات 05–08</p>
+      <h2 id="map-title" class="lesson-title" tabindex="-1">مستويات بلوم: فهم الطلب المعرفي</h2>
+      <p class="lesson-sub">تمييز العمليات المعرفية وتحليل المهمة قبل اختيار الأداة.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <nav class="stepper" data-stepper aria-label="شاشات الوحدة الثانية"></nav>
+
+    <div class="lesson-body">
+
+      <!-- Screen 05 -->
+      <section id="screen-05" class="screen" data-screen="05" aria-labelledby="screen-05-title">
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 05 · ن1</p>
+          <h3 id="screen-05-title" class="screen-title" tabindex="-1">الفعل أهم من شكل المنتج</h3>
+          <p class="screen-purpose">الغرض: تمييز الطلب المعرفي عن الوسيط المستخدم.</p>
+          <p class="element-status" data-element-status="t03"></p>
+        </header>
+        <div class="display-text">
+          <p>مهمتان تستخدمان ملصقًا رقميًا: الأولى تنقل تعريفات جاهزة، والثانية تبني اقتراحًا جديدًا وفق قيود مع توضيح مبرراته. هل يكفي شكل الملصق للحكم بأن المهمتين إبداع؟</p>
+        </div>
+        <p>اختر «نعم» أو «لا»، ثم حدد سبب حكمك.</p>
+        <div data-check="s05"></div>
+      </section>
+
+      <!-- Screen 06 -->
+      <section id="screen-06" class="screen" data-screen="06" aria-labelledby="screen-06-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 06 · ن1</p>
+          <h3 id="screen-06-title" class="screen-title" tabindex="-1">التذكر والفهم والتطبيق</h3>
+          <p class="screen-purpose">الغرض: تمييز العمليات في حالات محددة الشروط.</p>
+          <p class="element-status" data-element-status="t04"></p>
+        </header>
+        <div class="display-text">
+          <p>صنف المهمات الثلاث: استرجاع قواعد عمل سبق تعلمها؛ شرح القواعد بكلماتك مع مثال؛ استخدام إجراء توزيع أدوار سبق تعلمه لتنظيم مهمة مشابهة.</p>
+        </div>
+        <p>اختر من القائمة مستوى لكل مهمة، ثم اضغط «تحقق». إذا اختلف تصنيف بند يُعاد فتحه وحده مع مثال مساعد.</p>
+        <div data-check="s06"></div>
+      </section>
+
+      <!-- Screen 07 -->
+      <section id="screen-07" class="screen" data-screen="07" data-group="07" data-part="1" aria-labelledby="screen-07-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 07 أ · ن1</p>
+          <h3 id="screen-07-title" class="screen-title" tabindex="-1">التحليل والتقييم والإبداع</h3>
+          <p class="screen-purpose">الغرض: تمييز العمليات الأعلى من خلال نوع الدليل.</p>
+          <p class="element-status" data-element-status="t05"></p>
+        </header>
+        <div class="display-text">
+          <p>رتب الوصف تحت عمليته: بيان العلاقة بين أجزاء سجل؛ الحكم على بديلين وفق محكات؛ إنتاج خطة جديدة تستجيب لقيود.</p>
+        </div>
+        <div data-check="s07"></div>
+        <p class="note">أمثلة مؤلفة للتدريب. ليست المستويات مراتب لقيمة المعلم أو خطوات واجبة في كل درس. يتغير التصنيف إذا تغيرت التعليمات والدعم والدليل المطلوب؛ ويعبر كل مثال عن العملية الغالبة في الصياغة المعروضة.</p>
+      </section>
+
+      <section id="screen-07-2" class="screen" data-screen="07-2" data-group="07" data-part="2" aria-labelledby="screen-07-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 07 ب · ن1</p>
+          <h3 id="screen-07-2-title" class="screen-title" tabindex="-1">أمثلة: التذكر والفهم والتطبيق</h3>
+          <p class="screen-purpose">الغرض: ملاحظة كيف يتحدد الطلب المعرفي من الدليل المطلوب، وتصحيح مفاهيم شائعة.</p>
+        </header>
+        <p class="field-hint">السياق: «تنظيم عمل فريق».</p>
+        <ul class="process-list">
+          <li class="process-card"><h4>التذكر</h4><p>استرجع قواعد توزيع الأدوار التي درستها دون الرجوع إلى النص.</p><p>الدليل المتوقع: قائمة بالقواعد المسترجعة؛ يعزل التشخيص أثر الرجوع إلى النص.</p></li>
+          <li class="process-card"><h4>الفهم</h4><p>اشرح بكلماتك معنى توزيع المسؤوليات، ومثل له بحالة بسيطة.</p><p>الدليل المتوقع: شرح يبين المعنى ومثال متسق معه.</p></li>
+          <li class="process-card"><h4>التطبيق</h4><p>باستخدام إجراء توزيع الأدوار الذي تعلمته، وزع الأدوار على مهمة مشابهة موصوفة أمامك.</p><p>الدليل المتوقع: تطبيق الخطوات على الحالة، مع بيانات متسقة.</p></li>
+        </ul>
+
+        <div class="note">
+          <p><strong>تصحيح مفاهيم شائعة:</strong> كتابة فعل مثل «صمم» في الهدف لا تثبت وحدها مستوى الإبداع، كما أن استخدام اختبار رقمي لا يقصر المهمة على التذكر. يتحدد الحكم من التعليمات وطبيعة الاستجابة المطلوبة. في المهام المركبة يحدد المصمم العملية المستهدفة ويصرح بالعمليات المساندة بدل إعطاء تصنيف قطعي ملتبس.</p>
+        </div>
+      </section>
+
+      <section id="screen-07-3" class="screen" data-screen="07-3" data-group="07" data-part="3" aria-labelledby="screen-07-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 07 ج · ن1</p>
+          <h3 id="screen-07-3-title" class="screen-title" tabindex="-1">أمثلة: التحليل والتقييم والإبداع ومثال محلول</h3>
+          <p class="screen-purpose">الغرض: تمييز العمليات العليا بالدليل في السياق نفسه، ومتابعة تفكير معلن في مثال محلول.</p>
+        </header>
+        <p class="field-hint">السياق: «تنظيم عمل فريق».</p>
+        <ul class="process-list">
+          <li class="process-card"><h4>التحليل</h4><p>افحص سجل فريق افتراضي وحدد العلاقات بين تداخل المسؤوليات وتأخر تسليم المهمات، مستندًا إلى شواهد السجل.</p><p>الدليل المتوقع: تفكيك للمعلومات وعلاقات مفسرة؛ لا تنسب السببية يقينًا من سجل واحد.</p></li>
+          <li class="process-card"><h4>التقييم</h4><p>احكم على خطتين وفق وضوح المسؤوليات وقابلية التتبع، وادعم حكمك بمعلومات من الخطتين.</p><p>الدليل المتوقع: حكم مبرر بمحكات تطبق على البديلين.</p></li>
+          <li class="process-card"><h4>الإبداع</h4><p>صمم خطة جديدة لتنظيم مهمة لها قيود محددة، واجمع عناصرها في حل متسق ثم اختبره وعدله.</p><p>الدليل المتوقع: خطة تتجاوز نسخ المثال وتستجيب للقيود، مع سبب التعديل.</p></li>
+        </ul>
+
+        <div class="example">
+          <span class="example-label">تفكير معلن في مثال محلول</span>
+          <p>«سأبدأ بما سيقدمه المتعلم. إذا كان المطلوب حكمًا على بديلين، فإني أبحث عن معيار وشاهد يفسران الحكم. كتابة أسماء البديلين لا تكفي. ثم أختار وسيلة تسمح بعرض المقارنة والتعليل، مثل مستند نصي أو جدول بسيط. اختياري للوسيلة يأتي بعد تحديد الدليل».</p>
+        </div>
+      </section>
+
+      <section id="screen-07-4" class="screen" data-screen="07-4" data-group="07" data-part="4" aria-labelledby="screen-07-4-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 07 د · ن1</p>
+          <h3 id="screen-07-4-title" class="screen-title" tabindex="-1">أعد وصف مهمة واحدة بكلماتك</h3>
+          <p class="screen-purpose">الغرض: تطبيق التمييز بين العمليات على مهمة تختارها، ثم مراجعة وصفك بأسئلة معلنة.</p>
+          <p class="element-status" data-element-status="t05"></p>
+        </header>
+        <div class="field">
+          <label class="field-label" for="s07-paraphrase">اختر مهمة من أمثلة الجزأين ب وج أو من عملك، وصف ما يفعله المتعلم فيها والدليل الذي يقدمه</label>
+          <p class="field-hint" id="s07-paraphrase-hint">لا يصحح النظام هذا النص آليًا؛ راجعه بالأسئلة التالية.</p>
+          <textarea id="s07-paraphrase" class="input" data-field="s07.paraphrase" aria-describedby="s07-paraphrase-hint" required></textarea>
+        </div>
+        <div class="review-block">
+          <h5 class="review-block-title">قائمة مراجعة إعادة الصياغة</h5>
+          <div data-review="s07.rv1">هل وصفت ما يفعله المتعلم، لا اسم الأداة؟</div>
+          <div data-review="s07.rv2">هل يظهر في وصفك الدليل الذي سيقدمه المتعلم؟</div>
+          <div data-review="s07.rv3">هل حددت العملية الغالبة، وصرحت بالعمليات المساندة إن وجدت؟</div>
+        </div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t05">سجّل عملي</button></div>
+        <p class="result" data-result="t05" role="status"></p>
+      </section>
+
+      <!-- Screen 08 -->
+      <section id="screen-08" class="screen" data-screen="08" data-group="08" data-part="1" aria-labelledby="screen-08-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 08 أ · ن3</p>
+          <h3 id="screen-08-title" class="screen-title" tabindex="-1">الأداة تخدم الدليل</h3>
+          <p class="screen-purpose">الغرض: اختيار وظيفة رقمية تخدم المهمة، دون ربط اسم الأداة بمستوى ثابت.</p>
+          <p class="element-status" data-element-status="t06"></p>
+        </header>
+        <div class="display-text">
+          <p>تريد أن يقارن المتعلم بديلين ويبرر حكمه. أي وظيفة تخدم المهمة أكثر: تزيين العنوان فقط، أم عرض البديلين مع معايير المقارنة وشواهد الحكم؟</p>
+        </div>
+        <div data-check="s08"></div>
+        <p class="field-hint">أمثلة أدوات لكل مستوى: اختر مستوى لتفتح أمثلة أدوات قد تخدم مهامه في الجزء ج.</p>
+        <nav class="pyramid-nav" aria-label="هرم بلوم: افتح أمثلة مستوى">
+        <ul class="pyramid">
+          <li><a href="#level-create" class="pyramid-tier tier-6"><span>الإبداع</span></a></li>
+          <li><a href="#level-evaluate" class="pyramid-tier tier-5"><span>التقييم</span></a></li>
+          <li><a href="#level-analyze" class="pyramid-tier tier-4"><span>التحليل</span></a></li>
+          <li><a href="#level-apply" class="pyramid-tier tier-3"><span>التطبيق</span></a></li>
+          <li><a href="#level-understand" class="pyramid-tier tier-2"><span>الفهم</span></a></li>
+          <li><a href="#level-remember" class="pyramid-tier tier-1"><span>التذكر</span></a></li>
+        </ul>
+        <p class="pyramid-legend"><span>المستويات الثلاثة العليا: مهارات التفكير العليا (HOTS)</span><span>الدنيا: تأسيس المعرفة وتوظيفها (LOTS)</span></p>
+        </nav>
+      </section>
+
+      <section id="screen-08-2" class="screen" data-screen="08-2" data-group="08" data-part="2" aria-labelledby="screen-08-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 08 ب · ن3</p>
+          <h3 id="screen-08-2-title" class="screen-title" tabindex="-1">وسيلتك المتاحة وبديلها</h3>
+          <p class="screen-purpose">الغرض: اختيار وسيلة متاحة لك تحقق الوظيفة التي اخترتها، وبديل يحافظ عليها عند التعذر.</p>
+          <p class="element-status" data-element-status="t06"></p>
+        </header>
+        <div class="display-text">
+          <p>الوظيفة التي اخترتها في الجزء أ تحتاج وسيلة تملكها أنت ومتعلموك. سجّل وسيلة متاحة وبديلًا عند تعذرها، ثم راجع اختيارك.</p>
+        </div>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s08-means">وسيلة متاحة لك تحقق هذه الوظيفة</label>
+            <p class="field-hint" id="s08-means-hint">مستند أو جدول أو ورقة ممسوحة؛ لا يلزم شراء أداة.</p>
+            <input id="s08-means" class="input" type="text" data-field="s08.means" aria-describedby="s08-means-hint" required>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s08-alternative">بديل عند تعذرها</label>
+            <p class="field-hint" id="s08-alternative-hint">وسيلة أخرى تحافظ على الوظيفة نفسها.</p>
+            <input id="s08-alternative" class="input" type="text" data-field="s08.alternative" aria-describedby="s08-alternative-hint" required>
+          </div>
+        </div>
+        <div class="review-block">
+          <h5 class="review-block-title">راجع اختيارك</h5>
+          <div data-review="s08.rv1">هل الوسيلة متاحة لك ولمتعلميك؟</div>
+          <div data-review="s08.rv2">هل تسمح بإنتاج الدليل وقراءته؟</div>
+        </div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t06">سجّل عملي</button></div>
+        <p class="result" data-result="t06" role="status"></p>
+      </section>
+
+      <section id="screen-08-3" class="screen" data-screen="08-3" data-group="08" data-part="3" aria-labelledby="screen-08-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 08 ج · ن3</p>
+          <h3 id="screen-08-3-title" class="screen-title" tabindex="-1">أمثلة أدوات لكل مستوى</h3>
+          <p class="screen-purpose">الغرض: استكشاف وظائف رقمية ممكنة في كل مستوى، والحكم عليها بما يفعله المتعلم لا باسم الأداة.</p>
+        </header>
+        <span id="tools-reference"></span>
+        <div class="note">
+          <p>هذه القائمة من النسخة السابقة للحقيبة، وتُعرض أمثلةً على وظائف ممكنة. <strong>اسم الأداة لا يحدد مستوى بلوم</strong>: الأداة الواحدة قد تخدم مهام في مستويات مختلفة بحسب ما يفعله المتعلم والدليل المطلوب. تاريخ الاطلاع على صفحاتها الرسمية: 23 أكتوبر 2026. صفحات Google Classroom وDocs وSites وMicrosoft 365 تفتح على تسجيل الدخول، ولم يمكن فتح صفحتي Google Forms وGoogle Sheets آليًا في التاريخ نفسه. لم تُراجع شروط الاستخدام والأسعار؛ راجعها قبل الاعتماد على أي أداة، ولا يتطلب البرنامج أي حساب مدفوع.</p>
+        </div>
+    <div class="space-y-8">
+    <div class="space-y-3">
+      <h5 class="flex flex-wrap items-baseline gap-x-2 text-lg font-bold text-gray-800">⬇️ المستويات الدنيا (LOTS)<span class="text-sm font-normal text-gray-500">تأسيس المعرفة وتوظيفها</span></h5>
+      <details id="level-remember" class="group rounded-xl border border-gray-200 border-s-4 border-s-purple-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-xl" aria-hidden="true">📚</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-bold text-gray-900"><span class="text-xs font-semibold text-purple-700">المستوى 1 · </span>التذكر</span>
+            <span class="block text-sm text-gray-600">حفظ، تعريف، سرد</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">3 أمثلة</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h6 class="mb-3 text-sm font-semibold text-gray-700">أمثلة أدوات قد تخدم مهام في هذا المستوى (بحسب ما يفعله المتعلم)</h6>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://quizlet.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Quizlet</bdi>
+                <span class="block text-sm text-gray-600">بطاقات تعليمية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://kahoot.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Kahoot!</bdi>
+                <span class="block text-sm text-gray-600">ألعاب تنافسية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Forms</bdi>
+                <span class="block text-sm text-gray-600">اختبارات قصيرة.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-understand" class="group rounded-xl border border-gray-200 border-s-4 border-s-blue-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-xl" aria-hidden="true">💡</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-bold text-gray-900"><span class="text-xs font-semibold text-blue-700">المستوى 2 · </span>الفهم</span>
+            <span class="block text-sm text-gray-600">شرح، تفسير، تلخيص</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أمثلة</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h6 class="mb-3 text-sm font-semibold text-gray-700">أمثلة أدوات قد تخدم مهام في هذا المستوى (بحسب ما يفعله المتعلم)</h6>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://www.mindmeister.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">MindMeister</bdi>
+                <span class="block text-sm text-gray-600">خرائط ذهنية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://edpuzzle.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Edpuzzle</bdi>
+                <span class="block text-sm text-gray-600">فيديو تفاعلي.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Padlet</bdi>
+                <span class="block text-sm text-gray-600">تنظيم الأفكار.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://coggle.it" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Coggle</bdi>
+                <span class="block text-sm text-gray-600">توضيح العلاقات.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-apply" class="group rounded-xl border border-gray-200 border-s-4 border-s-green-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-100 text-xl" aria-hidden="true">🛠️</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-bold text-gray-900"><span class="text-xs font-semibold text-green-700">المستوى 3 · </span>التطبيق</span>
+            <span class="block text-sm text-gray-600">تنفيذ، استخدام، حل</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أمثلة</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h6 class="mb-3 text-sm font-semibold text-gray-700">أمثلة أدوات قد تخدم مهام في هذا المستوى (بحسب ما يفعله المتعلم)</h6>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://docs.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Docs/Slides</bdi>
+                <span class="block text-sm text-gray-600">تطبيق في مستندات.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://phet.colorado.edu" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">PhET Simulations</bdi>
+                <span class="block text-sm text-gray-600">محاكاة تفاعلية.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.google.com/maps/about/mymaps/" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google My Maps</bdi>
+                <span class="block text-sm text-gray-600">تطبيق جغرافي.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.office.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">MS Office</bdi>
+                <span class="block text-sm text-gray-600">تنفيذ مهام عملية.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </div>
+    <div class="space-y-3">
+      <h5 class="flex flex-wrap items-baseline gap-x-2 text-lg font-bold text-gray-800">⬆️ المستويات العليا (HOTS)<span class="text-sm font-normal text-gray-500">مهارات التفكير العليا</span></h5>
+      <details id="level-analyze" class="group rounded-xl border border-gray-200 border-s-4 border-s-yellow-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-yellow-100 text-xl" aria-hidden="true">🔍</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-bold text-gray-900"><span class="text-xs font-semibold text-yellow-700">المستوى 4 · </span>التحليل</span>
+            <span class="block text-sm text-gray-600">مقارنة، تفكيك، استنتاج</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أمثلة</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h6 class="mb-3 text-sm font-semibold text-gray-700">أمثلة أدوات قد تخدم مهام في هذا المستوى (بحسب ما يفعله المتعلم)</h6>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://www.mentimeter.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Mentimeter</bdi>
+                <span class="block text-sm text-gray-600">تصويت وتحليل.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://trends.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Trends</bdi>
+                <span class="block text-sm text-gray-600">مقارنة بيانات بحث.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://sheets.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Excel/Sheets</bdi>
+                <span class="block text-sm text-gray-600">تحليل بيانات.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://coggle.it" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Coggle</bdi>
+                <span class="block text-sm text-gray-600">تحليل العلاقات.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-evaluate" class="group rounded-xl border border-gray-200 border-s-4 border-s-orange-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-xl" aria-hidden="true">⚖️</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-bold text-gray-900"><span class="text-xs font-semibold text-orange-700">المستوى 5 · </span>التقييم</span>
+            <span class="block text-sm text-gray-600">نقد، حكم، تقدير</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">4 أمثلة</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h6 class="mb-3 text-sm font-semibold text-gray-700">أمثلة أدوات قد تخدم مهام في هذا المستوى (بحسب ما يفعله المتعلم)</h6>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Padlet</bdi>
+                <span class="block text-sm text-gray-600">نقد وتقييم الأقران.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://info.flip.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Flip (Flipgrid)</bdi>
+                <span class="block text-sm text-gray-600">مناقشات فيديو.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://forms.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Forms</bdi>
+                <span class="block text-sm text-gray-600">استبيانات تقييم.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://classroom.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">منتديات Google Classroom</bdi>
+                <span class="block text-sm text-gray-600">تقييم الحجج.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+      <details id="level-create" class="group rounded-xl border border-gray-200 border-s-4 border-s-red-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
+        <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 text-xl" aria-hidden="true">🎨</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-bold text-gray-900"><span class="text-xs font-semibold text-red-700">المستوى 6 · </span>الإبداع</span>
+            <span class="block text-sm text-gray-600">تصميم، إنتاج، ابتكار</span>
+          </span>
+          <span class="hidden shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 sm:inline-flex">5 أمثلة</span>
+          <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="border-t border-gray-100 p-4 sm:p-5">
+          <h6 class="mb-3 text-sm font-semibold text-gray-700">أمثلة أدوات قد تخدم مهام في هذا المستوى (بحسب ما يفعله المتعلم)</h6>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <li>
+              <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Canva</bdi>
+                <span class="block text-sm text-gray-600">تصميم جرافيك.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.adobe.com/express/" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Adobe Express</bdi>
+                <span class="block text-sm text-gray-600">تصميم سريع.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">YouTube</bdi>
+                <span class="block text-sm text-gray-600">إنشاء ونشر فيديو.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://sites.google.com" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Google Sites</bdi>
+                <span class="block text-sm text-gray-600">إنشاء مواقع ويب.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://scratch.mit.edu" target="_blank" rel="noopener noreferrer" class="tool-card block h-full bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:border-blue-500">
+                <bdi class="block font-bold text-gray-900">Scratch</bdi>
+                <span class="block text-sm text-gray-600">برمجة قصص وألعاب.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </div>
+    </div>
+      </section>
+    </div>
+
+    <a href="#plan" class="next-lesson" data-next-lesson hidden>
+      <span>الوحدة 3 — الهدف والخطة الذاتية</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Unit 3: plan (screens 09–12) =========================== -->
+  <!-- The former two-day schedule (facilitator timing) moved to trainer.html#archive; see docs/implementation-log.md. -->
+  <section id="plan" class="lesson" data-lesson data-view aria-labelledby="plan-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الوحدة 3 من 7 · الشاشات 09–12</p>
+      <h2 id="plan-title" class="lesson-title" tabindex="-1">الهدف والخطة الذاتية</h2>
+      <p class="lesson-sub">هدف واضح يمكن ملاحظته، وخطة تضعها أنت وتعدلها كلما تغيرت حاجتك.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <nav class="stepper" data-stepper aria-label="شاشات الوحدة الثالثة"></nav>
+
+    <div class="lesson-body">
+
+      <!-- Screen 09 -->
+      <section id="screen-09" class="screen" data-screen="09" data-group="09" data-part="1" aria-labelledby="screen-09-title">
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 09 أ · ن2</p>
+          <h3 id="screen-09-title" class="screen-title" tabindex="-1">صياغة هدف يمكن ملاحظته</h3>
+          <p class="screen-purpose">الغرض: إنتاج مسودة هدف لمهمتك.</p>
+          <p class="element-status" data-element-status="t07"></p>
+        </header>
+        <div class="display-text">
+          <p>ما الذي سيستطيع المتعلم فعله؟ تحت أي شروط؟ وما الذي ستبحث عنه للحكم على استجابته؟ اكتب هدفًا لمهمتك باستخدام هذه الأسئلة.</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s09-performance">الأداء: ما الذي سيستطيع المتعلم فعله؟</label>
+          <textarea id="s09-performance" class="input" data-field="s09.performance" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s09-conditions">الشروط: تحت أي ظروف أو بأي مواد؟</label>
+          <textarea id="s09-conditions" class="input" data-field="s09.conditions" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s09-criterion">معيار الحكم: ما الذي ستبحث عنه في استجابته؟</label>
+          <textarea id="s09-criterion" class="input" data-field="s09.criterion" required></textarea>
+        </div>
+      </section>
+
+      <section id="screen-09-2" class="screen" data-screen="09-2" data-group="09" data-part="2" aria-labelledby="screen-09-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 09 ب · ن2</p>
+          <h3 id="screen-09-2-title" class="screen-title" tabindex="-1">من الصياغة العامة إلى هدفك في عبارة</h3>
+          <p class="screen-purpose">الغرض: تمييز الهدف الذي يمكن ملاحظته من الهدف العام، ثم جمع أجزاء هدفك في عبارة واحدة.</p>
+          <p class="element-status" data-element-status="t07"></p>
+        </header>
+        <div class="example">
+          <span class="example-label">مثال مؤلف</span>
+          <p>«عند عرض خطتين، يختار المتعلم الأنسب وفق وضوح المسؤوليات وقابلية التتبع، ويستشهد بمعلومة من كل خطة».</p>
+        </div>
+        <div class="compare">
+          <div class="compare-col"><h4>صياغة عامة</h4><p>«يفهم الخطط».</p><p class="field-hint">لا تحدد ما سيقدمه المتعلم ولا ما ستبحث عنه.</p></div>
+          <div class="compare-col"><h4>صياغة مفصلة</h4><p>«عند عرض خطتين، يختار المتعلم الأنسب وفق وضوح المسؤوليات وقابلية التتبع، ويستشهد بمعلومة من كل خطة».</p><p class="field-hint">تحدد الأداء وشروطه ومعيار الحكم.</p></div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s09-statement">الهدف في عبارة واحدة</label>
+          <p class="field-hint" id="s09-statement-hint">اجمع الأجزاء الثلاثة في عبارة. يمكنك البدء من مسودة تجمعها لك ثم تعديلها.</p>
+          <textarea id="s09-statement" class="input" data-field="s09.statement" aria-describedby="s09-statement-hint" required></textarea>
+          <div class="actions"><button type="button" class="btn btn-secondary" data-action="compose-goal">اجمع الأجزاء في مسودة</button></div>
+        </div>
+      </section>
+
+      <section id="screen-09-3" class="screen" data-screen="09-3" data-group="09" data-part="3" aria-labelledby="screen-09-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 09 ج · ن2</p>
+          <h3 id="screen-09-3-title" class="screen-title" tabindex="-1">راجع هدفك بالمحكات</h3>
+          <p class="screen-purpose">الغرض: الحكم على وضوح هدفك بأسئلة معلنة قبل اعتماده في مشروعك.</p>
+          <p class="element-status" data-element-status="t07"></p>
+        </header>
+        <p class="note">لا يحكم النظام على صحة الهدف من وجود فعل معين فيه؛ راجعه أنت بالأسئلة التالية.</p>
+        <div class="review-block">
+          <h5 class="review-block-title">راجع هدفك بالمحكات</h5>
+          <div data-review="s09.rv1">هل يذكر هدفي أداءً يمكن ملاحظته؟</div>
+          <div data-review="s09.rv2">هل حددت الشروط؟</div>
+          <div data-review="s09.rv3">هل حددت ما سأبحث عنه للحكم على الاستجابة؟</div>
+          <div data-review="s09.rv4">هل يمكن بناء تقويم لهدفي؟</div>
+        </div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t07">سجّل عملي</button></div>
+        <p class="result" data-result="t07" role="status"></p>
+        <p class="field-hint">يُحفظ الهدف في مشروعك، ويمكنك تحسينه في الشاشة 17.</p>
+      </section>
+
+      <!-- Screen 10 -->
+      <section id="screen-10" class="screen" data-screen="10" aria-labelledby="screen-10-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 10 · ن7</p>
+          <h3 id="screen-10-title" class="screen-title" tabindex="-1">خطة تناسب وقتي واحتياجي</h3>
+          <p class="screen-purpose">الغرض: أن تدير تعلمك بنفسك.</p>
+          <p class="element-status" data-element-status="t08"></p>
+        </header>
+        <div class="display-text">
+          <p>اختر أول جانب تريد تطويره، وحدد موعدًا يناسبك للعودة. تقديرك للوقت شخصي ويمكن تغييره. ستجد عملك المحفوظ عند العودة وفق طريقة الحفظ المتاحة.</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s10-priority">أول جانب أريد تطويره</label>
+          <select id="s10-priority" class="input" data-field="s10.priority" required>
+            <option value="">اختر…</option>
+            <option value="n1">ن1 تحليل الطلب المعرفي في مهمة مكتوبة</option>
+            <option value="n2">ن2 صياغة هدف يمكن ملاحظته</option>
+            <option value="n3">ن3 اختيار وظيفة رقمية وتبريرها</option>
+            <option value="n4">ن4 إعادة تصميم مهمة لهدف معرفي معلن</option>
+            <option value="n5">ن5 بناء تقويم وتغذية راجعة متسقين مع الهدف</option>
+            <option value="n6">ن6 توثيق تطبيق أو محاكاة واستخلاص تعديل</option>
+            <option value="n7">ن7 تنظيم المصادر والإصدارات وسؤال الدورة التالية</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s10-step">خطوتي التالية المحددة</label>
+          <p class="field-hint" id="s10-step-hint">حدد فعلًا واحدًا، مثل تعديل هدف أو تجربة مهمة. عبارة مثل «أتعلم أكثر» عامة لا تساعدك على البدء.</p>
+          <input id="s10-step" class="input" type="text" data-field="s10.step" aria-describedby="s10-step-hint" required>
+        </div>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s10-return">موعد أو ظرف العودة</label>
+            <p class="field-hint" id="s10-return-hint">مثل «قبل إعداد الدرس المقبل».</p>
+            <input id="s10-return" class="input" type="text" data-field="s10.return" aria-describedby="s10-return-hint" required>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s10-time">الوقت المتاح لي <span class="field-optional">(اختياري)</span></label>
+            <input id="s10-time" class="input" type="text" data-field="s10.time">
+          </div>
+        </div>
+        <fieldset class="plain" data-field-wrap>
+          <legend>راجع خطوتك</legend>
+          <label class="choice"><input type="checkbox" data-field="s10.specific" data-required-msg="تأكد أن خطوتك فعل محدد واحد، ثم ضع العلامة."><span>خطوتي فعل واحد محدد أستطيع البدء به، لا هدفًا عامًا.</span></label>
+        </fieldset>
+        <details class="hint">
+          <summary><span>اعرض نموذج خطة (لن يُعبّأ في حقولك)</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body">
+            <p><strong>أولويتي:</strong> مواءمة الهدف مع دليل التقويم. <strong>خطوتي التالية:</strong> تعديل تعليمات المقارنة وإضافة معيارَي وضوح المسؤوليات وقابلية التتبع.</p>
+            <p><strong>شرط العودة:</strong> قبل إعداد مهمة تعلم جديدة. <strong>كيف سأراجع خطتي:</strong> أقرأ تعليماتي وأتحقق مما إذا كانت الاستجابة المطلوبة ستكشف المعيارين.</p>
+            <p><strong>المدة:</strong> أحددها بعد تجربة المهمة؛ لا توجد مدة مفترضة في المثال.</p>
+          </div>
+        </details>
+        <p class="note">لا يرسل الموقع تذكيرات؛ اكتب موعد العودة في تقويمك إن رغبت.</p>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t08">سجّل خطتي</button></div>
+        <p class="result" data-result="t08" role="status"></p>
+      </section>
+
+      <!-- Screen 11 -->
+      <section id="screen-11" class="screen" data-screen="11" aria-labelledby="screen-11-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 11 · ن3</p>
+          <h3 id="screen-11-title" class="screen-title" tabindex="-1">ما أحتاجه لتنفيذ خطتي</h3>
+          <p class="screen-purpose">الغرض: فحص شروط التطبيق دون افتراض موارد المدرسة.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="display-text">
+          <p>راجع ما تحتاجه لمهمتك: محتوى موثوق، ووسيلة لإنتاج الاستجابة، وطريقة لحفظها وقراءتها. ما البديل إذا لم تتوفر الوسيلة الرقمية؟</p>
+        </div>
+        <fieldset class="plain">
+          <legend>محتوى موثوق</legend>
+          <div class="review-scale">
+            <label class="review-opt"><input type="radio" name="s11-content" value="ok" data-field="s11.content"><span>متاح</span></label>
+            <label class="review-opt"><input type="radio" name="s11-content" value="need" data-field="s11.content"><span>أحتاج بديلًا</span></label>
+          </div>
+          <p class="field-hint" data-show-when="s11.content=need" hidden>افتح <a href="#screen-25" class="inline-link">بطاقة اختيار مصدر</a> لتسجيل مصدر يمكن تتبعه.</p>
+        </fieldset>
+        <fieldset class="plain">
+          <legend>وسيلة لإنتاج الاستجابة</legend>
+          <div class="review-scale">
+            <label class="review-opt"><input type="radio" name="s11-means" value="ok" data-field="s11.means"><span>متاح</span></label>
+            <label class="review-opt"><input type="radio" name="s11-means" value="need" data-field="s11.means"><span>أحتاج بديلًا</span></label>
+          </div>
+          <p class="field-hint" data-show-when="s11.means=need" hidden>فكّر في وظيفة بديلة تحقق الدليل نفسه (عرض المقارنة، كتابة التعليل…) لا في اسم خدمة محددة؛ قد تكفي ورقة أو مستند.</p>
+        </fieldset>
+        <fieldset class="plain">
+          <legend>طريقة لحفظ الاستجابة وقراءتها</legend>
+          <div class="review-scale">
+            <label class="review-opt"><input type="radio" name="s11-storage" value="ok" data-field="s11.storage"><span>متاح</span></label>
+            <label class="review-opt"><input type="radio" name="s11-storage" value="need" data-field="s11.storage"><span>أحتاج بديلًا</span></label>
+          </div>
+          <p class="field-hint" data-show-when="s11.storage=need" hidden>راجع <a href="#save-help" class="inline-link">دليل حفظ العمل</a>، وفكّر في طريقة تحفظ بها استجابات المتعلمين وتقرؤها لاحقًا.</p>
+        </fieldset>
+        <fieldset class="plain">
+          <legend>هل يتاح لك تطبيق صفي للمهمة؟</legend>
+          <div class="review-scale">
+            <label class="review-opt"><input type="radio" name="s11-class" value="yes" data-field="s11.classroom"><span>نعم</span></label>
+            <label class="review-opt"><input type="radio" name="s11-class" value="no" data-field="s11.classroom"><span>لا الآن</span></label>
+          </div>
+          <p class="field-hint" data-show-when="s11.classroom=no" hidden>يمكنك تجربة محاكاة موثقة تسميها «محاكاة»، وتبقي التطبيق الصفي خطوة لاحقة (الشاشة 27).</p>
+        </fieldset>
+        <div class="field">
+          <label class="field-label" for="s11-obstacle">العائق، إن وجد <span class="field-optional">(اختياري)</span></label>
+          <textarea id="s11-obstacle" class="input" data-field="s11.obstacle"></textarea>
+        </div>
+        <p class="field-hint">تُحفظ هذه القائمة داخل خطتك. هذه شاشة مساندة اختيارية لا تضيف عنصر استكمال.</p>
+      </section>
+
+      <!-- Screen 12 -->
+      <section id="screen-12" class="screen" data-screen="12" aria-labelledby="screen-12-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 12 · ن7</p>
+          <h3 id="screen-12-title" class="screen-title" tabindex="-1">مراجعة خطتي</h3>
+          <p class="screen-purpose">الغرض: إبقاء الخطة قابلة للتعديل وفق دليل.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="display-text">
+          <p>هل تغيرت أولويتك بعد التشخيص أو الممارسة؟ اذكر ما دفعك للتغيير، ثم حدد الخطوة التالية.</p>
+        </div>
+        <div id="s12-current" class="compare-col"></div>
+        <p class="field-hint">يمكنك الرجوع إلى <a href="#diagnostic-report" class="inline-link">تقرير التشخيص</a> قبل أن تقرر.</p>
+        <fieldset class="plain">
+          <legend>قراري</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="s12-decision" value="keep" data-field="s12.decision"><span>أحتفظ بخطتي كما هي</span></label>
+            <label class="choice"><input type="radio" name="s12-decision" value="modify" data-field="s12.decision"><span>أعدل الأولوية أو الخطوة أو شرط العودة</span></label>
+          </div>
+        </fieldset>
+        <div data-show-when="s12.decision=modify" hidden>
+          <div class="field">
+            <label class="field-label" for="s12-priority">الأولوية الجديدة</label>
+            <select id="s12-priority" class="input" data-field="s12.priority" data-copy-options="s10-priority"></select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s12-step">الخطوة التالية</label>
+            <input id="s12-step" class="input" type="text" data-field="s12.step">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s12-return">موعد أو ظرف العودة</label>
+            <input id="s12-return" class="input" type="text" data-field="s12.return">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s12-reason">ما الذي دفعك للتغيير <span class="field-optional">(اختياري)</span></label>
+            <textarea id="s12-reason" class="input" data-field="s12.reason"></textarea>
+          </div>
+          <div class="actions"><button type="button" class="btn btn-secondary" data-action="plan-preview">اعرض القديم والجديد قبل الحفظ</button></div>
+          <div id="s12-preview" hidden>
+            <div id="s12-compare" class="compare"></div>
+            <div class="actions">
+              <button type="button" class="btn btn-primary" data-action="plan-save">احفظ التعديل</button>
+              <button type="button" class="btn btn-secondary" data-action="plan-cancel">ألغِ؛ أبقِ الخطة السابقة</button>
+            </div>
+          </div>
+        </div>
+        <div data-show-when="s12.decision=keep" hidden>
+          <div class="actions"><button type="button" class="btn btn-primary" data-action="plan-keep">سجّل أنني راجعت خطتي</button></div>
+        </div>
+        <p id="s12-result" class="result" role="status"></p>
+        <p class="field-hint">لا يُعاقب تعديل الخطة ولا يزيد نسبة الإنجاز. يُحفظ تاريخ كل مراجعة وسببها.</p>
+        <div data-history="plan"></div>
+      </section>
+    </div>
+
+    <a href="#activities" class="next-lesson" data-next-lesson hidden>
+      <span>الوحدة 4 — الورش: ممارسة موجهة ومستقلة</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Unit 4: activities (screens 13–16) =========================== -->
+  <!-- The ids workshop-1..3 are kept (trainer.html links to them). Group instructions of the
+       former workshops remain in trainer.html#guide; see docs/implementation-log.md. -->
+  <section id="activities" class="lesson" data-lesson data-view aria-labelledby="activities-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الوحدة 4 من 7 · الشاشات 13–16</p>
+      <h2 id="activities-title" class="lesson-title" tabindex="-1">الورش: ممارسة موجهة ومستقلة</h2>
+      <p class="lesson-sub">ثلاث ورش تنفذها وحدك بمثال محايد ومحكات معلنة، ثم تأمل ما تغير في مهمتك.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <nav class="stepper" data-stepper aria-label="شاشات الوحدة الرابعة"></nav>
+
+    <div class="lesson-body">
+
+      <!-- Screen 13 -->
+      <section id="screen-13" class="screen" data-screen="13" data-group="13" data-part="1" data-step-title="تمييز الدليل" aria-labelledby="screen-13-title">
+        <div id="workshop-1">
+          <header class="screen-head">
+            <p class="screen-kicker">الشاشة 13 أ · الورشة الأولى · ن1</p>
+            <h3 id="screen-13-title" class="screen-title" tabindex="-1">تمييز الدليل: أي استجابة تكشف تقويمًا؟</h3>
+            <p class="screen-purpose">الغرض: التدريب على تحليل الطلب المعرفي مع مساندة واضحة.</p>
+            <p class="element-status" data-element-status="t09"></p>
+          </header>
+          <div class="example" id="shared-example">
+            <span class="example-label">مادة المثال المشترك (مؤلفة لأغراض التدريب)</span>
+            <p>يريد فريق افتراضي تنظيم معرض تعليمي. <strong>الخطة أ</strong> تسند كل مهمة إلى مسؤول معلوم، لكنها لا تحدد أين يسجل إنجاز العمل. <strong>الخطة ب</strong> تحدد لوحة لتسجيل الإنجاز، لكنها تسند بعض المهمات إلى الفريق كله دون مسؤول معلوم.</p>
+            <p>معيارا الحكم في هذا المثال هما وضوح المسؤوليات وقابلية تتبع الإنجاز. لا توجد هنا خطة أفضل مطلقًا؛ يوضح الحكم ما تحقق وما غاب وفق كل معيار.</p>
+          </div>
+          <div class="display-text">
+            <p>اقرأ الخطتين. أي استجابة تكشف تقويمًا وفق محكات؟</p>
+          </div>
+          <div data-check="s13"></div>
+        </div>
+      </section>
+
+      <section id="screen-13-2" class="screen" data-screen="13-2" data-group="13" data-part="2" aria-labelledby="screen-13-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 13 ب · الورشة الأولى · ن1</p>
+          <h3 id="screen-13-2-title" class="screen-title" tabindex="-1">تمييز الدليل: اربط الحكم بمعياريه</h3>
+          <p class="screen-purpose">الغرض: ربط كل جزء من الاستجابة بالمعيار الذي يستند إليه، ومتابعة تفكير معلن في الإجابة.</p>
+          <p class="element-status" data-element-status="t09"></p>
+        </header>
+        <div class="display-text">
+          <p>اربط جزأي الاستجابة بمعياري وضوح المسؤوليات وقابلية التتبع. مادة المثال هي <a href="#shared-example" class="inline-link">الخطتان أ وب</a>.</p>
+        </div>
+        <div data-check="s13b"></div>
+        <div class="example" id="worked-thinking">
+          <span class="example-label">كيف فكرت في الإجابة؟ (تفكير معلن)</span>
+          <p>«حددت أولًا المعيارين. بحثت بعد ذلك عن معلومة تقابل كل معيار في كل خطة. لم أستنتج نجاح التطبيق من جودة الوصف، بل حكمت على الخطتين كما وردتا. لو أردت اختبار الأثر فسأحتاج تجربة ودليلًا جديدًا».</p>
+        </div>
+      </section>
+
+      <!-- Screen 14 -->
+      <section id="screen-14" class="screen" data-screen="14" data-group="14" data-part="1" aria-labelledby="screen-14-title" hidden>
+        <div id="workshop-2">
+          <header class="screen-head">
+            <p class="screen-kicker">الشاشة 14 أ · الورشة الثانية · ن4</p>
+            <h3 id="screen-14-title" class="screen-title" tabindex="-1">تغيير الطلب المعرفي</h3>
+            <p class="screen-purpose">الغرض: إعادة تصميم مهمة محددة لتناسب هدفًا معرفيًا معلنًا.</p>
+            <p class="element-status" data-element-status="t10"></p>
+          </header>
+          <div class="display-text">
+            <p>المهمة الأصلية هي «أعد كتابة وصف الخطتين». أعد صياغتها لتطلب تقويمًا وفق المعيارين، وحدد الاستجابة التي ستقبلها دليلًا.</p>
+          </div>
+          <p class="field-hint">مادة المهمة هي <a href="#shared-example" class="inline-link">الخطتان أ وب</a>. اكتب محاولتك قبل فتح المثال.</p>
+          <div class="field">
+            <label class="field-label" for="s14-v1">تعليمات المهمة بعد إعادة الصياغة (محاولتي الأولى)</label>
+            <textarea id="s14-v1" class="input" data-field="s14.v1" required></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s14-v1evidence">الاستجابة التي سأقبلها دليلًا</label>
+            <textarea id="s14-v1evidence" class="input" data-field="s14.v1evidence" required></textarea>
+          </div>
+          <div class="actions"><button type="button" class="btn btn-primary" data-action="open-example" id="s14-open">احفظ محاولتي وافتح المثال للمقارنة</button></div>
+          <p id="s14-gate" class="result is-missing" role="status"></p>
+        </div>
+      </section>
+
+      <section id="screen-14-2" class="screen" data-screen="14-2" data-group="14" data-part="2" aria-labelledby="screen-14-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 14 ب · الورشة الثانية · ن4</p>
+          <h3 id="screen-14-2-title" class="screen-title" tabindex="-1">قارن محاولتك وأصلح النقص</h3>
+          <p class="screen-purpose">الغرض: مقارنة محاولتك بمثال محلول وبمحكات معلنة، ثم إصلاح النقص أو تعليله.</p>
+          <p class="element-status" data-element-status="t10"></p>
+        </header>
+        <p class="result is-missing" data-show-when="s14.exampleOpened=">اكتب محاولتك في <a href="#screen-14" class="inline-link">الجزء أ</a> أولًا، ثم افتح المثال؛ المقارنة تفيد بعد المحاولة.</p>
+
+          <div id="s14-compare" hidden>
+            <div class="example">
+              <span class="example-label">مثال مؤلف</span>
+              <p>«قارن الخطتين وفق وضوح المسؤوليات وقابلية التتبع، وبين قوة كل منهما ونقصها مستشهدًا بالنص».</p>
+            </div>
+            <details class="hint">
+              <summary><span>مثال استجابة ناقصة ومراجعتها</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+              <div class="hint-body">
+                <p><strong>الاستجابة الناقصة:</strong> «الخطة أ أفضل لأنها جميلة».</p>
+                <p><strong>المراجعة:</strong> ذكرت حكمًا، لكن معيار الجمال ليس من المعيارين المطلوبين ولم يقدم شاهد من الخطتين.</p>
+                <p><strong>التغذية الراجعة:</strong> «قارن وضوح المسؤوليات وقابلية التتبع في الخطتين، واستشهد بما في الوصف».</p>
+                <p><strong>استجابة محسنة مؤلفة:</strong> «الخطة أ تحدد المسؤول عن كل مهمة، لكنها لا تحدد موضع تسجيل الإنجاز. الخطة ب تحدد وسيلة تسجيل الإنجاز، لكنها لا تعين مسؤولًا لبعض المهمات. سأقترح جمع وضوح المسؤوليات في أ مع وسيلة التتبع في ب».</p>
+                <p class="field-hint">يراجع المعلم وجود المحكين والشواهد واتساق الاستنتاج، ولا يستنتج من هذا النص نجاح التنفيذ الفعلي.</p>
+              </div>
+            </details>
+            <h4 class="section-title">افحص محاولتك بالمحكات</h4>
+            <p class="field-hint">لا يحكم النظام آليًا على صحة نصك؛ أنت من يحدد ما في محاولتك.</p>
+            <fieldset class="plain">
+              <legend>وجود حكم مطلوب من المتعلم</legend>
+              <div class="review-scale">
+                <label class="review-opt"><input type="radio" name="s14-c1" value="present" data-field="s14.c1"><span>موجود في محاولتي</span></label>
+                <label class="review-opt"><input type="radio" name="s14-c1" value="missing" data-field="s14.c1"><span>ناقص</span></label>
+              </div>
+              <p class="part-hint" data-show-when="s14.c1=missing" hidden>خطوة الإصلاح: أضف إلى التعليمات طلب حكم صريح على الخطتين.</p>
+            </fieldset>
+            <fieldset class="plain">
+              <legend>معياران معلنان (وضوح المسؤوليات وقابلية التتبع)</legend>
+              <div class="review-scale">
+                <label class="review-opt"><input type="radio" name="s14-c2" value="present" data-field="s14.c2"><span>موجود في محاولتي</span></label>
+                <label class="review-opt"><input type="radio" name="s14-c2" value="missing" data-field="s14.c2"><span>ناقص</span></label>
+              </div>
+              <p class="part-hint" data-show-when="s14.c2=missing" hidden>خطوة الإصلاح: اذكر المعيارين في التعليمات ليعرف المتعلم أساس الحكم.</p>
+            </fieldset>
+            <fieldset class="plain">
+              <legend>شواهد من الخطتين</legend>
+              <div class="review-scale">
+                <label class="review-opt"><input type="radio" name="s14-c3" value="present" data-field="s14.c3"><span>موجود في محاولتي</span></label>
+                <label class="review-opt"><input type="radio" name="s14-c3" value="missing" data-field="s14.c3"><span>ناقص</span></label>
+              </div>
+              <p class="part-hint" data-show-when="s14.c3=missing" hidden>خطوة الإصلاح: اطلب من المتعلم أن يستشهد بمعلومة من كل خطة.</p>
+            </fieldset>
+            <div class="field" data-show-when-any="s14.c1=missing;s14.c2=missing;s14.c3=missing" hidden>
+              <label class="field-label" for="s14-v2">نسختي بعد إصلاح النقص</label>
+              <textarea id="s14-v2" class="input" data-field="s14.v2"></textarea>
+            </div>
+            <div class="field" data-show-when-any="s14.c1=missing;s14.c2=missing;s14.c3=missing" hidden>
+              <label class="field-label" for="s14-keepReason">أو: سبب إبقاء النقص للمراجعة لاحقًا</label>
+              <textarea id="s14-keepReason" class="input" data-field="s14.keepReason"></textarea>
+            </div>
+            <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t10">سجّل عملي</button></div>
+            <p class="result" data-result="t10" role="status"></p>
+            <p class="field-hint">يُحفظ نصك قبل المقارنة وبعدها، ولا يُكتب فوق المحاولة الأولى.</p>
+          </div>
+      </section>
+
+      <!-- Screen 15 -->
+      <section id="screen-15" class="screen" data-screen="15" data-group="15" data-part="1" data-step-title="مهمة من سياقي" aria-labelledby="screen-15-title" hidden>
+        <div id="workshop-3">
+          <header class="screen-head">
+            <p class="screen-kicker">الشاشة 15 أ · الورشة الثالثة · ن1 إلى ن3</p>
+            <h3 id="screen-15-title" class="screen-title" tabindex="-1">مهمة من سياقي: الهدف والدليل والوظيفة</h3>
+            <p class="screen-purpose">الغرض: نقل ما تعلمته إلى مشروعك.</p>
+            <p class="element-status" data-element-status="t11"></p>
+          </header>
+          <div class="display-text">
+            <p>استخدم مهمتك الشخصية أو مثالًا محايدًا. حدد الهدف، وما سيفعله المتعلم، والدليل المتوقع، والوظيفة الرقمية التي تخدمه. اختر المستوى المعرفي الذي يحتاجه الهدف.</p>
+          </div>
+          <p class="field-hint">لا يلزم استخدام ثلاثة مستويات أو جميع مستويات بلوم. تنتقل هذه المسودة إلى قالب المشروع في الشاشتين 17 و18 دون إعادة إدخال.</p>
+          <div class="field">
+            <label class="field-label" for="s15-goal">الهدف</label>
+            <textarea id="s15-goal" class="input" data-field="s15.goal" data-prefill-from="s09.statement" required></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s15-action">ما سيفعله المتعلم</label>
+            <textarea id="s15-action" class="input" data-field="s15.action" required></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s15-evidence">الدليل المتوقع</label>
+            <textarea id="s15-evidence" class="input" data-field="s15.evidence" required></textarea>
+          </div>
+          <div class="field-row field-row--2">
+            <div class="field">
+              <label class="field-label" for="s15-function">الوظيفة الرقمية التي تخدم الدليل</label>
+              <input id="s15-function" class="input" type="text" data-field="s15.function" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="s15-level">العملية المعرفية التي يحتاجها الهدف</label>
+              <select id="s15-level" class="input" data-field="s15.level" data-level-options required></select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-15-2" class="screen" data-screen="15-2" data-group="15" data-part="2" aria-labelledby="screen-15-2-title" hidden>
+        <div>
+          <header class="screen-head">
+            <p class="screen-kicker">الشاشة 15 ب · الورشة الثالثة · ن3 إلى ن5</p>
+            <h3 id="screen-15-2-title" class="screen-title" tabindex="-1">مهمة من سياقي: التبرير والمراجعة</h3>
+            <p class="screen-purpose">الغرض: تبرير اختيارك للمستوى والوسيلة، وتحديد بديل، ثم مراجعة مهمتك بأسئلة معلنة.</p>
+            <p class="element-status" data-element-status="t11"></p>
+          </header>
+          <div class="field">
+            <label class="field-label" for="s15-reason">سبب اختيارك للمستوى والوسيلة</label>
+            <textarea id="s15-reason" class="input" data-field="s15.reason" required></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s15-alternative">بديل عند تعذر الوسيلة</label>
+            <input id="s15-alternative" class="input" type="text" data-field="s15.alternative" data-prefill-from="s08.alternative" required>
+          </div>
+          <div class="review-block">
+            <h5 class="review-block-title">أسئلة المراجعة</h5>
+            <div data-review="s15.rv1">هل يكشف الدليل الهدف؟</div>
+            <div data-review="s15.rv2">هل أضافت الوسيلة وظيفة مفيدة؟</div>
+            <div class="field">
+              <label class="field-label" for="s15-changed">ما الذي تغير عن مهمتي الأولى؟</label>
+              <textarea id="s15-changed" class="input" data-field="s15.changed" required></textarea>
+            </div>
+          </div>
+          <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t11">سجّل عملي</button></div>
+          <p class="result" data-result="t11" role="status"></p>
+        </div>
+      </section>
+
+      <!-- Screen 16 -->
+      <section id="screen-16" class="screen" data-screen="16" data-group="16" data-part="1" data-step-title="ما الذي تغير ولماذا" aria-labelledby="screen-16-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 16 أ · ن4</p>
+          <h3 id="screen-16-title" class="screen-title" tabindex="-1">ما الذي تغير: قارن النسختين</h3>
+          <p class="screen-purpose">الغرض: مراجعة أثر إعادة التصميم على الطلب المعرفي.</p>
+          <p class="element-status" data-element-status="t12"></p>
+        </header>
+        <div class="display-text">
+          <p>قارن نسختك الأولى بالنسخة المعدلة. حدد تغييرًا في المطلوب من المتعلم، واستشهد بعبارة من كل نسخة. هل تغير التفكير المطلوب أم طريقة العرض فقط؟</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s16-before">العبارة من النسخة السابقة</label>
+          <textarea id="s16-before" class="input" data-field="s16.before" data-prefill-from="s03.current|s14.v1" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s16-after">العبارة من النسخة المعدلة</label>
+          <textarea id="s16-after" class="input" data-field="s16.after" data-prefill-from="s15.action|s14.v2" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s16-explain">تفسير الفرق</label>
+          <textarea id="s16-explain" class="input" data-field="s16.explain" required></textarea>
+        </div>
+      </section>
+
+      <section id="screen-16-2" class="screen" data-screen="16-2" data-group="16" data-part="2" aria-labelledby="screen-16-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 16 ب · ن4</p>
+          <h3 id="screen-16-2-title" class="screen-title" tabindex="-1">لماذا تغير: صنّف التغيير وحدد ما تحسّنه</h3>
+          <p class="screen-purpose">الغرض: الحكم على نوع التغيير بين النسختين، وتحديد محك يحتاج تحسينًا في عملك.</p>
+          <p class="element-status" data-element-status="t12"></p>
+        </header>
+        <fieldset class="plain" data-field-wrap>
+          <legend>ما الذي تغير؟</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="s16-kind" value="cognitive" data-field="s16.kind"><span>تغير الطلب المعرفي</span></label>
+            <label class="choice"><input type="radio" name="s16-kind" value="display" data-field="s16.kind"><span>تغيرت طريقة العرض</span></label>
+            <label class="choice"><input type="radio" name="s16-kind" value="review" data-field="s16.kind"><span>أحتاج مراجعة</span></label>
+          </div>
+        </fieldset>
+        <div class="feedback is-wrong" data-show-when="s16.kind=display" hidden><p>يمكن أن يكون تحسين العرض مفيدًا، لكنه لا يثبت تغير مستوى التفكير. ارجع إلى الهدف وحدد العملية المطلوبة.</p></div>
+        <div class="feedback" data-show-when="s16.kind=review" hidden><p>افتح المثال المحلول: <a href="#worked-thinking" class="inline-link">كيف فكرت في الإجابة (الشاشة 13)</a>، و<a href="#screen-07" class="inline-link">أمثلة العمليات الست (الشاشة 07)</a>.</p></div>
+        <div class="feedback" data-show-when="s16.kind=cognitive" hidden><p>راجع تفسيرك بالمحكات: ما العملية التي يطلبها النص المعدل؟ وأي عبارة فيه تطلبها؟ وهل يكشف الدليل المطلوب هذه العملية؟</p></div>
+
+        <h4 class="section-title">محك يحتاج تحسينًا في عملي <span class="field-optional">(اختياري)</span></h4>
+        <p class="field-hint">اختر ما تراه في عملك؛ تظهر لك رسالة وخطوة تالية. لا يستنتج النظام النقص من كلمات نصك.</p>
+        <div class="choice-list" data-deficits></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t12">سجّل عملي</button></div>
+        <p class="result" data-result="t12" role="status"></p>
+        <p class="field-hint">تُحفظ النسختان معًا؛ لا تُكتب الجديدة فوق الأولى.</p>
+      </section>
+    </div>
+
+    <a href="#template" class="next-lesson" data-next-lesson hidden>
+      <span>الوحدة 5 — قالب الدرس: بناء المشروع</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Unit 5: template (screens 17–20) =========================== -->
+  <!-- Replaces the former three-row template. Drafts saved by it (lessonTemplateDraft) are shown
+       read-only on screen 17 and never deleted (js/store.js -> applyLegacy). -->
+  <section id="template" class="lesson" data-lesson data-view aria-labelledby="template-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الوحدة 5 من 7 · الشاشات 17–20</p>
+      <h2 id="template-title" class="lesson-title" tabindex="-1">قالب الدرس: بناء المشروع</h2>
+      <p class="lesson-sub">تجمع مشروعك في نسخة قابلة للتجريب، وتراجعها بمحكات معلنة. لا يتطلب المسار توليدًا بالذكاء الاصطناعي.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <nav class="stepper" data-stepper aria-label="شاشات الوحدة الخامسة"></nav>
+
+    <div class="lesson-body">
+
+      <!-- Screen 17 -->
+      <section id="screen-17" class="screen" data-screen="17" data-group="17" data-part="1" data-step-title="الهدف والسياق" aria-labelledby="screen-17-title">
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 17 أ · ن2</p>
+          <h3 id="screen-17-title" class="screen-title" tabindex="-1">السياق: الجمهور والمتطلبات</h3>
+          <p class="screen-purpose">الغرض: تثبيت الهدف قبل بناء تفاصيل النشاط.</p>
+          <p class="element-status" data-element-status="t13"></p>
+        </header>
+        <div class="display-text">
+          <p>راجع هدفك: ما الأداء؟ وما شروطه؟ وبأي معيار ستراجعه؟ اذكر ما يحتاجه المتعلم قبل بدء المهمة، وأي قيود تؤثر في التنفيذ.</p>
+        </div>
+        <p class="field-hint">إن لم تحدد تفصيلًا بعد فاختر «لم أحدده بعد»، أو «لا ينطبق» إن لم يكن له مكان في مهمتك. لا يملأ النظام أسماء مناهج أو أعداد طلاب أو مددًا نيابة عنك، ويبقى ما لم يحدد ظاهرًا في المسودة.</p>
+        <div class="field">
+          <label class="field-label" for="s17-audience">الجمهور المقصود في درسك</label>
+          <textarea id="s17-audience" class="input" data-field="s17.audience"></textarea>
+          <select class="input field-status" data-field="s17.audienceStatus" aria-label="حالة حقل الجمهور">
+            <option value="">كتبته في الحقل</option><option value="tbd">لم أحدده بعد</option><option value="na">لا ينطبق</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s17-prereq">ما يحتاجه المتعلم قبل بدء المهمة</label>
+          <textarea id="s17-prereq" class="input" data-field="s17.prereq"></textarea>
+          <select class="input field-status" data-field="s17.prereqStatus" aria-label="حالة حقل المتطلبات السابقة">
+            <option value="">كتبته في الحقل</option><option value="tbd">لم أحدده بعد</option><option value="na">لا ينطبق</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="screen-17-2" class="screen" data-screen="17-2" data-group="17" data-part="2" aria-labelledby="screen-17-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 17 ب · ن2</p>
+          <h3 id="screen-17-2-title" class="screen-title" tabindex="-1">الهدف والقيود ومراجعته</h3>
+          <p class="screen-purpose">الغرض: تثبيت الهدف وقيود تنفيذه، ثم الحكم عليه بمحك «الهدف» قبل بناء المهمة.</p>
+          <p class="element-status" data-element-status="t13"></p>
+        </header>
+        <div class="field">
+          <label class="field-label" for="s17-goal">الهدف</label>
+          <p class="field-hint" id="s17-goal-hint">يُستعاد من مسودتك في الشاشة 09 أو 15، ويمكنك تحسينه هنا.</p>
+          <textarea id="s17-goal" class="input" data-field="s17.goal" data-prefill-from="s15.goal|s09.statement" aria-describedby="s17-goal-hint" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s17-constraints">القيود التي تؤثر في التنفيذ</label>
+          <textarea id="s17-constraints" class="input" data-field="s17.constraints"></textarea>
+          <select class="input field-status" data-field="s17.constraintsStatus" aria-label="حالة حقل القيود">
+            <option value="">كتبته في الحقل</option><option value="tbd">لم أحدده بعد</option><option value="na">لا ينطبق</option>
+          </select>
+        </div>
+        <fieldset class="plain" data-field-wrap>
+          <legend>مراجعة الهدف بمحك «الهدف» في سلم المشروع: أي وصف يطابق هدفك الآن؟</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="s17-goalReview" value="met" data-field="s17.goalReview"><span>أداء وشروط ومعيار يمكن ملاحظتها.</span></label>
+            <label class="choice"><input type="radio" name="s17-goalReview" value="improve" data-field="s17.goalReview"><span>الأداء ظاهر لكن الشرط أو معيار الحكم غامض.</span></label>
+            <label class="choice"><input type="radio" name="s17-goalReview" value="absent" data-field="s17.goalReview"><span>صياغة عامة لا تحدد ما سيقدمه المتعلم.</span></label>
+          </div>
+        </fieldset>
+        <p class="feedback is-wrong" data-show-when="s17.goalReview=improve|absent" hidden>اكتب ما ستشاهده في استجابة المتعلم، ثم راجع صياغتك. تستطيع المتابعة بمسودة تحتاج تحسينًا؛ سيظهر وضعها في مراجعة المشروع.</p>
+        <div class="legacy-panel" data-legacy-panel hidden></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t13">سجّل عملي</button></div>
+        <p class="result" data-result="t13" role="status"></p>
+        <p class="field-hint">هذه مسودة مشروع؛ لا توصف بأنها جاهزة للتطبيق الفعلي.</p>
+      </section>
+
+      <!-- Screen 18 -->
+      <section id="screen-18" class="screen" data-screen="18" data-group="18" data-part="1" aria-labelledby="screen-18-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 18 أ · ن3، ن4</p>
+          <h3 id="screen-18-title" class="screen-title" tabindex="-1">المهمة ومسار الاستجابة</h3>
+          <p class="screen-purpose">الغرض: كتابة تعليمات قابلة للاستخدام تختار فيها الوظيفة الرقمية وتعيد تصميم الطلب المعرفي.</p>
+          <p class="element-status" data-element-status="t14"></p>
+        </header>
+        <div class="display-text">
+          <p>اكتب تعليمات يستطيع المتعلم اتباعها وحده: نقطة البداية، والمصادر المتاحة، وما سينتجه، وطريقة تقديمه. وضح كيف تساعد الوظيفة الرقمية على تنفيذ ذلك.</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s18-task">نص المهمة كما سيقرؤه المتعلم</label>
+          <p class="field-hint" id="s18-task-hint">نقطة البداية، وما سينتجه، وطريقة تقديمه.</p>
+          <textarea id="s18-task" class="input" data-field="s18.task" data-prefill-from="s15.action" aria-describedby="s18-task-hint" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s18-sources">المصادر المتاحة للمتعلم</label>
+          <textarea id="s18-sources" class="input" data-field="s18.sources" required></textarea>
+        </div>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s18-means">وسيلة الاستجابة</label>
+            <input id="s18-means" class="input" type="text" data-field="s18.means" data-prefill-from="s15.function|s08.means" required>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s18-alternative">البديل عند تعذرها</label>
+            <input id="s18-alternative" class="input" type="text" data-field="s18.alternative" data-prefill-from="s15.alternative|s08.alternative" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s18-rationale">مبرر اختيار الوسيلة: كيف تخدم الدليل المطلوب؟</label>
+          <textarea id="s18-rationale" class="input" data-field="s18.rationale" required></textarea>
+        </div>
+      </section>
+
+      <section id="screen-18-2" class="screen" data-screen="18-2" data-group="18" data-part="2" aria-labelledby="screen-18-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 18 ب · ن3، ن4</p>
+          <h3 id="screen-18-2-title" class="screen-title" tabindex="-1">معاينة: ما سيقرأه الطالب</h3>
+          <p class="screen-purpose">الغرض: قراءة تعليماتك من موقع المتعلم، وتحديد ما يحتاج توضيحًا قبل التجريب.</p>
+          <p class="element-status" data-element-status="t14"></p>
+        </header>
+        <div id="s18-preview" class="example" aria-live="polite"></div>
+        <fieldset class="plain">
+          <legend>اقرأ المعاينة: ما الذي يحتاج توضيحًا؟</legend>
+          <div class="choice-list choice-list--2">
+            <label class="choice"><input type="checkbox" value="start" data-field="s18.clarify" data-multi><span>نقطة البداية</span></label>
+            <label class="choice"><input type="checkbox" value="sources" data-field="s18.clarify" data-multi><span>المصادر</span></label>
+            <label class="choice"><input type="checkbox" value="product" data-field="s18.clarify" data-multi><span>ما سينتجه المتعلم</span></label>
+            <label class="choice"><input type="checkbox" value="submit" data-field="s18.clarify" data-multi><span>طريقة التقديم</span></label>
+          </div>
+        </fieldset>
+        <p class="field-hint" data-show-when="s18.clarify=start|sources|product|submit" hidden>عدّل نص المهمة في <a href="#screen-18" class="inline-link">الجزء أ</a> ثم أعد قراءة المعاينة.</p>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s18-process">العملية المعرفية المستهدفة</label>
+            <select id="s18-process" class="input" data-field="s18.process" data-prefill-from="s15.level" data-level-options required></select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s18-processQuote">عبارة من التعليمات تدعم تصنيفك</label>
+            <input id="s18-processQuote" class="input" type="text" data-field="s18.processQuote" required>
+          </div>
+        </div>
+        <fieldset class="plain" data-field-wrap>
+          <legend>تأكيد</legend>
+          <label class="choice"><input type="checkbox" data-field="s18.previewChecked" data-required-msg="اقرأ المعاينة ثم ضع العلامة."><span>قرأت المعاينة كما سيقرؤها المتعلم، وحددت ما يحتاج توضيحًا.</span></label>
+        </fieldset>
+        <p class="note">لا يحكم النظام على ملاءمة المحتوى التخصصي من اكتمال النص.</p>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t14">سجّل عملي</button></div>
+        <p class="result" data-result="t14" role="status"></p>
+      </section>
+
+      <!-- Screen 19 -->
+      <section id="screen-19" class="screen" data-screen="19" data-group="19" data-part="1" aria-labelledby="screen-19-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 19 أ · ن5</p>
+          <h3 id="screen-19-title" class="screen-title" tabindex="-1">المحك والتغذية الراجعة</h3>
+          <p class="screen-purpose">الغرض: بناء تقويم وتغذية راجعة متسقين مع الهدف.</p>
+          <p class="element-status" data-element-status="t15"></p>
+        </header>
+        <div class="display-text">
+          <p>صف ما يميز الاستجابة المقبولة. اكتب رسالة تساعد من لم يحقق المحك على تحسين عمله، ثم حدد كيف ستتحقق من التحسن.</p>
+        </div>
+        <div id="s19-rows"></div>
+        <div class="actions"><button type="button" class="btn btn-secondary" data-action="add-criterion">أضف محكًا</button></div>
+      </section>
+
+      <section id="screen-19-2" class="screen" data-screen="19-2" data-group="19" data-part="2" aria-labelledby="screen-19-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 19 ب · ن5</p>
+          <h3 id="screen-19-2-title" class="screen-title" tabindex="-1">قارن رسائلك بمثالين</h3>
+          <p class="screen-purpose">الغرض: تمييز التغذية الراجعة المحددة من العامة، وتعديل رسائلك قبل اعتمادها.</p>
+          <p class="element-status" data-element-status="t15"></p>
+        </header>
+        <div class="example">
+          <span class="example-label">مثال مؤلف</span>
+          <p><strong>المحك:</strong> «يطبق المعيارين على الخطتين ويستشهد بالنص».</p>
+          <p><strong>رسالة العلاج:</strong> «ذكرت معيارًا واحدًا؛ أضف الثاني وطبقه على الخطتين».</p>
+        </div>
+        <div class="compare">
+          <div class="compare-col"><h4>رسالة ناقصة</h4><p>«إجابة ممتازة».</p><p class="field-hint">لا تحدد ما تحقق ولا ما الخطوة التالية.</p></div>
+          <div class="compare-col"><h4>رسالة محددة</h4><p>«ذكرت معيارًا واحدًا؛ أضف الثاني وطبقه على الخطتين».</p><p class="field-hint">تحدد النقص والفعل المطلوب لمعالجته.</p></div>
+        </div>
+        <fieldset class="plain" data-field-wrap>
+          <legend>تأكيد المقارنة</legend>
+          <label class="choice"><input type="checkbox" data-field="s19.compared" data-required-msg="قارن رسائلك بالمثالين ثم ضع العلامة."><span>قارنت رسائلي بالمثالين، وعدلت ما يحتاج إعادة صياغة (حدده في كل محك).</span></label>
+        </fieldset>
+        <p class="note">يفحص النظام وجود الحقول فقط، ولا يحكم على جودة المحك.</p>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t15">سجّل عملي</button></div>
+        <p class="result" data-result="t15" role="status"></p>
+      </section>
+
+      <!-- Screen 20: one rubric criterion per part, then saving the version -->
+      <section id="screen-20" class="screen" data-screen="20" data-group="20" data-part="1" data-step-title="مراجعة المشروع وحفظ نسخته" aria-labelledby="screen-20-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 أ · ن2</p>
+          <h3 id="screen-20-title" class="screen-title" tabindex="-1">مراجعة المشروع (1 من 7): الهدف</h3>
+          <p class="screen-purpose">الغرض: الحكم على وضوح هدفك بشاهد من عملك.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <div class="display-text">
+          <p>راجع تصميمك بمحكات المشروع. لكل محك اختر وصفه الحالي وأرفق شاهدًا من عملك. يمكنك الاحتفاظ بمسودة تحتاج تحسينًا؛ سيظهر وضعها بوضوح.</p>
+        </div>
+        <details class="hint">
+          <summary><span>أسئلة تساعدك على معايرة حكمك</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body prose">
+            <ul>
+              <li>أين يظهر المحك في عملي؟</li>
+              <li>هل يستطيع قارئ آخر العثور على الشاهد نفسه؟</li>
+              <li>ما مثال الاستجابة التي لن تحقق المحك، ولماذا؟</li>
+              <li>إذا لم أجد شاهدًا، فما التعديل المحدد الذي سأجربه؟</li>
+            </ul>
+          </div>
+        </details>
+        <div class="example work-excerpt" data-work-excerpt="goal"></div>
+        <div data-rubric="goal"></div>
+      </section>
+
+      <section id="screen-20-2" class="screen" data-screen="20-2" data-group="20" data-part="2" aria-labelledby="screen-20-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 ب · ن1، ن4</p>
+          <h3 id="screen-20-2-title" class="screen-title" tabindex="-1">مراجعة المشروع (2 من 7): المواءمة المعرفية</h3>
+          <p class="screen-purpose">الغرض: الحكم على اتساق الهدف والتعليمات والدليل في العملية المعرفية نفسها.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <div class="example work-excerpt" data-work-excerpt="alignment"></div>
+        <div data-rubric="alignment"></div>
+      </section>
+
+      <section id="screen-20-3" class="screen" data-screen="20-3" data-group="20" data-part="3" aria-labelledby="screen-20-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 ج · ن4</p>
+          <h3 id="screen-20-3-title" class="screen-title" tabindex="-1">مراجعة المشروع (3 من 7): وضوح المهمة</h3>
+          <p class="screen-purpose">الغرض: الحكم على قدرة المتعلم على تتبع تعليماتك وحده.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <div class="example work-excerpt" data-work-excerpt="clarity"></div>
+        <div data-rubric="clarity"></div>
+      </section>
+
+      <section id="screen-20-4" class="screen" data-screen="20-4" data-group="20" data-part="4" aria-labelledby="screen-20-4-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 د · ن3</p>
+          <h3 id="screen-20-4-title" class="screen-title" tabindex="-1">مراجعة المشروع (4 من 7): الوظيفة الرقمية</h3>
+          <p class="screen-purpose">الغرض: الحكم على صلة الوظيفة الرقمية بالدليل المطلوب وملاءمتها لسياقك.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <div class="example work-excerpt" data-work-excerpt="digital"></div>
+        <div data-rubric="digital"></div>
+      </section>
+
+      <section id="screen-20-5" class="screen" data-screen="20-5" data-group="20" data-part="5" aria-labelledby="screen-20-5-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 هـ · ن5</p>
+          <h3 id="screen-20-5-title" class="screen-title" tabindex="-1">مراجعة المشروع (5 من 7): التقويم والعلاج</h3>
+          <p class="screen-purpose">الغرض: الحكم على اتساق المحك ورسالة العلاج مع الهدف.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <div class="example work-excerpt" data-work-excerpt="feedback"></div>
+        <div data-rubric="feedback"></div>
+      </section>
+
+      <section id="screen-20-6" class="screen" data-screen="20-6" data-group="20" data-part="6" aria-labelledby="screen-20-6-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 و · ن7</p>
+          <h3 id="screen-20-6-title" class="screen-title" tabindex="-1">مراجعة المشروع (6 من 7): تتبع المحتوى</h3>
+          <p class="screen-purpose">الغرض: الحكم على قابلية تتبع مصادر مهمتك وحدود استعمالها.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <div class="example work-excerpt" data-work-excerpt="sources"></div>
+        <div data-rubric="sources"></div>
+      </section>
+
+      <section id="screen-20-7" class="screen" data-screen="20-7" data-group="20" data-part="7" aria-labelledby="screen-20-7-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 ز · ن6</p>
+          <h3 id="screen-20-7-title" class="screen-title" tabindex="-1">مراجعة المشروع (7 من 7): قابلية التجريب</h3>
+          <p class="screen-purpose">الغرض: الحكم على وضوح طريقة اختبار تصميمك.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <div class="example work-excerpt" data-work-excerpt="trial"></div>
+        <div data-rubric="trial"></div>
+      </section>
+
+      <section id="screen-20-8" class="screen" data-screen="20-8" data-group="20" data-part="8" aria-labelledby="screen-20-8-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 20 ح · ن7</p>
+          <h3 id="screen-20-8-title" class="screen-title" tabindex="-1">احفظ نسخة مشروعك</h3>
+          <p class="screen-purpose">الغرض: توثيق حكمك الذاتي على تصميمك وحدوده، في نسخة مؤرخة يمكن مقارنتها لاحقًا.</p>
+          <p class="element-status" data-element-status="t16"></p>
+        </header>
+        <h4 class="section-title">ملخص مراجعتك</h4>
+        <ul class="dash-list prose" data-rubric-summary></ul>
+        <p class="note">هذا سلم وصفي مقترح، وليس أداة صدق وثبات مجربة، ولا يدخل في درجة الاختبار. اختيار «متحقق في الدليل» في مراجعتك الذاتية لا يعني تقييمًا خارجيًا أو اعتمادًا مهنيًا.</p>
+        <div class="field">
+          <label class="field-label" for="s20-unresolved">البنود غير المحسومة <span class="field-optional">(اختياري)</span></label>
+          <textarea id="s20-unresolved" class="input" data-field="s20.unresolved"></textarea>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" data-action="save-version" data-kind="review">أحفظ نسخة للمراجعة</button>
+          <button type="button" class="btn btn-secondary" data-action="save-version" data-kind="trial">أجهز تجربة</button>
+          <button type="button" class="btn btn-ghost" data-action="project-preview">اعرض المشروع للمعاينة أو النسخ</button>
+        </div>
+        <p class="result" data-result="t16" role="status"></p>
+        <div id="project-preview" class="example" hidden></div>
+        <h4 class="section-title">نسخ مشروعي</h4>
+        <ul id="s20-versions" class="dash-list prose"></ul>
+      </section>
+    </div>
+
+    <a href="#check" class="next-lesson" data-next-lesson hidden>
+      <span>الوحدة 6 — التحقق: الاختبار الختامي والنتائج</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Unit 6: check (screens 21–24) =========================== -->
+  <!-- Replaces the former four-question check (archived in trainer.html#archive). Items load
+       on demand from js/test-forms.js; keys from js/test-keys.js only after submission. -->
+  <section id="check" class="lesson" data-lesson data-view aria-labelledby="check-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الوحدة 6 من 7 · الشاشات 21–24</p>
+      <h2 id="check-title" class="lesson-title" tabindex="-1">التحقق: الاختبار الختامي والنتائج</h2>
+      <p class="lesson-sub">اختبار معرفي محدد التغطية، ونتيجة تعرض شرطي الاجتياز منفصلين، وخطوة تعلم بعدها.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <nav class="stepper" data-stepper aria-label="شاشات الوحدة السادسة"></nav>
+
+    <div class="lesson-body">
+
+      <!-- Screen 21 -->
+      <section id="screen-21" class="screen" data-screen="21" aria-labelledby="screen-21-title">
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 21</p>
+          <h3 id="screen-21-title" class="screen-title" tabindex="-1">تعليمات الاختبار</h3>
+          <p class="screen-purpose">الغرض: توضيح ما يُقاس وكيف تُحتسب النتيجة.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="display-text">
+          <p>يتكون الاختبار من عشرة أسئلة. اختر إجابة واحدة لكل سؤال ثم أرسل المحاولة. تحتاج إلى 60 من 100 فأكثر، إلى جانب استكمال 80% من عناصر المحتوى المطلوبة. الاختبار يقيس فهم قرارات التصميم ولا يغني عن مراجعة مشروعك.</p>
+        </div>
+        <div class="prose">
+          <ul>
+            <li>لكل سؤال صحيح 10 درجات، والخاطئ صفر، دون خصم.</li>
+            <li>للاختبار محاولة مرسلة واحدة؛ راجع اختياراتك قبل الإرسال.</li>
+            <li>لا يوجد مؤقت في هذه النسخة.</li>
+            <li>تُحفظ إجاباتك قبل الإرسال، وتستطيع العودة إليها.</li>
+            <li>لا تُعرض مفاتيح الإجابة قبل الإرسال. بعد الإرسال تُقفل إجابات المحاولة، ويظهر تفسير كل إجابة وموضع مراجعتها.</li>
+            <li>بدء الاختبار لا يزيد نسبة المحتوى، والاختبار ليس من عناصر المحتوى العشرين.</li>
+          </ul>
+        </div>
+        <p class="note">بنود الاختبار مؤلفة لهذا البرنامج ولم تُجرب ميدانيًا بعد؛ ليست اختبارًا معياريًا أو مقننًا.</p>
+        <p id="test-status" class="result" role="status"></p>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="test-start" id="test-start">ابدأ الاختبار</button></div>
+      </section>
+
+      <!-- Screen 22 -->
+      <section id="screen-22" class="screen" data-screen="22" aria-labelledby="screen-22-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 22 · ن1 إلى ن7</p>
+          <h3 id="screen-22-title" class="screen-title" tabindex="-1">الإجابة والإرسال</h3>
+          <p class="screen-purpose">الغرض: قياس المعرفة المحددة في خريطة الاختبار.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="display-text">
+          <p>أجب عن جميع الأسئلة، ثم راجع اختياراتك قبل الإرسال النهائي لهذه المحاولة.</p>
+        </div>
+        <p id="test-count" class="test-count" role="status" aria-live="polite"></p>
+        <div id="test-player" aria-busy="false"></div>
+        <p id="test-player-msg" class="result" role="status"></p>
+        <div class="actions" id="test-actions" hidden>
+          <button type="button" class="btn btn-primary" data-action="test-submit">راجع وأرسل المحاولة</button>
+        </div>
+      </section>
+
+      <!-- Screen 23 -->
+      <section id="screen-23" class="screen" data-screen="23" data-group="23" data-part="1" data-step-title="نتيجتي وما ينقصني" aria-labelledby="screen-23-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 23 أ</p>
+          <h3 id="screen-23-title" class="screen-title" tabindex="-1">نتيجتي وما ينقصني</h3>
+          <p class="screen-purpose">الغرض: عرض شرطي الاجتياز مستقلين.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="display-text">
+          <p>هذه نتيجة اختبارك ونسبة استكمال محتواك. في الجزء ب تفسير كل إجابة وموضع المراجعة المرتبط بها.</p>
+        </div>
+        <div id="test-report"></div>
+      </section>
+
+      <section id="screen-23-2" class="screen" data-screen="23-2" data-group="23" data-part="2" aria-labelledby="screen-23-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 23 ب · ن1 إلى ن7</p>
+          <h3 id="screen-23-2-title" class="screen-title" tabindex="-1">تفسير كل إجابة وموضع مراجعتها</h3>
+          <p class="screen-purpose">الغرض: فهم سبب صحة كل إجابة أو خطئها، وتحديد الشاشة التي تراجعها.</p>
+        </header>
+        <div id="test-explain"></div>
+      </section>
+
+      <!-- Screen 24 -->
+      <section id="screen-24" class="screen" data-screen="24" aria-labelledby="screen-24-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 24 · ن5، ن7</p>
+          <h3 id="screen-24-title" class="screen-title" tabindex="-1">من النتيجة إلى خطوة تعلم</h3>
+          <p class="screen-purpose">الغرض: علاج محدد بدل تكرار اختبار بلا مراجعة.</p>
+          <p class="element-status" data-element-status="t17"></p>
+        </header>
+        <div class="display-text">
+          <p>اختر مفهومًا يحتاج مراجعة من تقريرك، واشرح ما ستغيره في فهمك أو تصميمك. إذا صحت جميع إجاباتك، اختر مفهومًا تريد تطبيقه في سياق جديد.</p>
+        </div>
+        <p id="s24-gate" class="result is-missing" role="status"></p>
+        <div class="field">
+          <label class="field-label" for="s24-concept">المفهوم الذي اخترته</label>
+          <select id="s24-concept" class="input" data-field="s24.concept" required></select>
+        </div>
+        <div class="feedback" id="s24-questions">
+          <p class="feedback-title">أسئلة مساندة</p>
+          <p>ما الدليل المطلوب؟ ما معيار الحكم؟ هل اختيرت الأداة قبل الهدف؟</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s24-conclusion">استنتاجي: ما الذي سأغيره في فهمي أو تصميمي</label>
+          <textarea id="s24-conclusion" class="input" data-field="s24.conclusion" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s24-step">خطوة التطبيق</label>
+          <textarea id="s24-step" class="input" data-field="s24.step" required></textarea>
+        </div>
+        <p class="field-hint">يمكنك <a href="#screen-17" class="inline-link">تعديل مشروعك</a>؛ تبقى نسخه السابقة محفوظة. كتابة التأمل لا تمنح درجة جديدة، وللاختبار محاولة واحدة تبقى نتيجتها كما هي.</p>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t17">سجّل عملي</button></div>
+        <p class="result" data-result="t17" role="status"></p>
+      </section>
+    </div>
+
+    <a href="#resources" class="next-lesson" data-next-lesson hidden>
+      <span>الوحدة 7 — المصادر وحلقة التعلم المستمرة</span>
+      <svg class="next-lesson-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- =========================== Unit 7: resources (screens 25–28) =========================== -->
+  <section id="resources" class="lesson" data-lesson data-view aria-labelledby="resources-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">الوحدة 7 من 7 · الشاشات 25–28</p>
+      <h2 id="resources-title" class="lesson-title" tabindex="-1">المصادر وحلقة التعلم المستمرة</h2>
+      <p class="lesson-sub">مصادر يمكن تتبعها، وخطة تجربة وعودة، ثم دليل ونسخة تالية من مشروعك.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <nav class="stepper" data-stepper aria-label="شاشات الوحدة السابعة"></nav>
+
+    <div class="lesson-body">
+
+      <!-- Screen 25 -->
+      <section id="screen-25" class="screen" data-screen="25" data-group="25" data-part="1" data-step-title="بطاقة مصدر قابل للتتبع" aria-labelledby="screen-25-title">
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 25 أ · ن7</p>
+          <h3 id="screen-25-title" class="screen-title" tabindex="-1">بطاقة مصدر: ما يسمح بالرجوع إليه</h3>
+          <p class="screen-purpose">الغرض: تنظيم مصدر تستخدمه في مهمتك بحيث يمكن الرجوع إليه.</p>
+          <p class="element-status" data-element-status="t18"></p>
+        </header>
+        <div class="display-text">
+          <p>اختر مصدرًا يخدم جزءًا من مهمتك. سجل عنوانه وصاحبه وموضعه والجزء الذي تستند إليه. وضح هل نقلت النص أم لخصته أم بنيت مثالًا من عندك.</p>
+        </div>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s25-title">العنوان</label>
+            <input id="s25-title" class="input" type="text" data-field="s25.title" data-source="title">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s25-author">المؤلف أو الجهة</label>
+            <input id="s25-author" class="input" type="text" data-field="s25.author" data-source="author">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s25-locator">الرابط أو بيانات الملف</label>
+          <p class="field-hint" id="s25-locator-hint">ما يسمح بالرجوع إلى المادة: رابط، أو اسم الملف وموضعه، أو بيانات النشر.</p>
+          <input id="s25-locator" class="input" type="text" dir="auto" data-field="s25.locator" data-source="locator" aria-describedby="s25-locator-hint" data-required-msg="أضف ما يسمح بالرجوع إلى المادة.">
+        </div>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s25-accessed">تاريخ الاطلاع الفعلي</label>
+            <input id="s25-accessed" class="input" type="date" data-field="s25.accessed" data-source="accessed">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s25-location">موضع الاستناد</label>
+            <p class="field-hint" id="s25-location-hint">صفحة أو قسم أو دقيقة.</p>
+            <input id="s25-location" class="input" type="text" data-field="s25.location" data-source="location" aria-describedby="s25-location-hint">
+          </div>
+        </div>
+        <details class="hint">
+          <summary><span>أمثلة بطاقات جاهزة</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body prose">
+            <p><strong>مقال أصلي:</strong> العنوان <bdi>First Principles of Instruction</bdi>؛ المؤلف <bdi>M. David Merrill</bdi>؛ السنة 2002؛ موضع الاستناد ص43؛ الغرض بناء تسلسل المهمة والتنشيط والعرض والتطبيق والدمج؛ نوع الاستخدام تلخيص؛ الرابط <bdi dir="ltr">https://mdavidmerrill.wordpress.com/wp-content/uploads/2019/04/firstprinciplesbymerrill.pdf</bdi> (نسخة المؤلف)؛ تاريخ الاطلاع 23 أكتوبر 2026؛ ترخيص إعادة النشر لم يتحقق.</p>
+            <p><strong>مقتطف كتاب من الناشر:</strong> العنوان <bdi>The Systematic Design of Instruction</bdi>؛ المؤلفون <bdi>Dick</bdi> و<bdi>Carey</bdi> و<bdi>Carey</bdi>؛ الطبعة السابعة؛ تاريخ هذه النسخة غير متحقق؛ موضع الاستناد ص127؛ الغرض مراجعة شروط الهدف ومحكاته؛ نوع الاستخدام تلخيص؛ الرابط <bdi dir="ltr">https://www.pearson.de/media/muster/ext/9781292052663.pdf</bdi> (مقتطف الناشر)؛ تاريخ الاطلاع 23 أكتوبر 2026.</p>
+            <p><strong>مثال مؤلف:</strong> العنوان خطتان لتنظيم معرض؛ المصدر سيناريو هذا البرنامج؛ موضع الاستخدام الشاشة 13؛ الغرض التدريب على الحكم وفق محكات؛ نوع الاستخدام مثال مؤلف؛ ليس حالة ميدانية أو نصًا من مقرر رسمي.</p>
+            <p class="field-hint">في البطاقات الخارجية يُسجَّل تاريخ اطلاعك الفعلي، ولا يُنسخ تاريخ مفترض. إذا تغير المصدر أو انقطع رابطه، اختر مصدرًا بديلًا يدعم الغرض نفسه.</p>
+          </div>
+        </details>
+      </section>
+
+      <section id="screen-25-2" class="screen" data-screen="25-2" data-group="25" data-part="2" aria-labelledby="screen-25-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 25 ب · ن7</p>
+          <h3 id="screen-25-2-title" class="screen-title" tabindex="-1">بطاقة مصدر: كيف تستخدمه في مشروعك</h3>
+          <p class="screen-purpose">الغرض: ربط المصدر بالجزء الذي يخدمه في مهمتك، وتوضيح نوع الاستخدام وترخيصه.</p>
+          <p class="element-status" data-element-status="t18"></p>
+        </header>
+        <form id="source-form" class="check" novalidate>
+          <div class="field">
+            <label class="field-label" for="s25-purpose">الغرض: أي جزء من مهمتك يخدمه</label>
+            <input id="s25-purpose" class="input" type="text" data-field="s25.purpose" data-source="purpose">
+          </div>
+          <div class="field-row field-row--2">
+            <div class="field">
+              <label class="field-label" for="s25-use">نوع الاستخدام</label>
+              <select id="s25-use" class="input" data-field="s25.use" data-source="use">
+                <option value="">اختر…</option>
+                <option value="quote">نقلت النص</option>
+                <option value="summary">لخصته</option>
+                <option value="own">بنيت مثالًا من عندي</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="s25-part">الجزء المستند إليه في مشروعي</label>
+              <select id="s25-part" class="input" data-field="s25.part" data-source="part">
+                <option value="">اختر…</option>
+                <option value="goal">الهدف</option>
+                <option value="task">المهمة وتعليماتها</option>
+                <option value="sources">مصادر المتعلم</option>
+                <option value="assessment">المحك والتغذية الراجعة</option>
+                <option value="trial">التجربة</option>
+                <option value="other">جزء آخر</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s25-license">ترخيص إعادة النشر</label>
+            <p class="field-hint" id="s25-license-hint">إن لم تعرفه فاتركه «غير معلوم»، ولا تفترض السماح بإعادة النشر.</p>
+            <input id="s25-license" class="input" type="text" data-field="s25.license" data-source="license" aria-describedby="s25-license-hint" placeholder="غير معلوم">
+          </div>
+          <div class="actions"><button type="submit" class="btn btn-primary">أضف البطاقة إلى مصادر مشروعي</button></div>
+          <p id="source-result" class="result" role="status"></p>
+        </form>
+        <h4 class="section-title">مصادر مشروعي</h4>
+        <ul id="source-list" class="source-list"></ul>
+
+        <p class="note">مراجع الحقيبة وملاحقها (قائمة الأدوات، والأمثلة التوضيحية، واستراتيجيات التقييم، والأساس العلمي) في <a href="../trainer.html#library" class="inline-link">المكتبة</a>، خارج مسار التعلم.</p>
+      </section>
+
+      <!-- Screen 26 -->
+      <section id="screen-26" class="screen" data-screen="26" data-group="26" data-part="1" data-step-title="هل يدعم المصدر قراري" aria-labelledby="screen-26-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 26 أ · ن7</p>
+          <h3 id="screen-26-title" class="screen-title" tabindex="-1">هل يدعم المصدر قراري: اقرأ المصدر</h3>
+          <p class="screen-purpose">الغرض: فحص صلة المصدر وقوة الادعاء.</p>
+          <p class="element-status" data-element-status="t19"></p>
+        </header>
+        <div class="display-text">
+          <p>قارن بين دراسة على طلبة مرحلة محددة وتدريب لمعلمي التعليم العام. ما الذي يمكنك الاستفادة منه؟ وما الذي يحتاج تحققًا في سياقك؟</p>
+        </div>
+        <div data-check="s26"></div>
+        <h4 class="section-title">حقول قراءة مساندة <span class="field-optional">(اختيارية)</span></h4>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="s26-sample">العينة في المصدر</label>
+            <input id="s26-sample" class="input" type="text" data-field="s26.sample">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s26-task">المهمة أو المعالجة</label>
+            <input id="s26-task" class="input" type="text" data-field="s26.task">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s26-result">النتيجة كما وردت</label>
+          <input id="s26-result" class="input" type="text" data-field="s26.result">
+        </div>
+      </section>
+
+      <section id="screen-26-2" class="screen" data-screen="26-2" data-group="26" data-part="2" aria-labelledby="screen-26-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 26 ب · ن7</p>
+          <h3 id="screen-26-2-title" class="screen-title" tabindex="-1">هل يدعم المصدر قراري: استخدامه وحده</h3>
+          <p class="screen-purpose">الغرض: تحديد استخدام واحد للمصدر في مهمتك، وما يحتاج تحققًا قبل نقله إلى سياقك.</p>
+          <p class="element-status" data-element-status="t19"></p>
+        </header>
+        <div class="field">
+          <label class="field-label" for="s26-use">استخدام واحد للمصدر الذي اخترته</label>
+          <textarea id="s26-use" class="input" data-field="s26.use" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s26-limit">حد هذا الاستخدام: ما الذي يحتاج تحققًا في سياقك؟</label>
+          <textarea id="s26-limit" class="input" data-field="s26.limit" required></textarea>
+        </div>
+        <fieldset class="plain" data-field-wrap>
+          <legend>تأكيد المراجعة</legend>
+          <label class="choice"><input type="checkbox" data-field="s26.reviewed" data-required-msg="راجع الاستخدام وحده ثم ضع العلامة."><span>راجعت أن الاستخدام لا ينقل استنتاج المصدر إلى سياقي دون تحقق.</span></label>
+        </fieldset>
+        <p class="note">لا يحكم النظام آليًا على جودة تلخيص دراسة.</p>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t19">سجّل عملي</button></div>
+        <p class="result" data-result="t19" role="status"></p>
+      </section>
+
+      <!-- Screen 27 -->
+      <section id="screen-27" class="screen" data-screen="27" data-group="27" data-part="1" data-step-title="خطة التطبيق والعودة" aria-labelledby="screen-27-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 27 أ · ن6</p>
+          <h3 id="screen-27-title" class="screen-title" tabindex="-1">خطة التطبيق: نوع التجربة وسياقها</h3>
+          <p class="screen-purpose">الغرض: التخطيط لتجربة تصميمك والعودة إليه بعد التعلم.</p>
+          <p class="element-status" data-element-status="t20"></p>
+        </header>
+        <div class="display-text">
+          <p>اختر كيف ستختبر تصميمك: تطبيق صفي عندما تتاح الفرصة، أو محاكاة موثقة. حدد ما ستبحث عنه في الاستجابات وما الذي سيجعلك تعدل المهمة، ومتى ستعود للمراجعة.</p>
+        </div>
+        <fieldset class="plain" data-field-wrap>
+          <legend>نوع التجربة</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="s27-type" value="class" data-field="s27.type"><span>تطبيق صفي</span></label>
+            <label class="choice"><input type="radio" name="s27-type" value="sim" data-field="s27.type"><span>محاكاة موثقة</span></label>
+          </div>
+        </fieldset>
+        <p class="feedback" data-show-when="s27.type=class" hidden>حدد سياق التطبيق قبل التنفيذ: الصف والمادة والوقت المتاح وما يلزم من موافقات.</p>
+        <p class="feedback is-wrong" data-show-when="s27.type=sim" hidden>المحاكاة تختبر وضوح المهمة، لكنها لا تقدم دليلًا على تعلم طلاب حقيقيين. سمّها محاكاة في سجلك.</p>
+        <div class="field">
+          <label class="field-label" for="s27-context">سياق التجربة</label>
+          <textarea id="s27-context" class="input" data-field="s27.context"></textarea>
+        </div>
+        <details class="hint">
+          <summary><span>مثال خطة تجربة (مؤلف)</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body">
+            <p><strong>نوع التجربة:</strong> محاكاة. سأقرأ تعليمات المقارنة وأنفذها بنفسي كما لو أنني أتعلمها لأول مرة، ثم أسجل مواضع الغموض.</p>
+            <p><strong>الدليل:</strong> مواضع التعليمات التي احتجت إلى تفسير إضافي لها ونسخة من استجابتي.</p>
+            <p><strong>حدود الاستنتاج:</strong> معرفتي المسبقة بالتصميم قد تخفي صعوبات يواجهها متعلم آخر.</p>
+            <p><strong>الخطوة التالية:</strong> أوضح التعليمات الملتبسة وأخطط لتجربة صفية حين تتاح، دون تسجيل نتائج طلاب لم يشاركوا.</p>
+          </div>
+        </details>
+      </section>
+
+      <section id="screen-27-2" class="screen" data-screen="27-2" data-group="27" data-part="2" aria-labelledby="screen-27-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 27 ب · ن6، ن7</p>
+          <h3 id="screen-27-2-title" class="screen-title" tabindex="-1">خطة التطبيق: الدليل والمحك والعودة</h3>
+          <p class="screen-purpose">الغرض: تحديد ما ستبحث عنه في الاستجابات، وما يجعلك تعدل المهمة، ومتى تعود إليها.</p>
+          <p class="element-status" data-element-status="t20"></p>
+        </header>
+        <div class="field">
+          <label class="field-label" for="s27-evidence">الدليل المتوقع: ما الذي ستبحث عنه في الاستجابات</label>
+          <textarea id="s27-evidence" class="input" data-field="s27.evidence"></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s27-criterion">محك المراجعة: ما الذي سيجعلك تعدل المهمة</label>
+          <textarea id="s27-criterion" class="input" data-field="s27.criterion"></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="s27-return">موعد أو ظرف العودة</label>
+          <input id="s27-return" class="input" type="text" data-field="s27.return">
+        </div>
+        <details class="hint">
+          <summary><span>تعذر التنفيذ الآن؟ سجّل العائق وخطوة حله</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body">
+            <div class="field">
+              <label class="field-label" for="s27-obstacle">عائق التنفيذ</label>
+              <textarea id="s27-obstacle" class="input" data-field="s27.obstacle"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label" for="s27-obstacleStep">خطوة حله</label>
+              <textarea id="s27-obstacleStep" class="input" data-field="s27.obstacleStep"></textarea>
+            </div>
+          </div>
+        </details>
+        <p class="note">سجّل ما لم يتحدد بعد بدل افتراضه. وثّق الشواهد بلا أسماء أو بيانات تعريفية للطلاب. حفظ الخطة لا يعني أن التطبيق حدث.</p>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t20">سجّل خطتي</button></div>
+        <p class="result" data-result="t20" role="status"></p>
+      </section>
+
+      <!-- Screen 28 -->
+      <section id="screen-28" class="screen" data-screen="28" data-group="28" data-part="1" data-step-title="الدليل والنسخة التالية" aria-labelledby="screen-28-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 28 أ · ن6</p>
+          <h3 id="screen-28-title" class="screen-title" tabindex="-1">الدليل: ماذا حدث في تجربتك</h3>
+          <p class="screen-purpose">الغرض: تنفيذ حلقة التحسين الفعلية.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="display-text">
+          <p>ماذا حدث في تجربتك؟ سجل الشاهد، وما تعتقد أنه يفسره، وما لا تستطيع الجزم به. أنشئ نسخة جديدة واذكر التعديل الذي يدعمه الدليل.</p>
+        </div>
+        <p id="s28-ready" class="feedback" role="status"></p>
+        <fieldset class="plain">
+          <legend>نوع ما تسجله</legend>
+          <div class="choice-list">
+            <label class="choice"><input type="radio" name="s28-type" value="class" data-field="s28.type"><span>تطبيق صفي حدث فعلًا</span></label>
+            <label class="choice"><input type="radio" name="s28-type" value="sim" data-field="s28.type"><span>محاكاة</span></label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label class="field-label" for="s28-evidence">الشاهد</label>
+          <p class="field-hint" id="s28-evidence-hint">الصق نصًا مناسبًا أو صف الشاهد وموضع حفظه. لا تُرفع الملفات إلى الموقع. احذف الأسماء وأي بيانات تعريفية للطلاب.</p>
+          <textarea id="s28-evidence" class="input" data-field="s28.evidence" aria-describedby="s28-evidence-hint"></textarea>
+        </div>
+      </section>
+
+      <section id="screen-28-2" class="screen" data-screen="28-2" data-group="28" data-part="2" aria-labelledby="screen-28-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 28 ب · ن6</p>
+          <h3 id="screen-28-2-title" class="screen-title" tabindex="-1">التفسير وقرار التعديل</h3>
+          <p class="screen-purpose">الغرض: تفسير الشاهد بحذر، وتحديد تعديل يدعمه، ثم إنشاء نسخة جديدة من المشروع.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <form id="trial-form" class="check" novalidate>
+          <div class="field">
+            <label class="field-label" for="s28-observation">ملاحظتي: ما الذي أعتقد أن الشاهد يفسره</label>
+            <textarea id="s28-observation" class="input" data-field="s28.observation"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s28-alt">تفسير بديل، وما لا أستطيع الجزم به</label>
+            <textarea id="s28-alt" class="input" data-field="s28.alt"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s28-decision">قرار التعديل الذي يدعمه الدليل</label>
+            <textarea id="s28-decision" class="input" data-field="s28.decision"></textarea>
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">سجّل التجربة وأنشئ نسخة جديدة من المشروع</button>
+          </div>
+          <p id="trial-result" class="result" role="status"></p>
+        </form>
+
+        <h4 class="section-title">سجل تجاربي</h4>
+        <ul id="trial-list" class="dash-list prose"></ul>
+      </section>
+
+      <section id="screen-28-3" class="screen" data-screen="28-3" data-group="28" data-part="3" aria-labelledby="screen-28-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 28 ج · ن6، ن7</p>
+          <h3 id="screen-28-3-title" class="screen-title" tabindex="-1">قارن نسختين وحدد دورتك التالية</h3>
+          <p class="screen-purpose">الغرض: ربط التعديل بالدليل بمقارنة نسختين من مشروعك، ثم اختيار نقطة بداية الدورة التالية.</p>
+        </header>
+        <div class="field-row field-row--2">
+          <div class="field">
+            <label class="field-label" for="compare-a">النسخة الأولى</label>
+            <select id="compare-a" class="input" data-version-select></select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="compare-b">النسخة الثانية</label>
+            <select id="compare-b" class="input" data-version-select></select>
+          </div>
+        </div>
+        <div class="actions"><button type="button" class="btn btn-secondary" data-action="compare-versions">اعرض المقارنة</button></div>
+        <div id="version-compare" class="compare" aria-live="polite"></div>
+
+        <h4 class="section-title">حاجة الدورة التالية</h4>
+        <p>اختر من أين تبدأ دورتك التالية:</p>
+        <div class="actions">
+          <a href="#screen-03" class="btn btn-secondary">أحدّث بطاقة حاجتي (03)</a>
+          <a href="#screen-09" class="btn btn-secondary">أعيد صياغة الهدف (09)</a>
+          <a href="#dashboard" class="btn btn-secondary">أفتح مواضع المراجعة في لوحتي</a>
+        </div>
+        <p class="field-hint">هذه الشاشة امتداد مستمر وليست شرط اجتياز. لا يستنتج النظام سببًا مؤكدًا أو أثرًا عامًا من ملاحظة واحدة، ولا ينشر عملك أو شواهدك.</p>
+      </section>
+    </div>
+
+    <a href="#dashboard" class="next-lesson next-lesson--finish" data-next-lesson hidden>
+      <span>لوحتي: شرطا الاجتياز والخطوة التالية</span>
+    </a>
+  </section>
+
+
+  <!-- =========================== Dashboard =========================== -->
+  <section id="dashboard" class="lesson" data-view aria-labelledby="dashboard-title" hidden>
+    <div class="lesson-banner">
+      <p class="lesson-kicker">لوحتي</p>
+      <h2 id="dashboard-title" class="lesson-title" tabindex="-1">أين وصلت، وما الخطوة التالية</h2>
+      <p class="lesson-sub">تُعرض الأدلة منفصلة: استكمال المحتوى، ودرجة الاختبار، ونسخة المشروع ومراجعتها الذاتية، والتطبيق الفعلي. لا يُدمج شيء منها في حكم واحد بالإتقان.</p>
+      <span class="lesson-rule" aria-hidden="true"></span>
+    </div>
+    <div class="lesson-body">
+      <h3 class="block-title">شرطا اجتياز الدورة</h3>
+      <p>الاجتياز يتطلب الشرطين معًا: استكمال 80% على الأقل من عناصر المحتوى العشرين، و60 من 100 فأكثر في الاختبار الختامي. لا تعوض الدرجة العالية نقص المحتوى، ولا العكس.</p>
+      <div id="dash-conditions" class="dash-grid"></div>
+      <p id="dash-summary" class="dash-summary" role="status"></p>
+      <div id="dash-next" class="actions"></div>
+
+      <h3 class="block-title section-gap">المشروع والتطبيق</h3>
+      <ul id="dash-project" class="dash-list prose"></ul>
+
+      <h3 class="block-title section-gap">أحتاج أن أراجع</h3>
+      <ul id="dash-review" class="dash-list prose"></ul>
+
+      <h3 class="block-title section-gap">عناصر الاستكمال</h3>
+      <p class="field-hint">يُحتسب العنصر عند تنفيذ نشاطه أو تحققه، لا بفتح الشاشة أو التمرير حتى نهايتها. كل عنصر يساوي 5%.</p>
+      <ul id="dash-elements" class="dash-list"></ul>
+
+      <h3 id="save-help" class="block-title section-gap" tabindex="-1">كيف أحفظ عملي</h3>
+      <div class="prose">
+        <p>يُحفظ عملك تلقائيًا أثناء الكتابة <strong>في هذا المتصفح على هذا الجهاز فقط</strong>. يظهر وقت آخر حفظ ناجح أعلى الصفحة، وإذا تعذر الحفظ يظهر تنبيه أحمر ويبقى نصك ظاهرًا حتى تحفظه أو تنسخه.</p>
+        <ul>
+          <li>للعودة لاحقًا: افتح الموقع في المتصفح نفسه واختر «تابع تعلمي».</li>
+          <li>لا توجد حسابات ولا مزامنة بين الأجهزة في هذه النسخة.</li>
+          <li>مسح بيانات المتصفح، أو النافذة الخاصة، أو جهاز آخر: لا يجد عملك. صدّر نسخة احتياطية واحفظها، ثم استوردها عند الحاجة.</li>
+          <li>لا يُنشر عملك ولا يُرسل إلى أي جهة.</li>
+        </ul>
+      </div>
+      <p id="save-info" class="note" role="status"></p>
+      <p id="legacy-note" class="note" hidden></p>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" data-action="export">صدّر نسخة احتياطية</button>
+        <label class="btn btn-secondary" for="import-file">استورد نسخة احتياطية</label>
+        <input id="import-file" type="file" accept="application/json,.json" class="sr-only">
+      </div>
+      <p id="backup-status" class="result is-done" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+
+  </main>
+
+  <!-- Footer: author and rights (same on every page). -->
+  <footer class="mt-12 bg-[#0b1f52] py-8 text-white">
+    <div class="container mx-auto flex flex-col items-center gap-2 px-4 text-center sm:px-6 lg:px-8">
+      <p class="text-lg font-bold">إعداد: بندر الأسمري</p>
+      <p class="text-sm text-blue-100">مورد تعليمي أُعد بحب لزملائي المعلمين والمدربين.</p>
+      <p class="text-xs text-blue-200">© 2025–2026 بندر الأسمري. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Unsaved change when leaving the page (sec. 34 message and buttons). -->
+<dialog id="unsaved-dialog" class="dialog" aria-labelledby="unsaved-title">
+  <h2 id="unsaved-title">تعديل لم يُحفظ</h2>
+  <p>لديك تعديل لم يحفظ. احفظه قبل المغادرة، أو عد لمواصلة التحرير.</p>
+  <p id="unsaved-msg" class="field-error" role="alert"></p>
+  <div class="actions">
+    <button type="button" class="btn btn-primary" data-unsaved="save">احفظ</button>
+    <button type="button" class="btn btn-secondary" data-unsaved="stay">عد للتحرير</button>
+    <button type="button" class="btn btn-danger" data-unsaved="leave">غادر دون حفظ</button>
+  </div>
+</dialog>
+
+
+</body>
+</html>

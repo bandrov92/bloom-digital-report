@@ -4,7 +4,7 @@
  * Single place to update content that the logic depends on: the 20 completion
  * elements, the recommended path, the diagnostic items, the practice checks,
  * the self-review rubric and the system messages. Screen prose lives in
- * trainee.html; final-test items live in js/test-forms.js and their keys in
+ * learn/index.html; final-test items live in js/test-forms.js and their keys in
  * js/test-keys.js (both loaded on demand).
  *
  * Source: "وثيقة التصميم التعليمي والسيناريو التفصيلي" v0.1 (2026-10-23).

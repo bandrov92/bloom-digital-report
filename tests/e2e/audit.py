@@ -11,7 +11,7 @@ from playwright.sync_api import sync_playwright
 ROOT = str(ROOT)
 srv = subprocess.Popen([sys.executable, '-m', 'http.server', '8722', '-d', ROOT], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
 B = 'http://localhost:8722/'
-SCREENS = 58  # screen sections and parts in trainee.html (28 design-document screens)
+SCREENS = 58  # screen sections and parts in learn/index.html (28 design-document screens)
 fails = []
 def check(c, m):
     print(('PASS ' if c else 'FAIL ') + m)
@@ -19,7 +19,7 @@ def check(c, m):
 try:
   with sync_playwright() as p:
     b = p.chromium.launch()
-    for page in ['index.html', 'trainee.html', 'trainer.html']:
+    for page in ['index.html', 'learn/', 'trainer.html']:
         pg = b.new_page(); errs = []; ext = []
         pg.on('console', lambda m: errs.append(m.text) if m.type in ('error', 'warning') else None)
         pg.on('pageerror', lambda e: errs.append(str(e)))
@@ -41,28 +41,35 @@ try:
         pg.close()
     # cross-page links from trainer/index into trainee
     pg = b.new_page(); pg.goto(B + 'trainer.html')
-    links = pg.evaluate("[...document.querySelectorAll('a[href^=\"trainee.html#\"]')].map(a=>a.getAttribute('href').split('#')[1])")
-    pg.goto(B + 'trainee.html'); pg.wait_for_timeout(300)
+    links = pg.evaluate("[...document.querySelectorAll('a[href^=\"learn/#\"]')].map(a=>a.getAttribute('href').split('#')[1])")
+    check(len(links) > 0, f'trainer page links into the trainee path ({len(links)})')
+    pg.goto(B + 'learn/'); pg.wait_for_timeout(300)
     missing = [l for l in links if not pg.evaluate(f"!!document.getElementById('{l}')")]
     check(missing == [], f'trainer -> trainee deep links exist {missing}')
     for l in links:
-        pg.goto(B + 'trainee.html#' + l); pg.wait_for_timeout(200)
+        pg.goto(B + 'learn/#' + l); pg.wait_for_timeout(200)
         vis = pg.evaluate(f"(() => {{ const e=document.getElementById('{l}'); return !!e && e.getClientRects().length>0; }})()")
         check(vis, f'deep link #{l} visible after navigation')
     for moved in ['content-res-tools', 'content-foundation', 'library']:
-        pg.goto(B + 'trainee.html#' + moved); pg.wait_for_timeout(400)
-        check(pg.url.endswith('trainer.html#' + moved) and pg.locator('#' + moved).count() == 1, f'old trainee.html#{moved} forwards to the trainer library')
+        for start in ('learn/#', 'trainee.html#'):
+            pg.goto(B + start + moved); pg.wait_for_timeout(500)
+            check(pg.url.endswith('trainer.html#' + moved) and pg.locator('#' + moved).count() == 1, f'{start}{moved} forwards to the trainer library')
     pg.goto(B + 'index.html#map'); pg.wait_for_timeout(400)
-    check(pg.url.endswith('trainee.html#map') and pg.is_visible('#map'), 'legacy index.html#map forwards to the unit')
+    check(pg.url.endswith('learn/#map') and pg.is_visible('#map'), 'legacy index.html#map forwards to the unit')
+    pg.goto(B + 'trainee.html#screen-09'); pg.wait_for_timeout(400)
+    check(pg.url.endswith('learn/#screen-09') and pg.is_visible('#screen-09'), 'old trainee.html links forward to learn/ with their hash')
+    pg.goto(B + 'learn/'); pg.wait_for_timeout(300)
+    check(pg.locator('a[href$="index.html"], a[href="../"], a[href="../index.html"]').count() == 0, 'trainee path has no link back to the portal')
+    check(pg.locator('a[href^="../trainer.html"]').count() == 1, 'trainee path keeps one link, to the library')
     # 375 and 1280 overflow for every view/screen
     for w in (375, 1280):
         c = b.new_context(viewport={'width': w, 'height': 800}); q = c.new_page()
         bad = []
-        q.goto(f'{B}trainee.html'); q.wait_for_timeout(200)
+        q.goto(f'{B}learn/'); q.wait_for_timeout(200)
         targets = q.evaluate("[...document.querySelectorAll('[data-screen]')].map(s => s.id)") + ['dashboard']
         check(len(targets) == SCREENS + 1, f'all {len(targets) - 1} screens and parts measured')
         for t in targets:
-            q.goto(f'{B}trainee.html#{t}'); q.wait_for_timeout(120)
+            q.goto(f'{B}learn/#{t}'); q.wait_for_timeout(120)
             # Open every collapsible so hidden long content is measured too.
             q.evaluate("document.querySelectorAll('details').forEach(d => { d.open = true; }); document.querySelectorAll('.acc-panel').forEach(a => a.classList.remove('hidden'))")
             ov = q.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth')
@@ -74,7 +81,7 @@ try:
         check(bad == [], f'{w}px: no horizontal page scroll {bad}')
         c.close()
     # print media shows all screens
-    q = b.new_page(); q.goto(B + 'trainee.html'); q.emulate_media(media='print'); q.wait_for_timeout(200)
+    q = b.new_page(); q.goto(B + 'learn/'); q.emulate_media(media='print'); q.wait_for_timeout(200)
     shown = q.evaluate("[...document.querySelectorAll('[data-screen]')].filter(s=>getComputedStyle(s).display!=='none').length")
     check(shown == SCREENS, f'print shows all {SCREENS} screens and parts ({shown})')
     b.close()

@@ -1,6 +1,6 @@
 """Screen length balance: every screen, part and page within 25% of the mean.
 
-Measures the height of each learner view in trainee.html from the top of the
+Measures the height of each learner view in learn/index.html from the top of the
 screen to its footer (collapsibles closed), at 375px and 1280px, and compares
 it with the mean of all views at that width. Fails when a view differs from the
 mean by more than MAX_DEVIATION; lists views beyond TARGET_DEVIATION as notes.
@@ -23,7 +23,7 @@ import pathlib
 from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-SITE = (ROOT / 'trainee.html').as_uri()
+SITE = (ROOT / 'learn' / 'index.html').as_uri()
 FIXTURES = pathlib.Path(__file__).resolve().parent / 'fixtures'
 WIDTHS = (375, 1280)
 MAX_DEVIATION = 25   # percent; the approved ceiling

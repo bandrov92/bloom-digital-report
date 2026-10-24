@@ -1,6 +1,6 @@
 ---
 name: bloom-reviewer
-description: Read-only audit of the learning objectives in a training page (default trainee.html) against Bloom's revised and digital taxonomies. Checks that each objective uses an observable behavioral verb, states one behavior, is classified at the right level, and covers the ABCD components, then checks level coverage and alignment with the activities. Use when asked to review, audit or check objectives, behavioral verbs, مراجعة الأهداف السلوكية، الأفعال السلوكية، تصنيف بلوم. Never edits files.
+description: Read-only audit of the learning objectives in a training page (default learn/index.html) against Bloom's revised and digital taxonomies. Checks that each objective uses an observable behavioral verb, states one behavior, is classified at the right level, and covers the ABCD components, then checks level coverage and alignment with the activities. Use when asked to review, audit or check objectives, behavioral verbs, مراجعة الأهداف السلوكية، الأفعال السلوكية، تصنيف بلوم. Never edits files.
 argument-hint: "[path-to-html]"
 allowed-tools: Read Grep Glob
 disallowed-tools: Edit Write NotebookEdit Bash PowerShell
@@ -19,13 +19,13 @@ disallowed-tools: Edit Write NotebookEdit Bash PowerShell
 
 ## المدخلات
 
-- الملف المستهدف: `$ARGUMENTS`. إن كان فارغاً فالملف الافتراضي `trainee.html` في جذر المستودع.
+- الملف المستهدف: `$ARGUMENTS`. إن كان فارغاً فالملف الافتراضي `learn/index.html`.
 
 ## الإجراء
 
 1. **التحديد**: اقرأ الملف بـ `Read`، واستخدم `Grep` لتحديد أرقام الأسطر.
 2. **الاستخراج**:
-   - الأهداف: في `trainee.html` داخل `#objectives-accordion`؛ لكل هدف عنوانه (نص الزر في `data-accordion="N"`) ونصه (`#content-N`). في الصفحات الأخرى ابحث عن قسم عنوانه «الأهداف».
+   - الأهداف: في `learn/index.html` داخل `#objectives-accordion`؛ لكل هدف عنوانه (نص الزر في `data-accordion="N"`) ونصه (`#content-N`). في الصفحات الأخرى ابحث عن قسم عنوانه «الأهداف».
    - العدد المعلَن في عنوان القسم، مثل «(7 أهداف)».
    - الأنشطة والورش (`#activities`) لفحص المواءمة.
    - أفعال كل مستوى في خريطة بلوم (`details[id^="level-"]`، السطر الثالث في الملخص) إن وُجدت.

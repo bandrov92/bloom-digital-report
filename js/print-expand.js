@@ -1,5 +1,5 @@
 /**
- * @file print-expand.js — shared by trainee.html and trainer.html.
+ * @file print-expand.js — shared by learn/index.html and trainer.html.
  *
  * AI usage note (Claude Code): extracted from main.js during the role split so the
  * trainer guide prints complete too. Browsers print a closed <details> without its

@@ -11,7 +11,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 import sys, json
 from playwright.sync_api import sync_playwright
 
-SITE = (ROOT / 'trainee.html').as_uri()
+SITE = (ROOT / 'learn' / 'index.html').as_uri()
 fails = []
 def check(cond, msg):
     print(('PASS ' if cond else 'FAIL ') + msg)
@@ -248,7 +248,7 @@ with sync_playwright() as p:
     dash = pg.inner_text('#dash-project')
     check('محاكاة' in dash and 'النسخة 2' in dash, 'dashboard shows project version and simulation status separately')
     # continue alias
-    go(pg, '26'); pg.goto(SITE.replace('trainee.html', 'trainee.html#continue')); pg.wait_for_timeout(300)
+    go(pg, '26'); pg.goto(SITE + '#continue'); pg.wait_for_timeout(300)
     check(pg.is_visible('#screen-26'), '#continue returns to last position')
     save_fixture(pg, 'state-complete.json')
     check(errors == [], f'no console errors: {errors[:3]}')

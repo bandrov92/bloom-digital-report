@@ -1,5 +1,5 @@
 /**
- * @file learning.js — the learner's activity on trainee.html: saved fields,
+ * @file learning.js — the learner's activity on learn/index.html: saved fields,
  * honest save status, practice checks, element completion, screen navigation,
  * the dashboard and the screen-specific behaviour of the scenario.
  *
@@ -7,7 +7,7 @@
  * (BloomData), js/store.js (BloomStore). js/main.js loads after it and calls
  * window.BloomLearning.resolveAlias() for #continue and #next.
  *
- * Conventions in trainee.html:
+ * Conventions in learn/index.html:
  *  - data-field="s07.paraphrase"     a saved control (input, textarea, select, radios, checkbox).
  *  - data-review="s07.rv1"           a self-review question rendered with the نعم/جزئيًا/ليس بعد scale.
  *  - data-check="s05"                a practice check rendered from BloomData.CHECKS.
@@ -737,12 +737,10 @@
     panel.replaceChildren(
       h('p', { class: 'stop-title' }, ok ? `حُفظ عملك في هذا المتصفح الساعة ${fmtTime(store.status.at)}.` : 'لم يُحفظ عملك.'),
       h('p', {}, ok
-        ? 'للعودة: افتح الموقع على هذا الجهاز وفي المتصفح نفسه، ثم اختر «تابع تعلمي» من البوابة. مسح بيانات المتصفح أو استخدام جهاز آخر لا ينقل عملك؛ صدّر نسخة احتياطية إن احتجت.'
+        ? 'للعودة: افتح رابط مسار المتدرب على هذا الجهاز وفي المتصفح نفسه، فيفتح على آخر موضع حفظته. مسح بيانات المتصفح أو استخدام جهاز آخر لا ينقل عملك؛ صدّر نسخة احتياطية إن احتجت.'
         : D.MESSAGES.saveFailed),
       h('p', { class: 'stop-links' }, [
         h('a', { href: '#save-help', class: 'inline-link' }, 'تصدير نسخة احتياطية'),
-        ' · ',
-        h('a', { href: 'index.html', class: 'inline-link', dataset: { leave: '' } }, 'العودة إلى البوابة'),
       ]),
     );
     /** @type {HTMLElement} */ (panel).setAttribute('tabindex', '-1');
@@ -1553,8 +1551,8 @@
     }
     return loadedScripts[src];
   }
-  const loadForms = () => (window.BloomTestForms ? Promise.resolve() : loadScript('js/test-forms.js'));
-  const loadKeys = () => (window.BloomTestKeys ? Promise.resolve() : loadScript('js/test-keys.js'));
+  const loadForms = () => (window.BloomTestForms ? Promise.resolve() : loadScript('../js/test-forms.js'));
+  const loadKeys = () => (window.BloomTestKeys ? Promise.resolve() : loadScript('../js/test-keys.js'));
   const LETTERS = ['أ', 'ب', 'ج', 'د'];
 
   function renderTestStatus() {

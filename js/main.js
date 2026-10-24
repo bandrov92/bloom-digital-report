@@ -1,11 +1,11 @@
 /**
- * @file main.js — page structure for trainee.html: hash router, lesson drawer
+ * @file main.js — page structure for learn/index.html: hash router, lesson drawer
  * and the screens inside each unit.
  *
  * AI usage note (Claude Code): refactored from the original inline script, then
  * redesigned as a lesson player. Self-learning redesign (2026-10-23):
  *  - Each unit (<section data-lesson>) now holds screens (<section data-screen>);
- *    one screen is shown at a time and the URL names it (trainee.html#screen-05).
+ *    one screen is shown at a time and the URL names it (learn/#screen-05).
  *  - Completion is NOT given for reaching the end of a page any more; learning
  *    progress is recorded by js/learning.js when the learner performs an activity.
  *  - The old knowledge check, lesson template, reflections and Gemini suggestion
@@ -28,7 +28,7 @@
 
   /**
    * Ids that moved to trainer.html (library appendices, 2026-10-23). Old links
-   * such as trainee.html#content-res-tools are forwarded there.
+   * such as learn/#content-res-tools (or the old trainee.html#…) are forwarded there.
    */
   const MOVED_TO_TRAINER = Object.freeze([
     'library', 'content-res-tools', 'content-res-case-studies', 'content-res-assessment',
@@ -142,13 +142,16 @@
     } catch {
       id = '';
     }
+    // The trainee's direct link (learn/ with no hash) reopens the last saved
+    // position; with nothing saved, the 'continue' alias falls back to screen 01.
+    if (!id) id = 'continue';
     const alias = window.BloomLearning?.resolveAlias?.(id);
     if (alias) id = alias;
     const fallback = { view: lessons[0] || null, screen: null, target: null };
     if (!id) return fallback;
     const element = byId(id);
     if (!element && MOVED_TO_TRAINER.includes(id)) {
-      window.location.replace(`trainer.html#${encodeURIComponent(id)}`);
+      window.location.replace(`../trainer.html#${encodeURIComponent(id)}`);
       return { view: null, screen: null, target: null };
     }
     if (!element) return fallback;

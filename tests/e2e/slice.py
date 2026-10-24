@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 import json, sys
 from playwright.sync_api import sync_playwright, expect
 
-SITE = (ROOT / 'trainee.html').as_uri()
+SITE = (ROOT / 'learn' / 'index.html').as_uri()
 fails = []
 def check(cond, msg):
     print(('PASS ' if cond else 'FAIL ') + msg)

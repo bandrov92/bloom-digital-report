@@ -8,7 +8,7 @@ import pathlib
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 import json
 from playwright.sync_api import sync_playwright
-SITE = (ROOT / 'trainee.html').as_uri()
+SITE = (ROOT / 'learn' / 'index.html').as_uri()
 fails = []
 def check(c, m):
     print(('PASS ' if c else 'FAIL ') + m)
@@ -19,17 +19,20 @@ with sync_playwright() as p:
     c = b.new_context(); pg = c.new_page(); pg.goto(SITE + '#screen-09'); pg.wait_for_timeout(300)
     pg.evaluate("() => { window.__o = Storage.prototype.setItem; Storage.prototype.setItem = function(){ throw new Error('x'); }; }")
     pg.fill('#s09-performance', 'نص لم يُحفظ'); pg.wait_for_timeout(900)
-    pg.click('.drawer-portal'); pg.wait_for_timeout(200)
+    # The trainee path has no link back to the portal (2026-10-25); a test-only
+    # link exercises the same leave guard as any same-site link.
+    pg.evaluate("() => { const a = document.createElement('a'); a.href = '../index.html'; a.id = 't-leave'; a.textContent = 'leave'; document.querySelector('#screen-09').prepend(a); }")
+    pg.click('#t-leave'); pg.wait_for_timeout(200)
     check(pg.evaluate("document.getElementById('unsaved-dialog').open") and pg.url.endswith('#screen-09'), 'leaving with unsaved text opens the dialog and stays')
     pg.click('[data-unsaved="save"]'); pg.wait_for_timeout(100)
     check('ما زال الحفظ متعذرًا' in pg.inner_text('#unsaved-msg'), 'save in dialog reports continued failure honestly')
     pg.keyboard.press('Escape'); pg.wait_for_timeout(100)
     check(not pg.evaluate("document.getElementById('unsaved-dialog').open"), 'Escape closes the dialog')
-    pg.click('.drawer-portal'); pg.wait_for_timeout(100); pg.click('[data-unsaved="stay"]'); pg.wait_for_timeout(100)
+    pg.click('#t-leave'); pg.wait_for_timeout(100); pg.click('[data-unsaved="stay"]'); pg.wait_for_timeout(100)
     check(pg.input_value('#s09-performance') == 'نص لم يُحفظ', 'return to editing keeps the text')
     pg.evaluate("() => { Storage.prototype.setItem = window.__o; }")
-    pg.click('.drawer-portal'); pg.wait_for_timeout(500)
-    check(pg.url.endswith('index.html'), 'leaves normally once saving works')
+    pg.click('#t-leave'); pg.wait_for_timeout(500)
+    check(pg.url.endswith('index.html') and '/learn/' not in pg.url, 'leaves normally once saving works')
     check('الشاشة 09' in pg.inner_text('#portal-resume'), 'portal reports saved position honestly')
     # 2 export / import
     pg.goto(SITE + '#dashboard'); pg.wait_for_timeout(300)

@@ -3,18 +3,19 @@
  *
  * AI usage note (Claude Code): written during the role-split refactor. Before the
  * split, index.html held the whole training kit, so links shared earlier point at
- * sections such as `index.html#map`. Those sections now live in trainee.html.
+ * sections such as `index.html#map`. Those sections now live in learn/ (the
+ * trainee's own path since 2026-10-25; trainee.html forwards there too).
  * This script forwards such links there so they keep working. A bare visit to
  * index.html (no hash, or an unknown hash) stays on the portal.
  */
 'use strict';
 
 (() => {
-  /** Section ids of the trainee page that old links may target. Keep in sync with trainee.html. */
+  /** Section ids of the trainee page that old links may target. Keep in sync with learn/index.html. */
   const LEGACY_SECTION_IDS = Object.freeze(['intro', 'map', 'plan', 'activities', 'template', 'check', 'resources', 'main-content']);
 
   /**
-   * Returns the trainee.html URL for a legacy section hash, or null if the hash
+   * Returns the learn/ URL for a legacy section hash, or null if the hash
    * does not name a known section.
    * @param {string} hash - window.location.hash, e.g. "#map".
    * @returns {string|null}
@@ -26,7 +27,7 @@
     } catch {
       return null; // malformed escape such as "#%" — stay on the portal
     }
-    return LEGACY_SECTION_IDS.includes(id) ? `trainee.html#${encodeURIComponent(id)}` : null;
+    return LEGACY_SECTION_IDS.includes(id) ? `learn/#${encodeURIComponent(id)}` : null;
   };
 
   const target = legacyTarget(window.location.hash);
@@ -34,6 +35,32 @@
     // replace() keeps the portal out of history, so Back does not loop.
     window.location.replace(target);
     return;
+  }
+
+  /**
+   * Shows the trainee's direct link (absolute, so it can be pasted into a message)
+   * and copies it. Falls back to selecting the text where the clipboard API is
+   * unavailable (file:// in some browsers, or a denied permission).
+   */
+  const urlEl = document.getElementById('portal-learn-url');
+  const copyBtn = document.querySelector('[data-copy-learn]');
+  const copyStatus = document.getElementById('portal-copy-status');
+  const learnUrl = new URL('learn/', window.location.href).href;
+  if (urlEl) urlEl.textContent = learnUrl;
+  if (copyBtn && urlEl && copyStatus) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(learnUrl);
+        copyStatus.textContent = 'نُسخ الرابط. أرسله للمتدرب ليدخل مساره مباشرة.';
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(urlEl);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+        copyStatus.textContent = 'تعذر النسخ التلقائي؛ الرابط محدد الآن، انسخه يدويًا.';
+      }
+    });
   }
 
   /**
