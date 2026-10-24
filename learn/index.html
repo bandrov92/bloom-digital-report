@@ -111,6 +111,8 @@
           <p class="screen-purpose">الغرض: تنشيط معرفتك السابقة بتصنيف بلوم الرقمي، والتعرف على قواعد الاجتياز والحفظ قبل أن تبدأ.</p>
           <p class="element-status element-status--none" data-no-element></p>
         </header>
+        <!-- Chunks (2026-10-25): each <div data-chunk> is one view; js/main.js shows one at a time. -->
+        <div class="chunk" data-chunk>
         <!-- Optional embedded video: the player loads only on "play" (js/learning.js -> playVideo). -->
         <figure class="video-embed" data-video="fqgTBwElPzU" data-video-title="What is Bloom's Digital Taxonomy? — Common Sense Education (YouTube)">
           <div class="video-frame">
@@ -121,16 +123,27 @@
           </div>
           <figcaption class="field-hint"><bdi>What is Bloom's Digital Taxonomy?</bdi> — <bdi>Common Sense Education</bdi> · بالإنجليزية · اختياري ولا يُحتسب في الاستكمال.</figcaption>
         </figure>
+        </div>
 
+        <div class="chunk" data-chunk>
         <h4 class="section-title">كيف يعمل البرنامج</h4>
         <div class="prose">
-          <ul>
+          <ul class="rule-cards">
             <li>البرنامج سبع وحدات في 28 شاشة، قُسم بعضها إلى أجزاء قصيرة لكل منها غرض. تستطيع فتح أي وحدة في أي وقت دون فقد عملك.</li>
             <li>يُحتسب عنصر المحتوى حين تنفذ نشاطه أو تحققه، لا حين تفتح الشاشة أو تمرر حتى نهايتها. في البرنامج 20 عنصرًا.</li>
             <li>الاجتياز يتطلب الشرطين معًا: استكمال 80% على الأقل من العناصر، و60 من 100 فأكثر في الاختبار الختامي.</li>
+          </ul>
+        </div>
+        </div>
+
+        <div class="chunk" data-chunk>
+        <h4 class="section-title">حفظ عملك ووقتك</h4>
+        <div class="prose">
+          <ul class="rule-cards" style="counter-reset: rule 3">
             <li>يُحفظ عملك في هذا المتصفح. اقرأ <a href="#save-help" class="inline-link">كيف أحفظ عملي</a>.</li>
             <li>لا توجد مدة مقررة للبرنامج؛ تقدّر وقتك بنفسك.</li>
           </ul>
+        </div>
         </div>
       </section>
 
@@ -140,6 +153,7 @@
           <h3 id="screen-01-2-title" class="screen-title" tabindex="-1">ما ستتعلمه: نواتج البرنامج</h3>
           <p class="screen-purpose">الغرض: معرفة ما ستستطيع أداءه في نهاية البرنامج، وربط كل شاشة بالناتج الذي تخدمه.</p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>ستطور مهمة تعلم، وتحدد كيف تلاحظ جودة استجابة طلابك، ثم تراجع تصميمك.</p>
         </div>
@@ -149,12 +163,19 @@
           <li><span class="outcome-code">ن1</span> تحلل مهمة مكتوبة وتحدد طلبها المعرفي الغالب، معللًا بفعل المتعلم لا باسم الأداة.</li>
           <li><span class="outcome-code">ن2</span> تصوغ هدفًا لمهمة تختارها يبين أداءً يمكن ملاحظته وشروطه ومعيار الحكم عليه.</li>
           <li><span class="outcome-code">ن3</span> تختار وظيفة رقمية لمهمة محددة وتبررها وفق حاجة المتعلم وظروف الاستخدام.</li>
+        </ol>
+        </div>
+
+        <div class="chunk" data-chunk>
+        <h4 class="section-title">النواتج من ن4 إلى ن7</h4>
+        <ol class="outcome-list" start="4">
           <li><span class="outcome-code">ن4</span> تعيد تصميم مهمة لتناسب هدفًا معرفيًا معلنًا، دون الاكتفاء بتغيير الوسيط.</li>
           <li><span class="outcome-code">ن5</span> تبني تقويمًا وتغذية راجعة متسقين مع الهدف.</li>
           <li><span class="outcome-code">ن6</span> توثق تطبيقًا أو تجربة محاكاة وتستخلص تعديلًا تدعمه شواهد.</li>
           <li><span class="outcome-code">ن7</span> تنظم مصادرك وإصدارات مشروعك وتحدد سؤال دورتك التالية.</li>
         </ol>
         <p class="field-hint">يظهر رمز الناتج الذي تخدمه كل شاشة أعلاها.</p>
+        </div>
       </section>
 
       <section id="screen-01-3" class="screen" data-screen="01-3" data-group="01" data-part="3" aria-labelledby="screen-01-3-title" hidden>
@@ -163,6 +184,7 @@
           <h3 id="screen-01-3-title" class="screen-title" tabindex="-1">المهمة التي ستطورها</h3>
           <p class="screen-purpose">الغرض: توضيح المخرج واختيار سياق واقعي دون فرض تخصص.</p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>تستطيع استخدام مهمة من دروسك أو المثال التدريبي المحايد.</p>
         </div>
@@ -185,14 +207,20 @@
           <p>ستبني على هذا الموقف مهمة يقارن فيها المتعلم الخطتين، ويمكنك الانتقال إلى مهمة من عملك في أي وقت.</p>
         </div>
 
+        </div>
+
+        <div class="chunk" data-chunk>
         <h4 class="section-title">مثال المخرج الذي ستصل إليه</h4>
         <div class="example">
           <span class="example-label">مثال مؤلف</span>
-          <p><strong>الهدف:</strong> عند عرض خطتين، يختار المتعلم الأنسب وفق وضوح المسؤوليات وقابلية التتبع، ويستشهد بمعلومة من كل خطة.</p>
-          <p><strong>المهمة:</strong> قارن الخطتين وفق وضوح المسؤوليات وقابلية التتبع، وبين قوة كل منهما ونقصها مستشهدًا بالنص.</p>
-          <p><strong>الدليل:</strong> مقارنة توضح تحقق كل معيار في كل خطة، مع تعليل الاختيار.</p>
-          <p><strong>المحك:</strong> يطبق المعيارين على الخطتين ويستشهد بالنص.</p>
-          <p><strong>خطة المراجعة:</strong> أقرأ تعليماتي وأتحقق مما إذا كانت الاستجابة المطلوبة ستكشف المعيارين.</p>
+          <div class="tabs" data-tabs="عناصر مثال المخرج">
+            <div data-tab="الهدف"><p><strong>الهدف:</strong> عند عرض خطتين، يختار المتعلم الأنسب وفق وضوح المسؤوليات وقابلية التتبع، ويستشهد بمعلومة من كل خطة.</p></div>
+            <div data-tab="المهمة"><p><strong>المهمة:</strong> قارن الخطتين وفق وضوح المسؤوليات وقابلية التتبع، وبين قوة كل منهما ونقصها مستشهدًا بالنص.</p></div>
+            <div data-tab="الدليل"><p><strong>الدليل:</strong> مقارنة توضح تحقق كل معيار في كل خطة، مع تعليل الاختيار.</p></div>
+            <div data-tab="المحك"><p><strong>المحك:</strong> يطبق المعيارين على الخطتين ويستشهد بالنص.</p></div>
+            <div data-tab="خطة المراجعة"><p><strong>خطة المراجعة:</strong> أقرأ تعليماتي وأتحقق مما إذا كانت الاستجابة المطلوبة ستكشف المعيارين.</p></div>
+          </div>
+        </div>
         </div>
       </section>
 
@@ -204,12 +232,18 @@
           <p class="screen-purpose">الغرض: تشخيص أولي لفهمك قبل التعلم.</p>
           <p class="element-status" data-element-status="t01"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>أجب وفق فهمك الحالي. لن تؤثر هذه المحاولة في درجة اجتيازك، وستساعدك على تحديد ما تحتاج إلى مراجعته.</p>
         </div>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div data-diagnostic></div>
         <div id="diagnostic-report" class="diag-report" tabindex="-1" hidden></div>
+        </div>
 
+        <div class="chunk" data-chunk>
         <details class="hint">
           <summary><span>فحص تقني اختياري: هل يحفظ متصفحك عملك؟</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
           <div class="hint-body">
@@ -222,6 +256,7 @@
             <p id="probe-status" class="result" role="status" aria-live="polite"></p>
           </div>
         </details>
+        </div>
       </section>
 
       <!-- Screen 03 -->
@@ -232,6 +267,7 @@
           <p class="screen-purpose">الغرض: تحديد نقطة بداية وربط التعلم بخبرتك.</p>
           <p class="element-status" data-element-status="t02"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>ما المهمة التي تريد تحسينها؟ اكتب ما يفعله المتعلم فيها الآن، وما الدليل الذي تتمنى ملاحظته بعد التعديل. إن لم تنفذ المهمة سابقًا فاذكر ذلك.</p>
         </div>
@@ -239,6 +275,9 @@
           <label class="field-label" for="s03-title">عنوان المهمة</label>
           <input id="s03-title" class="input" type="text" data-field="s03.title" data-prefill-from="s01.title" required>
         </div>
+        </div>
+
+        <div class="chunk" data-chunk>
         <fieldset class="plain" data-field-wrap>
           <legend>حالة خبرتك بالمهمة</legend>
           <div class="choice-list">
@@ -251,6 +290,7 @@
           <label class="field-label" for="s03-current">ما يفعله المتعلم في المهمة الآن (أو ما تتوقعه إن لم تنفذها)</label>
           <textarea id="s03-current" class="input" data-field="s03.current" data-required-msg="أكمل وصف ما يفعله المتعلم حتى تستطيع مقارنة النسختين لاحقًا." required></textarea>
         </div>
+        </div>
       </section>
 
       <section id="screen-03-2" class="screen" data-screen="03-2" data-group="03" data-part="2" aria-labelledby="screen-03-2-title" hidden>
@@ -260,6 +300,7 @@
           <p class="screen-purpose">الغرض: تحديد ما تريد تحسينه وما ستلاحظه بعد التعديل، ثم حفظ البطاقة.</p>
           <p class="element-status" data-element-status="t02"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="field">
           <label class="field-label" for="s03-need">ما الذي تحتاج إلى تحسينه</label>
           <textarea id="s03-need" class="input" data-field="s03.need" required></textarea>
@@ -268,6 +309,9 @@
           <label class="field-label" for="s03-evidence">الدليل الذي تتمنى ملاحظته بعد التعديل <span class="field-optional">(اختياري الآن)</span></label>
           <textarea id="s03-evidence" class="input" data-field="s03.evidence"></textarea>
         </div>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div class="field-row field-row--2">
           <div class="field">
             <label class="field-label" for="s03-stage">المرحلة الدراسية <span class="field-optional">(اختياري)</span></label>
@@ -287,11 +331,15 @@
             <p><strong>الدليل الذي أريد ملاحظته:</strong> مقارنة توضح تحقق كل معيار في كل خطة، مع تعليل الاختيار أو اقتراح تحسين مناسب.</p>
           </div>
         </details>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div class="legacy-panel" data-legacy-panel hidden></div>
         <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t02">سجّل البطاقة</button></div>
         <p class="result" data-result="t02" role="status"></p>
         <p class="field-hint">تُحفظ البطاقة نسخةً مرجعية، ويمكنك تعديلها لاحقًا مع حفظ أثر التعديل. تُستخدم معلوماتها في المشروع حتى لا تعيد إدخالها.</p>
         <div data-history="needCard"></div>
+        </div>
       </section>
 
       <!-- Screen 04 -->
@@ -302,19 +350,28 @@
           <p class="screen-purpose">الغرض: أن تتحكم في ترتيب تعلمك دون أن تخفى عليك متطلبات الاجتياز.</p>
           <p class="element-status element-status--none" data-no-element></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>اقترحنا هذه الخطوة التالية بناءً على إجاباتك. يمكنك تغيير ترتيب التعلم. الاجتياز يتطلب استكمال 80% من عناصر المحتوى المطلوبة و60 من 100 فأكثر في الاختبار الختامي.</p>
         </div>
         <h4 class="section-title">مواضع المراجعة من تشخيصك</h4>
         <ul id="s04-review" class="dash-list prose"></ul>
+        </div>
+
+        <div class="chunk" data-chunk>
+        <h4 class="section-title">اختر خطوتك التالية</h4>
         <div class="actions">
           <a href="#screen-09" class="btn btn-primary" data-path-choice="plan">أبدأ خطتي</a>
           <a href="#screen-05" class="btn btn-secondary" data-path-choice="review" id="s04-review-link">أراجع بلوم</a>
           <button type="button" class="btn btn-secondary" data-action="save-stop" data-stop-screen="04">أتوقف الآن</button>
         </div>
         <p class="field-hint">المسار المقترح: الخطة الأولية (09 و10) ثم مستويات بلوم (05–08) ثم الورش والقالب والاختبار والعودة للممارسة. لا تُقفل أي وحدة.</p>
+        </div>
+
+        <div class="chunk" data-chunk>
         <h4 class="section-title">خريطة البرنامج</h4>
         <ol id="program-map" class="dash-list prose program-map"></ol>
+        </div>
       </section>
     </div>
 
@@ -344,11 +401,16 @@
           <p class="screen-purpose">الغرض: تمييز الطلب المعرفي عن الوسيط المستخدم.</p>
           <p class="element-status" data-element-status="t03"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>مهمتان تستخدمان ملصقًا رقميًا: الأولى تنقل تعريفات جاهزة، والثانية تبني اقتراحًا جديدًا وفق قيود مع توضيح مبرراته. هل يكفي شكل الملصق للحكم بأن المهمتين إبداع؟</p>
         </div>
         <p>اختر «نعم» أو «لا»، ثم حدد سبب حكمك.</p>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div data-check="s05"></div>
+        </div>
       </section>
 
       <!-- Screen 06 -->
@@ -359,11 +421,16 @@
           <p class="screen-purpose">الغرض: تمييز العمليات في حالات محددة الشروط.</p>
           <p class="element-status" data-element-status="t04"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>صنف المهمات الثلاث: استرجاع قواعد عمل سبق تعلمها؛ شرح القواعد بكلماتك مع مثال؛ استخدام إجراء توزيع أدوار سبق تعلمه لتنظيم مهمة مشابهة.</p>
         </div>
         <p>اختر من القائمة مستوى لكل مهمة، ثم اضغط «تحقق». إذا اختلف تصنيف بند يُعاد فتحه وحده مع مثال مساعد.</p>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div data-check="s06"></div>
+        </div>
       </section>
 
       <!-- Screen 07 -->
@@ -374,11 +441,20 @@
           <p class="screen-purpose">الغرض: تمييز العمليات الأعلى من خلال نوع الدليل.</p>
           <p class="element-status" data-element-status="t05"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>رتب الوصف تحت عمليته: بيان العلاقة بين أجزاء سجل؛ الحكم على بديلين وفق محكات؛ إنتاج خطة جديدة تستجيب لقيود.</p>
         </div>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div data-check="s07"></div>
+        </div>
+
+        <div class="chunk" data-chunk>
+        <h4 class="section-title">قبل أن تكمل</h4>
         <p class="note">أمثلة مؤلفة للتدريب. ليست المستويات مراتب لقيمة المعلم أو خطوات واجبة في كل درس. يتغير التصنيف إذا تغيرت التعليمات والدعم والدليل المطلوب؛ ويعبر كل مثال عن العملية الغالبة في الصياغة المعروضة.</p>
+        </div>
       </section>
 
       <section id="screen-07-2" class="screen" data-screen="07-2" data-group="07" data-part="2" aria-labelledby="screen-07-2-title" hidden>
@@ -387,15 +463,28 @@
           <h3 id="screen-07-2-title" class="screen-title" tabindex="-1">أمثلة: التذكر والفهم والتطبيق</h3>
           <p class="screen-purpose">الغرض: ملاحظة كيف يتحدد الطلب المعرفي من الدليل المطلوب، وتصحيح مفاهيم شائعة.</p>
         </header>
-        <p class="field-hint">السياق: «تنظيم عمل فريق».</p>
-        <ul class="process-list">
-          <li class="process-card"><h4>التذكر</h4><p>استرجع قواعد توزيع الأدوار التي درستها دون الرجوع إلى النص.</p><p>الدليل المتوقع: قائمة بالقواعد المسترجعة؛ يعزل التشخيص أثر الرجوع إلى النص.</p></li>
-          <li class="process-card"><h4>الفهم</h4><p>اشرح بكلماتك معنى توزيع المسؤوليات، ومثل له بحالة بسيطة.</p><p>الدليل المتوقع: شرح يبين المعنى ومثال متسق معه.</p></li>
-          <li class="process-card"><h4>التطبيق</h4><p>باستخدام إجراء توزيع الأدوار الذي تعلمته، وزع الأدوار على مهمة مشابهة موصوفة أمامك.</p><p>الدليل المتوقع: تطبيق الخطوات على الحالة، مع بيانات متسقة.</p></li>
+        <div class="chunk" data-chunk>
+        <p class="field-hint">السياق: «تنظيم عمل فريق». فكر في الدليل الذي تتوقعه لكل مهمة، ثم اقلب البطاقة لتقارن.</p>
+        <ul class="flip-list">
+          <li><button type="button" class="flip-card" data-flip>
+            <span class="flip-face flip-front"><span class="flip-level">التذكر</span><span class="flip-text">استرجع قواعد توزيع الأدوار التي درستها دون الرجوع إلى النص.</span><span class="flip-cue">ما الدليل الذي تتوقعه؟ اضغط لترى</span></span>
+            <span class="flip-face flip-back"><span class="flip-level">التذكر</span><span class="flip-text">الدليل المتوقع: قائمة بالقواعد المسترجعة؛ يعزل التشخيص أثر الرجوع إلى النص.</span><span class="flip-cue">اضغط للعودة إلى المهمة</span></span>
+          </button></li>
+          <li><button type="button" class="flip-card" data-flip>
+            <span class="flip-face flip-front"><span class="flip-level">الفهم</span><span class="flip-text">اشرح بكلماتك معنى توزيع المسؤوليات، ومثل له بحالة بسيطة.</span><span class="flip-cue">ما الدليل الذي تتوقعه؟ اضغط لترى</span></span>
+            <span class="flip-face flip-back"><span class="flip-level">الفهم</span><span class="flip-text">الدليل المتوقع: شرح يبين المعنى ومثال متسق معه.</span><span class="flip-cue">اضغط للعودة إلى المهمة</span></span>
+          </button></li>
+          <li><button type="button" class="flip-card" data-flip>
+            <span class="flip-face flip-front"><span class="flip-level">التطبيق</span><span class="flip-text">باستخدام إجراء توزيع الأدوار الذي تعلمته، وزع الأدوار على مهمة مشابهة موصوفة أمامك.</span><span class="flip-cue">ما الدليل الذي تتوقعه؟ اضغط لترى</span></span>
+            <span class="flip-face flip-back"><span class="flip-level">التطبيق</span><span class="flip-text">الدليل المتوقع: تطبيق الخطوات على الحالة، مع بيانات متسقة.</span><span class="flip-cue">اضغط للعودة إلى المهمة</span></span>
+          </button></li>
         </ul>
+        </div>
 
+        <div class="chunk" data-chunk>
         <div class="note">
           <p><strong>تصحيح مفاهيم شائعة:</strong> كتابة فعل مثل «صمم» في الهدف لا تثبت وحدها مستوى الإبداع، كما أن استخدام اختبار رقمي لا يقصر المهمة على التذكر. يتحدد الحكم من التعليمات وطبيعة الاستجابة المطلوبة. في المهام المركبة يحدد المصمم العملية المستهدفة ويصرح بالعمليات المساندة بدل إعطاء تصنيف قطعي ملتبس.</p>
+        </div>
         </div>
       </section>
 
@@ -405,16 +494,29 @@
           <h3 id="screen-07-3-title" class="screen-title" tabindex="-1">أمثلة: التحليل والتقييم والإبداع ومثال محلول</h3>
           <p class="screen-purpose">الغرض: تمييز العمليات العليا بالدليل في السياق نفسه، ومتابعة تفكير معلن في مثال محلول.</p>
         </header>
-        <p class="field-hint">السياق: «تنظيم عمل فريق».</p>
-        <ul class="process-list">
-          <li class="process-card"><h4>التحليل</h4><p>افحص سجل فريق افتراضي وحدد العلاقات بين تداخل المسؤوليات وتأخر تسليم المهمات، مستندًا إلى شواهد السجل.</p><p>الدليل المتوقع: تفكيك للمعلومات وعلاقات مفسرة؛ لا تنسب السببية يقينًا من سجل واحد.</p></li>
-          <li class="process-card"><h4>التقييم</h4><p>احكم على خطتين وفق وضوح المسؤوليات وقابلية التتبع، وادعم حكمك بمعلومات من الخطتين.</p><p>الدليل المتوقع: حكم مبرر بمحكات تطبق على البديلين.</p></li>
-          <li class="process-card"><h4>الإبداع</h4><p>صمم خطة جديدة لتنظيم مهمة لها قيود محددة، واجمع عناصرها في حل متسق ثم اختبره وعدله.</p><p>الدليل المتوقع: خطة تتجاوز نسخ المثال وتستجيب للقيود، مع سبب التعديل.</p></li>
+        <div class="chunk" data-chunk>
+        <p class="field-hint">السياق: «تنظيم عمل فريق». فكر في الدليل الذي تتوقعه لكل مهمة، ثم اقلب البطاقة لتقارن.</p>
+        <ul class="flip-list">
+          <li><button type="button" class="flip-card" data-flip>
+            <span class="flip-face flip-front"><span class="flip-level">التحليل</span><span class="flip-text">افحص سجل فريق افتراضي وحدد العلاقات بين تداخل المسؤوليات وتأخر تسليم المهمات، مستندًا إلى شواهد السجل.</span><span class="flip-cue">ما الدليل الذي تتوقعه؟ اضغط لترى</span></span>
+            <span class="flip-face flip-back"><span class="flip-level">التحليل</span><span class="flip-text">الدليل المتوقع: تفكيك للمعلومات وعلاقات مفسرة؛ لا تنسب السببية يقينًا من سجل واحد.</span><span class="flip-cue">اضغط للعودة إلى المهمة</span></span>
+          </button></li>
+          <li><button type="button" class="flip-card" data-flip>
+            <span class="flip-face flip-front"><span class="flip-level">التقييم</span><span class="flip-text">احكم على خطتين وفق وضوح المسؤوليات وقابلية التتبع، وادعم حكمك بمعلومات من الخطتين.</span><span class="flip-cue">ما الدليل الذي تتوقعه؟ اضغط لترى</span></span>
+            <span class="flip-face flip-back"><span class="flip-level">التقييم</span><span class="flip-text">الدليل المتوقع: حكم مبرر بمحكات تطبق على البديلين.</span><span class="flip-cue">اضغط للعودة إلى المهمة</span></span>
+          </button></li>
+          <li><button type="button" class="flip-card" data-flip>
+            <span class="flip-face flip-front"><span class="flip-level">الإبداع</span><span class="flip-text">صمم خطة جديدة لتنظيم مهمة لها قيود محددة، واجمع عناصرها في حل متسق ثم اختبره وعدله.</span><span class="flip-cue">ما الدليل الذي تتوقعه؟ اضغط لترى</span></span>
+            <span class="flip-face flip-back"><span class="flip-level">الإبداع</span><span class="flip-text">الدليل المتوقع: خطة تتجاوز نسخ المثال وتستجيب للقيود، مع سبب التعديل.</span><span class="flip-cue">اضغط للعودة إلى المهمة</span></span>
+          </button></li>
         </ul>
+        </div>
 
+        <div class="chunk" data-chunk>
         <div class="example">
           <span class="example-label">تفكير معلن في مثال محلول</span>
           <p>«سأبدأ بما سيقدمه المتعلم. إذا كان المطلوب حكمًا على بديلين، فإني أبحث عن معيار وشاهد يفسران الحكم. كتابة أسماء البديلين لا تكفي. ثم أختار وسيلة تسمح بعرض المقارنة والتعليل، مثل مستند نصي أو جدول بسيط. اختياري للوسيلة يأتي بعد تحديد الدليل».</p>
+        </div>
         </div>
       </section>
 
@@ -425,11 +527,15 @@
           <p class="screen-purpose">الغرض: تطبيق التمييز بين العمليات على مهمة تختارها، ثم مراجعة وصفك بأسئلة معلنة.</p>
           <p class="element-status" data-element-status="t05"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="field">
           <label class="field-label" for="s07-paraphrase">اختر مهمة من أمثلة الجزأين ب وج أو من عملك، وصف ما يفعله المتعلم فيها والدليل الذي يقدمه</label>
           <p class="field-hint" id="s07-paraphrase-hint">لا يصحح النظام هذا النص آليًا؛ راجعه بالأسئلة التالية.</p>
           <textarea id="s07-paraphrase" class="input" data-field="s07.paraphrase" aria-describedby="s07-paraphrase-hint" required></textarea>
         </div>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div class="review-block">
           <h5 class="review-block-title">قائمة مراجعة إعادة الصياغة</h5>
           <div data-review="s07.rv1">هل وصفت ما يفعله المتعلم، لا اسم الأداة؟</div>
@@ -438,6 +544,7 @@
         </div>
         <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t05">سجّل عملي</button></div>
         <p class="result" data-result="t05" role="status"></p>
+        </div>
       </section>
 
       <!-- Screen 08 -->
@@ -448,10 +555,15 @@
           <p class="screen-purpose">الغرض: اختيار وظيفة رقمية تخدم المهمة، دون ربط اسم الأداة بمستوى ثابت.</p>
           <p class="element-status" data-element-status="t06"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>تريد أن يقارن المتعلم بديلين ويبرر حكمه. أي وظيفة تخدم المهمة أكثر: تزيين العنوان فقط، أم عرض البديلين مع معايير المقارنة وشواهد الحكم؟</p>
         </div>
         <div data-check="s08"></div>
+        </div>
+
+        <div class="chunk" data-chunk>
+        <h4 class="section-title">هرم بلوم: الوظيفة قبل الأداة</h4>
         <p class="field-hint">أمثلة أدوات لكل مستوى: اختر مستوى لتفتح أمثلة أدوات قد تخدم مهامه في الجزء ج.</p>
         <nav class="pyramid-nav" aria-label="هرم بلوم: افتح أمثلة مستوى">
         <ul class="pyramid">
@@ -464,6 +576,7 @@
         </ul>
         <p class="pyramid-legend"><span>المستويات الثلاثة العليا: مهارات التفكير العليا (HOTS)</span><span>الدنيا: تأسيس المعرفة وتوظيفها (LOTS)</span></p>
         </nav>
+        </div>
       </section>
 
       <section id="screen-08-2" class="screen" data-screen="08-2" data-group="08" data-part="2" aria-labelledby="screen-08-2-title" hidden>
@@ -473,6 +586,7 @@
           <p class="screen-purpose">الغرض: اختيار وسيلة متاحة لك تحقق الوظيفة التي اخترتها، وبديل يحافظ عليها عند التعذر.</p>
           <p class="element-status" data-element-status="t06"></p>
         </header>
+        <div class="chunk" data-chunk>
         <div class="display-text">
           <p>الوظيفة التي اخترتها في الجزء أ تحتاج وسيلة تملكها أنت ومتعلموك. سجّل وسيلة متاحة وبديلًا عند تعذرها، ثم راجع اختيارك.</p>
         </div>
@@ -488,6 +602,9 @@
             <input id="s08-alternative" class="input" type="text" data-field="s08.alternative" aria-describedby="s08-alternative-hint" required>
           </div>
         </div>
+        </div>
+
+        <div class="chunk" data-chunk>
         <div class="review-block">
           <h5 class="review-block-title">راجع اختيارك</h5>
           <div data-review="s08.rv1">هل الوسيلة متاحة لك ولمتعلميك؟</div>
@@ -495,6 +612,7 @@
         </div>
         <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t06">سجّل عملي</button></div>
         <p class="result" data-result="t06" role="status"></p>
+        </div>
       </section>
 
       <section id="screen-08-3" class="screen" data-screen="08-3" data-group="08" data-part="3" aria-labelledby="screen-08-3-title" hidden>
@@ -503,12 +621,13 @@
           <h3 id="screen-08-3-title" class="screen-title" tabindex="-1">أمثلة أدوات لكل مستوى</h3>
           <p class="screen-purpose">الغرض: استكشاف وظائف رقمية ممكنة في كل مستوى، والحكم عليها بما يفعله المتعلم لا باسم الأداة.</p>
         </header>
+        <div class="chunk" data-chunk>
         <span id="tools-reference"></span>
         <div class="note">
           <p>هذه القائمة من النسخة السابقة للحقيبة، وتُعرض أمثلةً على وظائف ممكنة. <strong>اسم الأداة لا يحدد مستوى بلوم</strong>: الأداة الواحدة قد تخدم مهام في مستويات مختلفة بحسب ما يفعله المتعلم والدليل المطلوب. تاريخ الاطلاع على صفحاتها الرسمية: 23 أكتوبر 2026. صفحات Google Classroom وDocs وSites وMicrosoft 365 تفتح على تسجيل الدخول، ولم يمكن فتح صفحتي Google Forms وGoogle Sheets آليًا في التاريخ نفسه. لم تُراجع شروط الاستخدام والأسعار؛ راجعها قبل الاعتماد على أي أداة، ولا يتطلب البرنامج أي حساب مدفوع.</p>
         </div>
-    <div class="space-y-8">
-    <div class="space-y-3">
+        </div>
+    <div class="chunk space-y-3" data-chunk>
       <h5 class="flex flex-wrap items-baseline gap-x-2 text-lg font-bold text-gray-800">⬇️ المستويات الدنيا (LOTS)<span class="text-sm font-normal text-gray-500">تأسيس المعرفة وتوظيفها</span></h5>
       <details id="level-remember" class="group rounded-xl border border-gray-200 border-s-4 border-s-purple-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
@@ -625,7 +744,7 @@
         </div>
       </details>
     </div>
-    <div class="space-y-3">
+    <div class="chunk space-y-3" data-chunk>
       <h5 class="flex flex-wrap items-baseline gap-x-2 text-lg font-bold text-gray-800">⬆️ المستويات العليا (HOTS)<span class="text-sm font-normal text-gray-500">مهارات التفكير العليا</span></h5>
       <details id="level-analyze" class="group rounded-xl border border-gray-200 border-s-4 border-s-yellow-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-3 transition duration-200 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
@@ -753,7 +872,6 @@
           </ul>
         </div>
       </details>
-    </div>
     </div>
       </section>
     </div>

@@ -1,5 +1,11 @@
 """Screen length balance: every screen, part and page within 25% of the mean.
 
+Screens written in chunks ([data-chunked], units 1 and 2 since 2026-10-25) are
+measured with every chunk shown, so their whole content still balances with the
+other screens; that each chunk fits the visible area is checked by
+tests/e2e/chunks.py. On phones the diagnostic shows one item per page, so its
+pages are compared only at the width where they exist.
+
 Measures the height of each learner view in learn/index.html from the top of the
 screen to its footer (collapsibles closed), at 375px and 1280px, and compares
 it with the mean of all views at that width. Fails when a view differs from the
@@ -77,6 +83,8 @@ def measure(browser, width, state_file=None, keys=None, strip_for=None):
         data = arrival(state_file, strip_for) if strip_for else (FIXTURES / state_file).read_text(encoding='utf-8')
         # Seed once per tab (sessionStorage flag), so a later edit of the state survives a reload.
         ctx.add_init_script(f"try {{ if (!sessionStorage.getItem('fixture')) {{ localStorage.setItem('bloomLearning.v1', {json.dumps(data)}); sessionStorage.setItem('fixture', '1'); }} }} catch (e) {{}}")
+    # Chunked screens are measured with every chunk shown (their whole content).
+    ctx.add_init_script("document.addEventListener('DOMContentLoaded', () => document.body.classList.add('show-all-chunks'))")
     pg = ctx.new_page()
     pg.on('dialog', lambda d: d.accept())
     pg.goto(SITE); pg.wait_for_timeout(500)
@@ -106,20 +114,21 @@ with sync_playwright() as p:
     browser.close()
 
 order = list(table)
-means = {w: sum(table[n][w] for n in order) / len(order) for w in WIDTHS}
+means = {w: sum(table[n][w] for n in order if w in table[n]) / sum(1 for n in order if w in table[n]) for w in WIDTHS}
 fails, notes = [], []
 print(f"views: {len(order)} | mean 375px: {means[375]:.0f} | mean 1280px: {means[1280]:.0f}")
 print(f"{'view':10s} {'375px':>7s} {'dev':>6s} {'1280px':>7s} {'dev':>6s}")
 for n in order:
-    devs = {w: (table[n][w] - means[w]) / means[w] * 100 for w in WIDTHS}
+    devs = {w: (table[n][w] - means[w]) / means[w] * 100 for w in WIDTHS if w in table[n]}
     flag = ''
     if any(abs(d) > MAX_DEVIATION for d in devs.values()):
         flag = 'FAIL'; fails.append(n)
     elif any(abs(d) > TARGET_DEVIATION for d in devs.values()):
         flag = 'note'; notes.append(n)
-    print(f"{n:10s} {table[n][375]:7d} {devs[375]:+5.0f}% {table[n][1280]:7d} {devs[1280]:+5.0f}%  {flag}")
+    cells = ' '.join(f"{table[n][w]:7d} {devs[w]:+5.0f}%" if w in table[n] else f"{'—':>7s} {'':>6s}" for w in WIDTHS)
+    print(f"{n:10s} {cells}  {flag}")
 for w in WIDTHS:
-    worst = max(abs(table[n][w] - means[w]) / means[w] * 100 for n in order)
+    worst = max(abs(table[n][w] - means[w]) / means[w] * 100 for n in order if w in table[n])
     print(f"{w}px: largest deviation {worst:.0f}%")
 print(f"\nbeyond {TARGET_DEVIATION}% (notes): {len(notes)} {notes}")
 print(f"FAILED (beyond {MAX_DEVIATION}%):", len(fails), fails)

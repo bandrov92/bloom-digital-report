@@ -18,8 +18,27 @@ def check(cond, msg):
 def state(pg):
     return pg.evaluate("JSON.parse(localStorage.getItem('bloomLearning.v1') || 'null')")
 
+# Chunked screens (2026-10-25) show one chunk at a time; these functional checks
+# fill fields across chunks, so every chunk is shown (chunk navigation itself is
+# covered by tests/e2e/chunks.py).
+SHOW_ALL = "document.addEventListener('DOMContentLoaded', () => document.body.classList.add('show-all-chunks'))"
+
+
+def show_all_chunks(browser):
+    """Every context and page of this browser opens with all chunks visible."""
+    new_context = browser.new_context
+
+    def ctx(**kw):
+        c = new_context(**kw)
+        c.add_init_script(SHOW_ALL)
+        return c
+    browser.new_context = ctx
+    browser.new_page = lambda **kw: ctx(**kw).new_page()
+    return browser
+
+
 with sync_playwright() as p:
-    b = p.chromium.launch()
+    b = show_all_chunks(p.chromium.launch())
     ctx = b.new_context(viewport={'width': 1280, 'height': 900})
     pg = ctx.new_page()
     errors = []
@@ -27,7 +46,7 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errors.append(str(e)))
     pg.goto(SITE + '#screen-05'); pg.wait_for_timeout(300)
     check(pg.is_visible('#screen-05') and not pg.is_visible('#screen-06'), 'only screen 05 visible')
-    check(pg.locator('#map [data-step-link]').count() == 4, 'stepper has 4 screens')
+    check(pg.locator('[data-steps-for="map"] [data-step-link]').count() == 4, 'drawer step list has 4 screens')
     # visiting all screens completes nothing
     for n in ['06', '07', '08', '05']:
         pg.goto(SITE + f'#screen-{n}'); pg.wait_for_timeout(100)
@@ -102,9 +121,9 @@ with sync_playwright() as p:
     # deep link into reference
     pg.goto(SITE + '#level-apply'); pg.wait_for_timeout(300)
     check(pg.is_visible('#screen-08-3') and pg.evaluate("document.getElementById('level-apply').open"), 'deep link #level-apply opens screen 08 ج and the level')
-    # keyboard: focus stepper link and Enter
+    # keyboard: focus the drawer step link and Enter
     pg.goto(SITE + '#screen-05'); pg.wait_for_timeout(100)
-    pg.focus('#map [data-step-link="06"]'); pg.keyboard.press('Enter'); pg.wait_for_timeout(200)
+    pg.focus('[data-steps-for="map"] [data-step-link="06"]'); pg.keyboard.press('Enter'); pg.wait_for_timeout(200)
     check(pg.is_visible('#screen-06') and pg.evaluate("document.activeElement.id") == 'screen-06-title', 'keyboard step link moves focus to screen title')
     # dashboard
     pg.goto(SITE + '#dashboard'); pg.wait_for_timeout(200)

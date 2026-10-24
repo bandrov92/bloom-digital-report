@@ -1639,3 +1639,361 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   .testimonial-card { padding: 1.875rem 1.25rem 1.25rem; }
   .testimonial-mark { font-size: 7rem; }
 }
+
+/* =========================================================================
+   Lighter learner screens (Claude Code, 2026-10-25). Owner decisions: the unit
+   banner shrinks but stays on every screen; the screen list and parts move into
+   the drawer; long screens show one small chunk at a time ([data-chunk]) that
+   fits the visible area, with "متابعة" between chunks (js/main.js).
+   ========================================================================= */
+
+/* --- Slim unit banner -------------------------------------------------------- */
+.lesson-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  padding: 0.7rem 1.25rem;
+}
+.lesson-banner > * { max-width: none; margin-inline: 0; }
+.lesson-banner .lesson-kicker { order: 0; margin: 0; font-size: 0.75rem; }
+.lesson-banner .lesson-title { order: 1; flex: 1 1 auto; min-width: 0; font-size: 1.05rem; line-height: 1.6; }
+.lesson-banner .lesson-sub {
+  order: 2;
+  flex-basis: 100%;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #cbeef7;
+}
+.lesson-banner .lesson-rule { display: none; }
+@media (min-width: 640px) {
+  .lesson-banner { padding: 0.75rem max(2rem, calc((100% - var(--column)) / 2 + 2rem)); }
+}
+@media (max-width: 639px) {
+  .lesson-banner { flex-wrap: nowrap; padding-block: 0.55rem; }
+  .lesson-banner .lesson-sub { display: none; }
+  .lesson-banner .lesson-kicker { flex-shrink: 0; }
+  .lesson-banner .lesson-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 0.95rem; }
+  .lesson-body { padding-top: 0.9rem; }
+}
+/* The step cards above each screen are replaced by the drawer step list. */
+.stepper { display: none; }
+.lesson-body { padding-top: 1.25rem; }
+
+/* --- Drawer: screens and parts of the current unit --------------------------- */
+.drawer-steps {
+  margin: 0.15rem 0 0.6rem;
+  padding: 0 2.6rem 0 0.25rem;
+  list-style: none;
+}
+[dir="ltr"] .drawer-steps { padding: 0 0.25rem 0 2.6rem; }
+.drawer-steps[hidden] { display: none; }
+.drawer-steps > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  padding: 0.1rem 0;
+}
+.drawer-step {
+  display: flex;
+  flex: 1 1 10rem;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  color: var(--body);
+  text-decoration: none;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+.drawer-step:hover { background: #f3f4f6; }
+.drawer-step-n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  border: 1.5px solid #d1d5db;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: #fff center / 0.8rem no-repeat;
+  font-variant-numeric: tabular-nums;
+}
+.drawer-step[data-done] .drawer-step-n {
+  border-color: var(--teal-600);
+  background-color: var(--teal-600);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+  color: transparent;
+}
+.drawer-step[aria-current="step"] { background: #ecfeff; color: var(--navy-900); font-weight: 700; }
+.drawer-step[aria-current="step"]:not([data-done]) .drawer-step-n { border-color: var(--teal-600); color: var(--teal-700); }
+.drawer-step-title { min-width: 0; }
+.drawer-parts { display: flex; flex-basis: 100%; gap: 0.25rem; padding-inline-start: 2.5rem; }
+.drawer-part {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+}
+.drawer-part:hover { border-color: var(--teal-600); color: var(--teal-700); }
+.drawer-part[aria-current="step"] { border-color: var(--navy-900); background: var(--navy-900); color: #fff; }
+
+/* --- Screen head: purpose and element status folded ----------------------- */
+/* Kicker and the "عن هذه الشاشة" toggle share one line above the title. */
+.screen-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.screen-head > .screen-kicker { order: 0; margin: 0; }
+.screen-head > .screen-about { order: 0; margin-inline-start: auto; }
+.screen-head > .screen-title { order: 1; flex-basis: 100%; }
+.screen-head > .screen-about[open] { order: 2; flex-basis: 100%; margin-inline-start: 0; }
+@media (max-width: 639px) {
+  .screen-head > .screen-title { font-size: 1.25rem; line-height: 1.5; }
+}
+.screen-about > summary {
+  display: inline-flex;
+  white-space: nowrap;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.screen-about > summary::-webkit-details-marker { display: none; }
+.screen-about > summary::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-inline-end: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+.screen-about[open] > summary::before { transform: rotate(-135deg); }
+.screen-about > summary:hover { color: var(--teal-700); }
+.screen-about:has(.element-status.is-done) > summary::after {
+  content: "✓";
+  color: var(--teal-700);
+  font-weight: 700;
+}
+.screen-about .screen-purpose { margin-top: 0.4rem; font-size: 0.9375rem; }
+
+/* --- Screen footer: one row, small save line -------------------------------- */
+.screen-nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+.screen-nav > .btn-primary { justify-self: end; }
+.screen-nav-back { justify-self: start; display: flex; }
+.screen-nav-back > span:empty { display: none; }
+.screen-nav-save {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.25rem 0 0.75rem;
+}
+.btn-mini {
+  padding: 0.25rem 0.4rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.btn-mini:hover { color: var(--teal-700); }
+.chunk-dots { display: inline-flex; align-items: center; gap: 0.35rem; }
+.chunk-dots[hidden] { display: none; }
+.chunk-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #d1d5db;
+  transition: width 0.25s var(--ease), background-color 0.25s ease;
+}
+.chunk-dot.is-seen { background: #99f6e4; }
+.chunk-dot.is-current { width: 1.4rem; background: var(--teal-600); }
+@media (max-width: 559px) {
+  .screen-nav { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .screen-nav .btn { padding-inline: 0.85rem; font-size: 0.875rem; }
+  .screen-nav-back .btn-ghost { white-space: nowrap; }
+}
+
+/* --- Chunked screens: one view at a time, footer always in reach ------------ */
+.screen[data-chunked]:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - var(--topbar-h) - 4.25rem);
+}
+.screen[data-chunked] > .screen-foot {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin-top: auto;
+  padding: 0.6rem 0 0.4rem;
+  background: rgba(255, 255, 255, 0.97);
+}
+[data-chunk][hidden] { display: none; }
+[data-chunk]:not([hidden]) { animation: chunk-in 0.32s var(--ease) both; padding-bottom: 1.25rem; }
+[data-chunk]:focus { outline: none; }
+[data-chunk] > :first-child { margin-top: 0; }
+@keyframes chunk-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: none; }
+}
+
+/* --- Rule cards (screen 01 أ) ------------------------------------------------ */
+.prose ul.rule-cards {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rule;
+}
+@media (min-width: 640px) { .prose ul.rule-cards { grid-template-columns: 1fr 1fr; } }
+.rule-cards li {
+  position: relative;
+  margin: 0;
+  padding: 0.75rem 0.9rem 0.75rem 0.9rem;
+  padding-inline-start: 2.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #fff;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  counter-increment: rule;
+}
+.rule-cards li::before {
+  content: counter(rule);
+  position: absolute;
+  inset-inline-start: 0.75rem;
+  top: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 9999px;
+  background: #ccfbf1;
+  color: var(--teal-700);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.rule-cards li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* --- Reveal cards (screens 07 ب and 07 ج) ------------------------------------ */
+.flip-list { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+/* One column at every width: the three cards read as a sequence and keep 07 ب in balance. */
+.flip-card {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 6rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.flip-card:hover { border-color: var(--teal-600); box-shadow: 0 4px 14px rgba(13, 148, 136, 0.12); }
+.flip-card[aria-pressed="true"] { border-color: #99f6e4; background: #f0fdfa; }
+.flip-card.is-turning { animation: flip-turn 0.35s var(--ease); }
+@keyframes flip-turn {
+  from { transform: perspective(40rem) rotateY(70deg); opacity: 0.4; }
+  to { transform: none; opacity: 1; }
+}
+.flip-face { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.75rem; row-gap: 0.15rem; height: 100%; }
+.flip-text { flex-basis: 100%; }
+.flip-face[hidden] { display: none; }
+.flip-level { font-weight: 700; color: var(--navy-900); }
+.flip-text { font-size: 0.9375rem; line-height: 1.8; }
+.flip-cue { order: -1; margin-inline-start: auto; font-size: 0.75rem; font-weight: 700; color: var(--teal-700); }
+.flip-level { order: -2; }
+
+/* --- Tabs (screen 01 ج) ------------------------------------------------------ */
+.tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.tab {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid #bae6fd;
+  border-radius: 9999px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #075985;
+  cursor: pointer;
+}
+.tab:hover { border-color: #0284c7; }
+.tab[aria-selected="true"] { border-color: #075985; background: #075985; color: #fff; }
+.tabs [role="tabpanel"][hidden] { display: none; }
+.tabs [role="tabpanel"]:focus-visible { outline-offset: 4px; }
+.tabs [role="tabpanel"] p { margin: 0; }
+
+/* Tests and print: every chunk, tab panel and card face visible (tests/e2e). */
+.show-all-chunks [data-chunk][hidden],
+.show-all-chunks .flip-face[hidden],
+.show-all-chunks .tabs [role="tabpanel"][hidden] { display: block; }
+.show-all-chunks .flip-face[hidden] { display: flex; }
+.show-all-chunks .screen[data-chunked]:not([hidden]) { display: block; min-height: 0; }
+.show-all-chunks .screen[data-chunked] > .screen-foot { position: static; }
+
+@media print {
+  .screen-nav-save { display: none !important; }
+  [data-chunk][hidden], .tabs [role="tabpanel"][hidden] { display: block !important; }
+  .flip-face[hidden] { display: flex !important; }
+  .flip-cue, .tab-list, .chunk-dots { display: none !important; }
+  .screen[data-chunked]:not([hidden]) { display: block; min-height: 0; }
+  .screen[data-chunked] > .screen-foot { position: static; }
+}
+
+/* Compact pyramid on phones so it fits one chunk. */
+@media (max-width: 639px) {
+  [data-chunk] .pyramid-tier { padding-block: 0.35rem; font-size: 0.875rem; }
+  [data-chunk] .pyramid li:nth-child(4) { margin-top: 0.35rem; }
+  [data-chunk] .pyramid-legend { margin-top: 0.5rem; font-size: 0.75rem; }
+}
+
+/* Paged lists inside a chunk: one compact row (السابق · الصفحة · التالي). */
+[data-chunk] .pager { flex-wrap: nowrap; gap: 0.5rem; }
+[data-chunk] .pager .pager-btn { min-height: 2.25rem; padding: 0.3rem 0.8rem; font-size: 0.8125rem; }
+[data-chunk] .pager-status { flex: 1; text-align: center; font-size: 0.75rem; }
+@media (max-width: 639px) {
+  [data-chunk] .program-map li { padding-block: 0; font-size: 0.875rem; line-height: 1.7; }
+  [data-chunk] .program-map .dash-item-cond { font-size: 0.75rem; }
+}

@@ -13,8 +13,27 @@ fails = []
 def check(c, m):
     print(('PASS ' if c else 'FAIL ') + m)
     if not c: fails.append(m)
+# Chunked screens (2026-10-25) show one chunk at a time; these functional checks
+# fill fields across chunks, so every chunk is shown (chunk navigation itself is
+# covered by tests/e2e/chunks.py).
+SHOW_ALL = "document.addEventListener('DOMContentLoaded', () => document.body.classList.add('show-all-chunks'))"
+
+
+def show_all_chunks(browser):
+    """Every context and page of this browser opens with all chunks visible."""
+    new_context = browser.new_context
+
+    def ctx(**kw):
+        c = new_context(**kw)
+        c.add_init_script(SHOW_ALL)
+        return c
+    browser.new_context = ctx
+    browser.new_page = lambda **kw: ctx(**kw).new_page()
+    return browser
+
+
 with sync_playwright() as p:
-    b = p.chromium.launch()
+    b = show_all_chunks(p.chromium.launch())
     # 1 unsaved exit dialog
     c = b.new_context(); pg = c.new_page(); pg.goto(SITE + '#screen-09'); pg.wait_for_timeout(300)
     pg.evaluate("() => { window.__o = Storage.prototype.setItem; Storage.prototype.setItem = function(){ throw new Error('x'); }; }")

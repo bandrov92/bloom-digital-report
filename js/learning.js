@@ -199,6 +199,76 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Content components: reveal cards and tabs (2026-10-25)
+  // Both are written in HTML with all their text visible; script only adds the
+  // interaction, so print and a page without script show everything.
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Reveal cards (<button data-flip> with .flip-front and .flip-back): the
+   * front asks the learner to predict, the back gives the answer. Nothing is
+   * recorded: turning a card is not an activity that completes an element.
+   */
+  function initFlipCards() {
+    $$('[data-flip]').forEach((card) => {
+      const back = card.querySelector('.flip-back');
+      if (back) back.hidden = true;
+      card.setAttribute('aria-pressed', 'false');
+      card.addEventListener('click', () => {
+        const turned = card.getAttribute('aria-pressed') !== 'true';
+        card.setAttribute('aria-pressed', String(turned));
+        const front = card.querySelector('.flip-front');
+        if (front) front.hidden = turned;
+        if (back) back.hidden = !turned;
+        card.classList.remove('is-turning');
+        void card.offsetWidth;
+        card.classList.add('is-turning');
+      });
+    });
+  }
+
+  /**
+   * Tabs from panels written in HTML (<div data-tabs> holding <div data-tab="label">).
+   * Builds the tab list, shows one panel, and supports arrow keys, Home and End.
+   */
+  function initTabs() {
+    $$('[data-tabs]').forEach((box, b) => {
+      const panels = $$(':scope > [data-tab]', box);
+      if (panels.length < 2) return;
+      const list = h('div', { class: 'tab-list', role: 'tablist', 'aria-label': box.dataset.tabs || 'تبويبات' });
+      const tabs = panels.map((panel, k) => {
+        const id = `tabs-${b}-${k}`;
+        panel.id = panel.id || `${id}-panel`;
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', id);
+        panel.setAttribute('tabindex', '0');
+        return h('button', { type: 'button', class: 'tab', role: 'tab', id, 'aria-controls': panel.id }, panel.dataset.tab || String(k + 1));
+      });
+      const select = (k, focus = false) => {
+        tabs.forEach((tab, j) => {
+          tab.setAttribute('aria-selected', String(j === k));
+          tab.tabIndex = j === k ? 0 : -1;
+          panels[j].hidden = j !== k;
+        });
+        if (focus) tabs[k].focus();
+      };
+      tabs.forEach((tab, k) => {
+        tab.addEventListener('click', () => select(k));
+        tab.addEventListener('keydown', (event) => {
+          const keys = { ArrowLeft: k + 1, ArrowRight: k - 1, Home: 0, End: tabs.length - 1 }; // RTL: left is next
+          if (!(event.key in keys)) return;
+          event.preventDefault();
+          select((keys[event.key] + tabs.length) % tabs.length, true);
+        });
+      });
+      list.append(...tabs);
+      box.prepend(list);
+      box.classList.add('is-ready');
+      select(0);
+    });
+  }
+
+  // ---------------------------------------------------------------------------
   // Save status (never shows success when saving failed)
   // ---------------------------------------------------------------------------
 
@@ -510,6 +580,8 @@
           result.append(' ما زال ناقصًا في: ', ...[...elsewhere].flatMap((key, k) => [k ? '، ' : '', h('a', { href: screenHref(key), class: 'inline-link' }, `الشاشة ${screenLabel(key)}`)]), '.');
         }
       }
+      // The field may sit in an earlier chunk of this screen: open it first (main.js).
+      focusTarget?.dispatchEvent(new CustomEvent('bloom:reveal', { bubbles: true }));
       /** @type {HTMLElement|null} */ (focusTarget)?.focus();
       return false;
     }
@@ -715,15 +787,22 @@
       const isLastPart = parts[parts.length - 1] === n;
       const next = (isLastPart && D.NEXT_OVERRIDES[groupOfKey(n)]) || SCREEN_ORDER[i + 1];
       const stopPanel = h('div', { class: 'stop-panel', role: 'status', hidden: true, dataset: { stopPanel: n } });
+      // One row: back, chunk dots (main.js fills them on chunked screens), next.
+      // The save actions sit on a small second line so the row stays one line on phones.
       const nav = h('nav', { class: 'screen-nav', 'aria-label': `التنقل من الشاشة ${screenLabel(n)}` }, [
-        prev ? h('a', { href: screenHref(prev), class: 'btn btn-ghost', rel: 'prev' }, `السابق: ${screenLabel(prev)}`) : h('span'),
-        h('div', { class: 'screen-nav-save' }, [
-          h('button', { type: 'button', class: 'btn btn-secondary', dataset: { action: 'save-draft' } }, 'احفظ المسودة'),
-          h('button', { type: 'button', class: 'btn btn-secondary', dataset: { action: 'save-stop', stopScreen: n } }, 'احفظ وتوقف'),
+        h('div', { class: 'screen-nav-back' }, [
+          prev ? h('a', { href: screenHref(prev), class: 'btn btn-ghost', rel: 'prev' }, `السابق: ${screenLabel(prev)}`) : h('span'),
+          h('button', { type: 'button', class: 'btn btn-ghost', hidden: true, dataset: { chunkPrev: '' } }, 'السابق'),
         ]),
+        h('span', { class: 'chunk-dots', hidden: true, dataset: { chunkDots: '' } }),
         next ? h('a', { href: screenHref(next), class: 'btn btn-primary', rel: 'next' }, `التالي: ${screenLabel(next)}`) : h('a', { href: '#dashboard', class: 'btn btn-primary' }, 'لوحتي'),
       ]);
-      screen.append(h('div', { class: 'screen-foot' }, [nav, stopPanel]));
+      const save = h('div', { class: 'screen-nav-save' }, [
+        h('button', { type: 'button', class: 'btn-mini', dataset: { action: 'save-draft' } }, 'احفظ المسودة'),
+        h('button', { type: 'button', class: 'btn-mini', dataset: { action: 'save-stop', stopScreen: n } }, 'احفظ وتوقف'),
+      ]);
+      // The save line follows the footer, so the sticky footer of a chunked screen stays one row.
+      screen.append(h('div', { class: 'screen-foot' }, [nav, stopPanel]), save);
     });
   }
 
@@ -1222,7 +1301,8 @@
   }
 
   /** Items per page in generated lists (keeps screens of comparable length). */
-  const PAGE_SIZE = { diagnostic: 2, diagnosticReport: 2, test: 2, testReport: 3 };
+  // Phones show one diagnostic item per page so the page fits one chunk of screen 02 (tests/e2e/chunks.py).
+  const PAGE_SIZE = { diagnostic: window.matchMedia('(max-width: 639px)').matches ? 1 : 2, diagnosticReport: 2, test: 2, testReport: 3 };
   /** @type {ReturnType<typeof paginate>|null} */
   let diagPager = null;
   /** @type {ReturnType<typeof paginate>|null} */
@@ -2335,6 +2415,8 @@
 
   // Boot. Order matters: build widgets, then restore values, then paint state.
   renderLevelOptions();
+  initFlipCards();
+  initTabs();
   restoreFields();
   initFields();
   initLeaveGuard();
