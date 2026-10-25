@@ -1741,11 +1741,20 @@
         h('span', {}, `${LETTERS[k]}) ${o.text}`),
       ]))),
     ])));
+    // Review page (2026-10-25): the last page lists every answer and holds the
+    // submit bar alone, so the single attempt is sent only after a full review.
+    player.append(h('section', { class: 'test-review', id: 'test-review', 'aria-labelledby': 'test-review-title' }, [
+      h('h4', { class: 'section-title', id: 'test-review-title' }, 'راجع إجاباتك قبل الإرسال'),
+      h('p', { class: 'field-hint' }, 'للاختبار محاولة مرسلة واحدة. تأكد من اختيارك في كل سؤال، وافتح أي سؤال لتغييره، ثم أرسل.'),
+      h('ol', { class: 'test-review-list', id: 'test-review-list' }),
+    ]));
     player.setAttribute('aria-busy', 'false');
-    // Open on the page of the first unanswered question (all pages when printing).
+    // Open on the page of the first unanswered question, or on the review page
+    // when every question is answered (all pages when printing).
     const firstOpen = items.findIndex((item) => !draft.answers?.[item.id]);
-    testPager = paginate(player, { perPage: PAGE_SIZE.test, label: 'أسئلة الاختبار', lastOnly: [actionsBar] });
+    testPager = paginate(player, { perPage: PAGE_SIZE.test, label: 'أسئلة الاختبار', lastOnly: [actionsBar], lastPage: 1 });
     if (firstOpen > 0) testPager.showItem(player.querySelector(`#test-item-${items[firstOpen].id}`));
+    else if (firstOpen === -1) testPager.show(testPager.pages - 1);
     renderTestCount();
   }
 
@@ -1755,6 +1764,26 @@
     if (!draft || !count) return;
     const answered = Object.values(draft.answers || {}).filter(Boolean).length;
     count.textContent = `أجبت عن ${answered} من ${D.TEST_CONFIG.itemsPerForm}، وتبقى ${D.TEST_CONFIG.itemsPerForm - answered}. تُحفظ إجاباتك قبل الإرسال.`;
+    renderTestReview(draft);
+  }
+
+  /**
+   * Fills the review page: one row per question with the chosen option, or a
+   * marked row with a link back to the question when it is still unanswered.
+   * @param {{answers?: Object<string, string>}} draft
+   */
+  function renderTestReview(draft) {
+    const list = byId('test-review-list');
+    if (!list) return;
+    const items = draftItems(draft);
+    list.replaceChildren(...items.map((item, i) => {
+      const k = item.options.findIndex((o) => o.id === draft.answers?.[item.id]);
+      return h('li', { class: k < 0 ? 'test-review-row is-missing' : 'test-review-row' }, [
+        h('span', { class: 'test-review-num' }, `السؤال ${i + 1}`),
+        h('span', { class: 'test-review-choice' }, k < 0 ? 'لم تجب بعد' : `اختيارك: ${LETTERS[k]}) ${item.options[k].text}`),
+        h('a', { href: `#test-item-${item.id}`, class: 'inline-link test-review-link' }, k < 0 ? 'أجب عنه' : 'افتحه'),
+      ]);
+    }));
   }
 
   /** Locks the attempt, scores it with keys loaded only now, and opens the report. */

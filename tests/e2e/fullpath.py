@@ -69,7 +69,7 @@ with sync_playwright() as p:
     pg.goto(SITE); pg.wait_for_timeout(300)
     check(not any('test-forms' in u or 'test-keys' in u for u in reqs), 'test files not loaded on page open')
     # 01
-    go(pg, '01-3'); pg.locator('input[data-field="s01.context"][value="own"]').check(); fill(pg, '#s01-title', 'مقارنة مصدرين في درس العلوم')
+    go(pg, '01-4'); pg.locator('input[data-field="s01.context"][value="own"]').check(); fill(pg, '#s01-title', 'مقارنة مصدرين في درس العلوم')
     # 02 diagnostic: leave one empty first
     go(pg, '02')
     ans = {'q1': 'f', 'q2': 'a', 'q3': 'b', 'q4': 'b', 'q5': 'b'}
@@ -229,9 +229,16 @@ with sync_playwright() as p:
     check(pg.locator('#test-player input:checked').count() == 9, 'unsubmitted answers restored after reload')
     check(pg.is_visible('#test-item-A10'), 'player reopens on the page of the first unanswered question')
     save_fixture(pg, 'state-test-active.json')
+    check(not pg.is_visible('#test-actions'), 'submit hidden on question pages')
+    reveal(pg, '#test-review'); pg.wait_for_timeout(100)
+    check(pg.is_visible('#test-actions') and pg.locator('#test-review-list li').count() == 10, 'review page lists 10 answers and holds the submit bar')
+    check(pg.locator('#test-review-list li.is-missing').count() == 1 and 'لم تجب بعد' in pg.inner_text('#test-review-list'), 'review page marks the unanswered question')
+    check(pg.locator('#test-player [data-pager-page]:not([hidden]) fieldset').count() == 0, 'review page holds no question')
     pg.click('[data-action="test-submit"]'); pg.wait_for_timeout(150)
     check('السؤال 10' in pg.inner_text('#test-player-msg') and st(pg)['test']['attempts'] == [], 'empty question blocks submission and is named')
     pg.locator('input[name="test-A10"][value="a"]').check(); pg.wait_for_timeout(50)
+    check(pg.locator('#test-review-list li.is-missing').count() == 0, 'review updates after answering')
+    reveal(pg, '#test-review'); pg.wait_for_timeout(100)
     pg.click('[data-action="test-submit"]'); pg.wait_for_timeout(800)
     s = st(pg); a = s['test']['attempts'][0]
     check(a['total'] == 60 and s['test']['draft'] is None, f'attempt scored 60 and locked ({a["total"]})')

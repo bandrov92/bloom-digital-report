@@ -1202,6 +1202,66 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   background: #fff;
   line-height: 1.8;
 }
+/* Three program objectives card (screen 01 ب) */
+.goals-card {
+  overflow: hidden;
+  margin: 0 0 0.75rem;
+  border: 1px solid #c7d2fe;
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 10px 24px -16px rgba(11, 31, 82, 0.45);
+}
+.goals-card-head {
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, var(--navy-900), var(--navy-800));
+  color: #fff;
+}
+.goals-card-eyebrow {
+  margin: 0 0 0.2rem;
+  color: var(--cyan-300);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.goals-card-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+.goals-list { display: grid; margin: 0; padding: 0; list-style: none; }
+.goals-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.65rem 0.9rem;
+  border-inline-start: 4px solid var(--teal-600);
+}
+.goals-item + .goals-item { border-block-start: 1px solid var(--line); }
+.goals-num {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background: var(--navy-900);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 900;
+}
+.goals-body { min-width: 0; }
+.goals-text { margin: 0 0 0.25rem; color: var(--ink); line-height: 1.7; }
+.goals-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
 .outcome-code {
   flex-shrink: 0;
   min-width: 2.5rem;
@@ -1332,6 +1392,27 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 .test-item { padding: 1rem; border: 1px solid var(--line); border-radius: 0.9rem; background: #fff; }
 .kc-count { display: block; font-size: 0.8125rem; font-weight: 700; color: var(--teal-700); }
 .test-stem { display: block; margin-top: 0.2rem; font-size: 1.0625rem; }
+/* Review page: the last page of the test, holding the submit bar alone. */
+.test-review-list { display: grid; gap: 0.35rem; margin: 0.75rem 0 0; padding: 0; list-style: none; }
+@media (min-width: 640px) { .test-review-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.test-review-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: var(--surface);
+  font-size: 0.9375rem;
+}
+.test-review-row.is-missing { border-color: #fca5a5; background: #fef2f2; }
+.test-review-num { font-weight: 700; color: var(--teal-700); white-space: nowrap; }
+.test-review-row.is-missing .test-review-num,
+.test-review-row.is-missing .test-review-choice { color: #b91c1c; }
+.test-review-choice { overflow: hidden; color: var(--body); text-overflow: ellipsis; white-space: nowrap; }
+.test-review-link { white-space: nowrap; }
+@media print { .test-review-choice { white-space: normal; } }
 
 /* --- Rubric and criterion rows ----------------------------------------------- */
 .rubric-item {

@@ -11,7 +11,7 @@ from playwright.sync_api import sync_playwright
 ROOT = str(ROOT)
 srv = subprocess.Popen([sys.executable, '-m', 'http.server', '8722', '-d', ROOT], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
 B = 'http://localhost:8722/'
-SCREENS = 64  # screen sections and parts in learn/index.html (28 design-document screens)
+SCREENS = 65  # screen sections and parts in learn/index.html (28 design-document screens)
 fails = []
 def check(c, m):
     print(('PASS ' if c else 'FAIL ') + m)
