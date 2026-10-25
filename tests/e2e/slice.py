@@ -54,7 +54,8 @@ with sync_playwright() as p:
     st = state(pg)
     check(st and st['elements'] == {}, 'visiting/scrolling completes no element')
     check(st['position']['screen'] == '05', 'position saved on screen change')
-    # s05 wrong then right
+    # s05 wrong then right (the check is on part 05 ب since the video part was added)
+    pg.goto(SITE + '#screen-05-2'); pg.wait_for_timeout(100)
     f = pg.locator('[data-check-form="s05"]')
     f.locator('input[value="yes"]').check(); f.locator('input[value="file"]').check()
     f.locator('button[type=submit]').click(); pg.wait_for_timeout(100)

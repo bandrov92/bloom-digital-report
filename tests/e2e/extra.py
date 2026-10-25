@@ -76,20 +76,24 @@ with sync_playwright() as p:
     r.goto(SITE + '#screen-03'); r.wait_for_timeout(200)
     check(r.input_value('#s03-title') == 'الدورة المائية', 'old lesson title pre-filled on need card')
     # 4 keyboard-only check
-    k = b.new_context(); kp = k.new_page(); kp.goto(SITE + '#screen-05'); kp.wait_for_timeout(300)
+    k = b.new_context(); kp = k.new_page(); kp.goto(SITE + '#screen-05-2'); kp.wait_for_timeout(300)
     kp.focus('[data-check-form="s05"] input[value="yes"]'); kp.keyboard.press('ArrowDown'); kp.wait_for_timeout(50)
     check(kp.evaluate("document.querySelector('[data-check-form=\"s05\"] input[value=\"no\"]').checked"), 'arrow keys move within a choice group')
     kp.keyboard.press('Tab'); kp.keyboard.press('ArrowDown'); kp.keyboard.press('Tab'); kp.keyboard.press('Enter'); kp.wait_for_timeout(200)
     st = kp.evaluate("JSON.parse(localStorage.getItem('bloomLearning.v1'))")
     check(st['elements'].get('t03'), 'check answered and submitted with keyboard only')
-    # 5 embedded video on screen 01 loads only on demand
+    # 5 embedded video on screen 05 أ loads only on demand, with Arabic captions requested
     v = b.new_context(); vp = v.new_page(); reqs = []
     vp.on('request', lambda r: reqs.append(r.url))
-    vp.goto(SITE + '#screen-01'); vp.wait_for_timeout(400)
-    check(not any('youtube' in u for u in reqs) and vp.locator('#screen-01 iframe').count() == 0, 'no YouTube request before play')
-    vp.click('#screen-01 [data-action="play-video"]'); vp.wait_for_timeout(200)
-    src = vp.get_attribute('#screen-01 .video-frame iframe', 'src') or ''
-    check('youtube-nocookie.com/embed/fqgTBwElPzU' in src, 'player embedded in screen 01 after play')
+    vp.goto(SITE + '#screen-05'); vp.wait_for_timeout(400)
+    check(not any('youtube' in u for u in reqs) and vp.locator('#screen-05 iframe').count() == 0, 'no YouTube request before play')
+    vp.click('#screen-05 [data-action="play-video"]'); vp.wait_for_timeout(200)
+    src = vp.get_attribute('#screen-05 .video-frame iframe', 'src') or ''
+    check('youtube-nocookie.com/embed/7gpkK54LZ3Q' in src and 'cc_lang_pref=ar' in src, 'player embedded in screen 05 after play, Arabic captions requested')
+    # 6 audio introduction on screen 01: no request before play; missing file shows the note
+    vp.goto(SITE + '#screen-01'); vp.wait_for_timeout(300)
+    check(not any('tamhid' in u for u in reqs), 'no audio request before play')
+    check(vp.locator('#screen-01 [data-audio] details.hint').count() == 1, 'audio transcript present on screen 01')
     b.close()
 print('\nFAILED:', len(fails)); [print(' -', f) for f in fails]
 raise SystemExit(1 if fails else 0)

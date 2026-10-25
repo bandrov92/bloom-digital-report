@@ -111,7 +111,7 @@ with sync_playwright() as p:
     pg.locator('input[data-field="s10.specific"]').check(); complete(pg, 't08'); check('t08' in done(pg), 't08 complete')
     check(len(st(pg)['history']['plan']) == 1, 'initial plan stored in history')
     # 05-08
-    go(pg, '05'); chk(pg, 's05', {'judge': 'no', 'reason': 'act'})
+    go(pg, '05-2'); chk(pg, 's05', {'judge': 'no', 'reason': 'act'})
     go(pg, '06'); chk(pg, 's06', {'m1': 'remember', 'm2': 'understand', 'm3': 'apply'})
     go(pg, '07'); chk(pg, 's07', {'m1': 'analyze', 'm2': 'evaluate', 'm3': 'create'}); go(pg, '07-4'); fill(pg, '#s07-paraphrase', 'يحكم المتعلم على مصدرين بمعيارين.')
     for i in (1, 2, 3): review(pg, f's07.rv{i}')

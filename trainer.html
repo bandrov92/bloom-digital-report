@@ -44,75 +44,69 @@
 <main id="main-content" class="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
 
   <h1 class="text-3xl font-extrabold text-[#0b1f52] sm:text-4xl">لوحة المدرب</h1>
-  <p class="mt-3 max-w-3xl text-lg text-gray-600">دليل تنفيذ الورشة الحضورية: نظرة عامة على الحقيبة، وإرشادات التيسير، وتفاصيل كل نشاط بتوقيته وملاحظاته. لا يلزم المتعلم دخول هذه الصفحة؛ مساحة المتعلم برنامج تعلم ذاتي مستقل.</p>
+  <p class="mt-3 max-w-3xl text-lg text-gray-600">كل ما يحتاجه من يقدم البرنامج في صفحة واحدة: صورة البرنامج ووحداته، وطريقة تشغيله ذاتيًا، ودليل النسخة الحضورية، والمكتبة والمراجع. لا يلزم المتدرب دخول هذه الصفحة؛ مساره برنامج تعلم ذاتي مستقل.</p>
 
-  <nav class="mt-6 mb-10" aria-label="أقسام لوحة المدرب">
-    <ul class="flex flex-wrap gap-2 text-sm">
-      <li><a href="#overview" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">نظرة عامة</a></li>
-      <li><a href="#facilitation" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">إرشادات التيسير</a></li>
-      <li><a href="#guide" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">دليل الجلسات والأنشطة</a></li>
-      <li><a href="#library" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">المكتبة</a></li>
-      <li><a href="#archive" class="inline-flex rounded-full bg-white px-4 py-2 font-semibold text-[#0b1f52] shadow-sm ring-1 ring-gray-200 transition hover:bg-teal-50">أرشيف النسخة الحضورية</a></li>
+  <!-- Quick start (2026-10-25 reorganization): the three things a trainer does first. -->
+  <ol class="trainer-start" aria-label="ابدأ من هنا">
+    <li><span class="trainer-start-num" aria-hidden="true">1</span><span><strong>أرسل الرابط المباشر.</strong> أرسل للمتدربين رابط مسارهم <a href="learn/" class="inline-link"><bdi dir="ltr">learn/</bdi></a>؛ تجده مع زر النسخ في <a href="index.html" class="inline-link">البوابة</a>.</span></li>
+    <li><span class="trainer-start-num" aria-hidden="true">2</span><span><strong>اعرف قاعدة الاجتياز.</strong> استكمال 80% فأكثر من عناصر المحتوى العشرين، و60 من 100 فأكثر في الاختبار الختامي؛ الشرطان معًا.</span></li>
+    <li><span class="trainer-start-num" aria-hidden="true">3</span><span><strong>تابع بما يعرضه المتدرب.</strong> يُحفظ عمل المتدرب في متصفحه، ولا يصل إليك تلقائيًا؛ اطلب منه عرض «لوحتي» أو ملف النسخة الاحتياطية الذي يصدّره.</span></li>
+  </ol>
+
+  <nav class="trainer-nav" aria-label="أقسام لوحة المدرب">
+    <ul>
+      <li><a href="#overview">1. البرنامج في لمحة</a></li>
+      <li><a href="#guide">2. دليل النسخة الحضورية</a></li>
+      <li><a href="#library">3. المكتبة والمراجع</a></li>
+      <li><a href="#archive">4. أرشيف النسخة الحضورية</a></li>
+      <li><a href="resource-card.html" class="trainer-nav-card">بطاقة المصدر للمقيّم</a></li>
     </ul>
   </nav>
 
-  <!-- Moved from trainee.html (role split): content addressed to the trainer. -->
-  <section id="overview" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="overview-title">
-    <h2 id="overview-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">👋 نظرة عامة على الحقيبة</h2>
-    <p class="text-gray-600 mb-6">هذه الحقيبة الرقمية مصممة لتمكين المدربين والمعلمين من تقديم ورشة عمل تفاعلية حول "تطبيقات هرم بلوم الرقمية". 🎯 الهدف هو تزويد المتدربين بالأساس النظري والمهارات العملية لدمج الأدوات الرقمية بفاعلية في فصولهم الدراسية، بما يتوافق مع مستويات التفكير العليا (HOTS).</p>
+  <!-- 1. Overview: what the kit holds and the seven units, each linked to the learner path. -->
+  <section id="overview" class="trainer-section" aria-labelledby="overview-title">
+    <p class="trainer-section-kicker">القسم 1</p>
+    <h2 id="overview-title" class="trainer-section-title">البرنامج في لمحة</h2>
+    <p class="trainer-section-lead">حقيبة هرم بلوم الرقمية برنامج تعلم ذاتي لمعلمي التعليم العام: يطور فيه المعلم مهمة من دروسه، ويختبر فهمه، ويراجع أثر التعديل. وتبقى معه نسخة حضورية يقدمها المدرب في ورشة، دليلها في القسم 2.</p>
 
-    <h3 class="text-xl font-bold text-gray-700 mb-4">📦 مكونات الحقيبة الرقمية:</h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div class="p-4 bg-blue-50 border-s-4 border-blue-500 rounded-lg">
-        <h4 class="font-bold text-blue-900">1. مساحة المتعلم</h4>
-        <p class="text-sm text-gray-700">برنامج تعلم ذاتي: سبع وحدات في 28 شاشة، وتشخيص، ومشروع بنسخ ومراجعة ذاتية، واختبار ختامي، وحفظ محلي.</p>
-      </div>
-      <div class="p-4 bg-teal-50 border-s-4 border-teal-600 rounded-lg">
-        <h4 class="font-bold text-teal-900">2. لوحة المدرب (هذه الصفحة)</h4>
-        <p class="text-sm text-gray-700">دليل الجلسات والأنشطة، وتوقيتاتها، وملاحظات التيسير.</p>
-      </div>
-      <div class="p-4 bg-gray-100 border-s-4 border-gray-500 rounded-lg">
-        <h4 class="font-bold text-gray-800">3. الموارد المرفقة</h4>
-        <p class="text-sm text-gray-700">قوالب تفاعلية وقائمة أدوات مقترحة لكل مستوى.</p>
-      </div>
+    <h3 class="trainer-sub">مكونات الحقيبة</h3>
+    <div class="trainer-parts">
+      <div class="trainer-part"><p class="trainer-part-title">مسار المتدرب</p><p>برنامج تعلم ذاتي: سبع وحدات في 28 شاشة، وتشخيص، ومشروع بنسخ ومراجعة ذاتية، واختبار ختامي، وحفظ محلي.</p></div>
+      <div class="trainer-part"><p class="trainer-part-title">لوحة المدرب (هذه الصفحة)</p><p>دليل الجلسات والأنشطة وتوقيتاتها، وملاحظات التيسير، والمكتبة.</p></div>
+      <div class="trainer-part"><p class="trainer-part-title">الموارد المرفقة</p><p>قالب المشروع التفاعلي، وأمثلة أدوات لكل مستوى، والإنفوجرافيك والصور التوضيحية والمقطع الصوتي.</p></div>
     </div>
 
-    <h3 class="text-xl font-bold text-gray-700 mb-4">🔗 روابط سريعة إلى مساحة المتعلم</h3>
-    <ul class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <li>
-          <a href="learn/#plan" class="block h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:border-teal-500 hover:shadow-md">
-            <span class="block font-bold text-gray-900">📅 الهدف والخطة الذاتية</span>
-            <span class="mt-1 block text-sm text-gray-600">الشاشات 09–12 (خطة الجلسات الحضورية في الأرشيف أدناه)</span>
-          </a>
-        </li>
-        <li>
-          <a href="learn/#map" class="block h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:border-teal-500 hover:shadow-md">
-            <span class="block font-bold text-gray-900">🔎 فهم الطلب المعرفي</span>
-            <span class="mt-1 block text-sm text-gray-600">الشاشات 05–08 وأمثلة الأدوات بحسب الوظيفة</span>
-          </a>
-        </li>
-        <li>
-          <a href="learn/#template" class="block h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:border-teal-500 hover:shadow-md">
-            <span class="block font-bold text-gray-900">📎 قالب المشروع</span>
-            <span class="mt-1 block text-sm text-gray-600">الشاشات 17–20: الهدف والمهمة والمحكات والمراجعة الذاتية</span>
-          </a>
-        </li>
-    </ul>
+    <h3 class="trainer-sub">الوحدات السبع كما يراها المتدرب</h3>
+    <ol class="trainer-units">
+        <li><a href="learn/#intro" class="trainer-unit"><span class="trainer-unit-num" aria-hidden="true">1</span><span class="trainer-unit-body"><span class="trainer-unit-title">النظرة العامة والتشخيص</span><span class="trainer-unit-meta">الوحدة 1 · الشاشات 01–04</span><span class="trainer-unit-text">تهيئة، وتشخيص أولي لا يدخل في الاجتياز، وتحديد المهمة التي سترافق المتدرب في البرنامج.</span></span></a></li>
+        <li><a href="learn/#map" class="trainer-unit"><span class="trainer-unit-num" aria-hidden="true">2</span><span class="trainer-unit-body"><span class="trainer-unit-title">مستويات بلوم: فهم الطلب المعرفي</span><span class="trainer-unit-meta">الوحدة 2 · الشاشات 05–08</span><span class="trainer-unit-text">تمييز العمليات المعرفية وتحليل المهمة قبل اختيار الأداة؛ فيها الفيديو والإنفوجرافيك وأمثلة الأدوات بحسب الوظيفة.</span></span></a></li>
+        <li><a href="learn/#plan" class="trainer-unit"><span class="trainer-unit-num" aria-hidden="true">3</span><span class="trainer-unit-body"><span class="trainer-unit-title">الهدف والخطة الذاتية</span><span class="trainer-unit-meta">الوحدة 3 · الشاشات 09–12</span><span class="trainer-unit-text">هدف يمكن ملاحظته، وخطة يضعها المتدرب ويعدلها (خطة الجلسات الحضورية في الأرشيف أدناه).</span></span></a></li>
+        <li><a href="learn/#activities" class="trainer-unit"><span class="trainer-unit-num" aria-hidden="true">4</span><span class="trainer-unit-body"><span class="trainer-unit-title">الورش: ممارسة موجهة ومستقلة</span><span class="trainer-unit-meta">الوحدة 4 · الشاشات 13–16</span><span class="trainer-unit-text">ثلاث ورش ينفذها المتدرب وحده بمثال محايد ومحكات معلنة، ثم يقارن نسختي مهمته.</span></span></a></li>
+        <li><a href="learn/#template" class="trainer-unit"><span class="trainer-unit-num" aria-hidden="true">5</span><span class="trainer-unit-body"><span class="trainer-unit-title">قالب الدرس: بناء المشروع</span><span class="trainer-unit-meta">الوحدة 5 · الشاشات 17–20</span><span class="trainer-unit-text">الهدف والمهمة والمحكات والمراجعة الذاتية بسلم سباعي، وحفظ نسخة المشروع.</span></span></a></li>
+        <li><a href="learn/#check" class="trainer-unit"><span class="trainer-unit-num" aria-hidden="true">6</span><span class="trainer-unit-body"><span class="trainer-unit-title">التحقق: الاختبار الختامي والنتائج</span><span class="trainer-unit-meta">الوحدة 6 · الشاشات 21–24</span><span class="trainer-unit-text">اختبار بنموذجين ومحاولة مرسلة واحدة، ونتيجة تعرض شرطي الاجتياز منفصلين.</span></span></a></li>
+        <li><a href="learn/#resources" class="trainer-unit"><span class="trainer-unit-num" aria-hidden="true">7</span><span class="trainer-unit-body"><span class="trainer-unit-title">المصادر وحلقة التعلم المستمرة</span><span class="trainer-unit-meta">الوحدة 7 · الشاشات 25–28</span><span class="trainer-unit-text">بطاقات المصادر، وخطة التجربة والعودة، والدليل والنسخة التالية، ثم المراجع.</span></span></a></li>
+    </ol>
   </section>
 
-  <section id="facilitation" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="facilitation-title">
-    <h2 id="facilitation-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">🧭 إرشادات التيسير</h2>
-    <p class="text-gray-600 mb-6">💡 مراعاة التمايز: تم تصميم الأنشطة لتكون مرنة. شجع المعلمين الأكثر خبرة على استكشاف أدوات متقدمة، وقدم دعماً إضافياً للمبتدئين.</p>
-    <p class="text-gray-600">🤸 كسر الجمود: ابدأ كل يوم بنشاط قصير وممتع (مثل سؤال طريف عبر Mentimeter أو لعبة سريعة) لتنشيط المجموعة.</p>
-  </section>
+  <!-- 2. Classroom version: facilitation tips first, then the five activities in session order. -->
+  <section id="guide" class="trainer-section" aria-labelledby="guide-title">
+    <p class="trainer-section-kicker">القسم 2</p>
+    <h2 id="guide-title" class="trainer-section-title">دليل النسخة الحضورية</h2>
+    <p class="trainer-section-lead">تفاصيل الأنشطة وورش العمل لكل جلسة في النسخة الحضورية. أُعيد تصميم الورش في مسار المتدرب لتُنفَّذ فرديًا بمثال محايد ومحكات معلنة؛ روابط «عرض الورشة» تفتح النسخة الذاتية.</p>
 
-  <section id="guide" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="guide-title">
-    <h2 id="guide-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">📋 دليل الجلسات والأنشطة التفصيلي</h2>
-    <p class="text-gray-600 mb-6">هذا الدليل يوفر للمدرب تفاصيل الأنشطة وورش العمل لكل جلسة تدريبية في النسخة الحضورية. أُعيد تصميم الورش في مساحة المتعلم لتُنفَّذ فرديًا بمثال محايد ومحكات معلنة؛ روابط «عرض الورشة» تفتح النسخة الذاتية الجديدة.</p>
+    <div id="facilitation" class="trainer-tips" aria-labelledby="facilitation-title">
+      <h3 id="facilitation-title" class="trainer-sub">إرشادات التيسير</h3>
+      <ul>
+        <li><strong>مراعاة التمايز:</strong> الأنشطة مرنة. شجع المعلمين الأكثر خبرة على استكشاف أدوات متقدمة، وقدم دعمًا إضافيًا للمبتدئين.</li>
+        <li><strong>كسر الجمود:</strong> ابدأ كل يوم بنشاط قصير (مثل سؤال عبر <bdi>Mentimeter</bdi> أو لعبة سريعة) لتنشيط المجموعة.</li>
+      </ul>
+    </div>
+
+    <h3 class="trainer-sub">الأنشطة بترتيب الجلسات</h3>
     <div class="space-y-3">
       <details id="guide-activity-1" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">✏️ نشاط (1): استبيان قبلي (10 دقائق) - (الجلسة 1)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">نشاط (1): استبيان قبلي (10 دقائق) - (الجلسة 1)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
@@ -135,7 +129,7 @@
       </details>
       <details id="guide-activity-2" class="group rounded-xl border border-gray-200 border-s-4 border-s-blue-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🛠️ ورشة عمل (1): تمرين الأدوات - المستويات الدنيا (الجلسة 3)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ورشة عمل (1): تمرين الأدوات - المستويات الدنيا (الجلسة 3)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
@@ -160,7 +154,7 @@
       </details>
       <details id="guide-activity-3" class="group rounded-xl border border-gray-200 border-s-4 border-s-purple-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🛠️ ورشة عمل (2): نقد مهمة - (التحليل والتقييم) (الجلسة 4)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ورشة عمل (2): نقد مهمة - (التحليل والتقييم) (الجلسة 4)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
@@ -184,7 +178,7 @@
       </details>
       <details id="guide-activity-4" class="group rounded-xl border border-gray-200 border-s-4 border-s-red-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🛠️ ورشة عمل (3): المشروع النهائي: تصميم درس متكامل (الجلسة 5)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ورشة عمل (3): المشروع النهائي: تصميم درس متكامل (الجلسة 5)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
@@ -203,7 +197,7 @@
       </details>
       <details id="guide-activity-5" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">📈 نشاط (2): تقييم الدورة (10 دقائق) - (الجلسة 6)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">نشاط (2): تقييم الدورة (10 دقائق) - (الجلسة 6)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
@@ -231,13 +225,14 @@
   <!-- Library (moved from trainee.html screen 25 on 2026-10-23 at the owner's request, to keep the
        learning path uncluttered). Ids content-res-* and content-foundation are kept: js/main.js
        forwards old trainee.html links to them. -->
-  <section id="library" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="library-title">
-    <h2 id="library-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">📚 المكتبة: ملاحق الحقيبة ومراجعها</h2>
-    <p class="text-gray-600 mb-6">ملاحق النسخة الحضورية ومراجعها العلمية، للرجوع إليها خارج مسار التعلم. يراجعها القائمون على البرنامج ويحدّثون تاريخ التحقق من مصادرها، ولا يُنشر فيها عمل أي معلم.</p>
+  <section id="library" class="trainer-section" aria-labelledby="library-title">
+    <p class="trainer-section-kicker">القسم 3</p>
+    <h2 id="library-title" class="trainer-section-title">المكتبة والمراجع</h2>
+    <p class="trainer-section-lead">ملاحق النسخة الحضورية (أ–و)، ثم الأساس العلمي والمراجع (ز). يراجعها القائمون على البرنامج ويحدّثون تاريخ التحقق من مصادرها، ولا يُنشر فيها عمل أي معلم. قائمة المراجع نفسها في آخر مسار المتدرب (الشاشة 28 د و28 هـ).</p>
     <div class="space-y-3">
       <details id="content-res-tools" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🔗 ملحق (أ): قائمة المصادر والأدوات</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ملحق (أ): قائمة المصادر والأدوات</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5 ">
@@ -270,7 +265,7 @@
       </div>
       <details id="content-res-case-studies" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🌟 ملحق (ج): أمثلة توضيحية</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ملحق (ج): أمثلة توضيحية</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5 space-y-3">
@@ -287,7 +282,7 @@
       </details>
       <details id="content-res-assessment" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">📊 ملحق (د): استراتيجيات التقييم الرقمي</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ملحق (د): استراتيجيات التقييم الرقمي</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5 space-y-3">
@@ -302,7 +297,7 @@
       </details>
       <details id="content-res-challenges" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🚧 ملحق (هـ): معالجة التحديات الشائعة</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ملحق (هـ): معالجة التحديات الشائعة</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5 space-y-3">
@@ -316,7 +311,7 @@
       </details>
       <details id="content-res-further-learning" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🔗 ملحق (و): مجتمعات مهنية ومتابعة التعلم</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ملحق (و): مجتمعات مهنية ومتابعة التعلم</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5 space-y-3">
@@ -331,32 +326,26 @@
       </details>
       <details id="content-foundation" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">📜 ملحق (ز): الأساس العلمي والمراجع</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">ملحق (ز): الأساس العلمي والمراجع</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
         <div class="mb-4">
-          <a href="https://www.youtube.com/watch?v=xDW2eLDy1Qg" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg bg-blue-600 px-4 py-2 font-bold text-white shadow-md hover:bg-blue-700">🎥 مشاهدة: شرح أكاديمي لهرم بلوم (يفتح YouTube)</a>
-          <p class="field-hint mt-2">مادة اختيارية من YouTube تُحمّل عند الضغط فقط: «شرح تصنيف بلوم لتحديد الأهداف التعليمية»، قناة منصة مساق، منشور في 11 فبراير 2023 بحسب بيانات الصفحة؛ تاريخ الاطلاع 23 أكتوبر 2026، ولم يُتأكد آليًا من إتاحته العامة. لا يتوفر له نص مكافئ في هذه النسخة، ولم يُوثَّق بيان حقوق استخدامه؛ لا يعتمد عليه أي نشاط.</p>
+          <a href="https://www.youtube.com/watch?v=mBD5RecZk1s" target="_blank" rel="noopener noreferrer" class="inline-flex rounded-lg bg-blue-600 px-4 py-2 font-bold text-white shadow-md hover:bg-blue-700">مشاهدة: هرم بلوم المعرفي من منصة إدراك (يفتح YouTube)</a>
+          <p class="field-hint mt-2">مادة اختيارية بالعربية: «استراتيجية الصف المعكوس - هرم بلوم المعرفي»، من مساق «استراتيجية الصف المعكوس» على منصة إدراك للتعليم الإلكتروني، منشور في 17 يونيو 2020، مدته نحو خمس دقائق؛ تاريخ الاطلاع 25 أكتوبر 2026. لا يتوفر له نص مكافئ في هذه النسخة؛ لا يعتمد عليه أي نشاط. الفيديو المضمن في مسار المتدرب (الشاشة 05 أ) من مركز التعلم بجامعة نورث كارولاينا، ومعه ملخص عربي.</p>
           <p class="field-hint">روابط DOI وResearchGate أدناه لم يمكن فتحها آليًا في 23 أكتوبر 2026 (المواقع ترفض الطلبات الآلية)؛ تحتاج فتحًا يدويًا للتأكد. وفق APA 7 لا يُضاف تاريخ اطلاع للمراجع ذات DOI.</p>
         </div>
-        <div class="space-y-4 text-left" dir="ltr" lang="en">
-          <div class="bg-white p-4 rounded-lg shadow-sm border">
-            <p class="text-sm text-gray-800">Amin, H., &amp; Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. <em>Asian Association of Open Universities Journal, 15</em>(2), 223-238. <a href="https://doi.org/10.1108/AAOUJ-04-2020-0023" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1108/AAOUJ-04-2020-0023</a></p>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow-sm border">
-            <p class="text-sm text-gray-800">Anderson, L. W., &amp; Krathwohl, D. R. (Eds.). (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy of educational objectives.</em> Longman.</p>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow-sm border">
-            <p class="text-sm text-gray-800">Bloom, B. S. (Ed.). (1956). <em>Taxonomy of educational objectives: The classification of educational goals. Handbook 1: Cognitive domain.</em> David McKay.</p>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow-sm border">
-            <p class="text-sm text-gray-800">Churches, A. (2008). <em>Bloom's digital taxonomy.</em> Educational Origami. <a href="https://www.researchgate.net/publication/228381038_Bloom's_Digital_Taxonomy" target="_blank" rel="noopener noreferrer" class="inline-link">https://www.researchgate.net/publication/228381038_Bloom's_Digital_Taxonomy</a></p>
-          </div>
-          <div class="bg-white p-4 rounded-lg shadow-sm border">
-            <p class="text-sm text-gray-800">St-Hilaire, C. (2023). Using Bloom’s digital taxonomy to map digital curriculum. <em>Journal of Digital Learning in Teacher Education, 39</em>(4), 238-250. <a href="https://doi.org/10.1080/21532974.2023.2205249" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1080/21532974.2023.2205249</a></p>
-          </div>
-        </div>
+        <ol class="ref-list" dir="ltr" lang="en">
+          <li>Amin, H., &amp; Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. <em>Asian Association of Open Universities Journal, 15</em>(2), 223–238. <a href="https://doi.org/10.1108/AAOUJ-04-2020-0023" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1108/AAOUJ-04-2020-0023</a></li>
+          <li>Anderson, L. W., &amp; Krathwohl, D. R. (Eds.). (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy of educational objectives</em>. Longman.</li>
+          <li>Bloom, B. S. (Ed.). (1956). <em>Taxonomy of educational objectives: The classification of educational goals. Handbook 1: Cognitive domain</em>. David McKay.</li>
+          <li>Churches, A. (2008). <em>Bloom's digital taxonomy</em>. Educational Origami. <a href="https://www.researchgate.net/publication/228381038_Bloom's_Digital_Taxonomy" target="_blank" rel="noopener noreferrer" class="inline-link">https://www.researchgate.net/publication/228381038_Bloom's_Digital_Taxonomy</a></li>
+          <li>Dick, W., Carey, L., &amp; Carey, J. O. (2009). <em>The systematic design of instruction</em> (7th ed.). Pearson Merrill.</li>
+          <li>Edraak. (2020, June 17). <em><bdi dir="rtl" lang="ar">استراتيجية الصف المعكوس - هرم بلوم المعرفي</bdi></em> [Flipped classroom strategy: Bloom's cognitive pyramid] [Video]. YouTube. <a href="https://www.youtube.com/watch?v=mBD5RecZk1s" target="_blank" rel="noopener noreferrer" class="inline-link">https://www.youtube.com/watch?v=mBD5RecZk1s</a></li>
+          <li>Merrill, M. D. (2002). First principles of instruction. <em>Educational Technology Research and Development, 50</em>(3), 43–59. <a href="https://doi.org/10.1007/BF02505024" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1007/BF02505024</a></li>
+          <li>St-Hilaire, C. (2023). Using Bloom's digital taxonomy to map digital curriculum. <em>Journal of Digital Learning in Teacher Education, 39</em>(4), 238–250. <a href="https://doi.org/10.1080/21532974.2023.2205249" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1080/21532974.2023.2205249</a></li>
+          <li>UNC Learning Center. (2016, September 20). <em>Bloom's revised taxonomy of cognition</em> [Video]. YouTube. <a href="https://www.youtube.com/watch?v=7gpkK54LZ3Q" target="_blank" rel="noopener noreferrer" class="inline-link">https://www.youtube.com/watch?v=7gpkK54LZ3Q</a></li>
+        </ol>
       </div>
       </details>
     </div>
@@ -365,13 +354,14 @@
   <!-- Archive (2026-10-23): learner-facing content of the classroom version that the
        self-learning redesign no longer shows in trainee.html. Kept verbatim so nothing is
        deleted; see docs/implementation-log.md, section 8. -->
-  <section id="archive" class="mb-10 rounded-xl bg-white p-4 shadow-lg sm:p-6" aria-labelledby="archive-title">
-    <h2 id="archive-title" class="mb-6 border-b border-blue-200 pb-2 text-2xl font-extrabold text-gray-900 sm:text-3xl">🗂️ أرشيف النسخة الحضورية</h2>
-    <p class="text-gray-600 mb-6">تحولت مساحة المتعلم إلى برنامج تعلم ذاتي (28 شاشة و20 عنصر استكمال). المحتوى التالي كان يظهر للمتدربين في النسخة الحضورية، ونُقل هنا كما هو بدل حذفه. التوقيت والأيام لا تنطبق على التعلم الذاتي، والأسئلة الأربعة استُبدل بها اختبار ختامي بنموذجين.</p>
+  <section id="archive" class="trainer-section" aria-labelledby="archive-title">
+    <p class="trainer-section-kicker">القسم 4</p>
+    <h2 id="archive-title" class="trainer-section-title">أرشيف النسخة الحضورية</h2>
+    <p class="trainer-section-lead">تحولت مساحة المتعلم إلى برنامج تعلم ذاتي (28 شاشة و20 عنصر استكمال). المحتوى التالي كان يظهر للمتدربين في النسخة الحضورية، ونُقل هنا كما هو بدل حذفه. التوقيت والأيام لا تنطبق على التعلم الذاتي، والأسئلة الأربعة استُبدل بها اختبار ختامي بنموذجين.</p>
     <div class="space-y-3">
       <details id="archive-objectives" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">🎯 الأهداف السلوكية السبعة (النسخة الحضورية)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">الأهداف السلوكية السبعة (النسخة الحضورية)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
@@ -390,7 +380,7 @@
       </details>
       <details id="archive-plan" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">📅 خطة الدورة الحضورية (يومان · 10 ساعات)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">خطة الدورة الحضورية (يومان · 10 ساعات)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">
@@ -436,7 +426,7 @@
       </details>
       <details id="archive-check" class="group rounded-xl border border-gray-200 border-s-4 border-s-gray-500 bg-white shadow-sm transition-shadow duration-200 open:shadow-md" data-print-open>
         <summary class="flex cursor-pointer list-none items-center gap-4 rounded-xl p-4 transition duration-200 hover:bg-gray-50 sm:p-5 [&::-webkit-details-marker]:hidden">
-          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">✅ أسئلة التحقق الأربعة (النسخة الحضورية)</span>
+          <span class="min-w-0 flex-1 text-lg font-bold text-gray-900">أسئلة التحقق الأربعة (النسخة الحضورية)</span>
           <svg class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
         </summary>
         <div class="border-t border-gray-100 p-4 text-gray-700 sm:p-5">

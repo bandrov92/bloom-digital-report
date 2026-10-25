@@ -228,6 +228,26 @@
   }
 
   /**
+   * Local audio clips (<figure data-audio> holding an <audio> with preload="none").
+   * Nothing loads until the learner presses play. If the file cannot be loaded
+   * (for example, not yet added to the repository), the player is hidden and a
+   * note points to the written text, which is the full equivalent of the clip.
+   */
+  function initAudio() {
+    $$('[data-audio]').forEach((figure) => {
+      const audio = figure.querySelector('audio');
+      const note = figure.querySelector('[data-audio-missing]');
+      if (!audio) return;
+      const showMissing = () => {
+        audio.hidden = true;
+        if (note) note.hidden = false;
+      };
+      audio.addEventListener('error', showMissing, true);
+      $$('source', audio).forEach((source) => source.addEventListener('error', showMissing));
+    });
+  }
+
+  /**
    * Tabs from panels written in HTML (<div data-tabs> holding <div data-tab="label">).
    * Builds the tab list, shows one panel, and supports arrow keys, Home and End.
    */
@@ -2149,7 +2169,8 @@
     const id = figure?.getAttribute('data-video') || '';
     if (!figure || !/^[\w-]{11}$/.test(id)) return;
     const iframe = h('iframe', {
-      src: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`,
+      // Captions on by default, Arabic preferred (YouTube shows them when it has an Arabic track).
+      src: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&cc_load_policy=1&cc_lang_pref=ar&hl=ar`,
       title: figure.getAttribute('data-video-title') || 'YouTube',
       allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
       referrerpolicy: 'strict-origin-when-cross-origin',
@@ -2417,6 +2438,7 @@
   renderLevelOptions();
   initFlipCards();
   initTabs();
+  initAudio();
   restoreFields();
   initFields();
   initLeaveGuard();

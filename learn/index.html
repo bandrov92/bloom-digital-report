@@ -108,20 +108,29 @@
         <header class="screen-head">
           <p class="screen-kicker">الشاشة 01 أ · تمهيد</p>
           <h3 id="screen-01-title" class="screen-title" tabindex="-1">تمهيد: كيف يعمل البرنامج</h3>
-          <p class="screen-purpose">الغرض: تنشيط معرفتك السابقة بتصنيف بلوم الرقمي، والتعرف على قواعد الاجتياز والحفظ قبل أن تبدأ.</p>
+          <p class="screen-purpose">الغرض: التعرف على طريقة عمل البرنامج وقواعد الاجتياز والحفظ قبل أن تبدأ.</p>
           <p class="element-status element-status--none" data-no-element></p>
         </header>
         <!-- Chunks (2026-10-25): each <div data-chunk> is one view; js/main.js shows one at a time. -->
         <div class="chunk" data-chunk>
-        <!-- Optional embedded video: the player loads only on "play" (js/learning.js -> playVideo). -->
-        <figure class="video-embed" data-video="fqgTBwElPzU" data-video-title="What is Bloom's Digital Taxonomy? — Common Sense Education (YouTube)">
-          <div class="video-frame">
-            <button type="button" class="video-play" data-action="play-video" aria-label="شغّل الفيديو: ما تصنيف بلوم الرقمي؟ (YouTube، بالإنجليزية)">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
-              <span>شاهد قبل أن تبدأ: ما تصنيف بلوم الرقمي؟</span>
-            </button>
-          </div>
-          <figcaption class="field-hint"><bdi>What is Bloom's Digital Taxonomy?</bdi> — <bdi>Common Sense Education</bdi> · بالإنجليزية · اختياري ولا يُحتسب في الاستكمال.</figcaption>
+        <!-- Audio introduction (2026-10-25): local file, loads only when played (preload="none").
+             The written text below is its full equivalent; js/learning.js shows a note if the file is missing. -->
+        <figure class="audio-intro" data-audio>
+          <figcaption class="audio-intro-head">
+            <span class="audio-intro-kicker">مقطع صوتي · نصف دقيقة</span>
+            <span class="audio-intro-title">استمع قبل أن تبدأ: تمهيد للبرنامج</span>
+          </figcaption>
+          <audio controls preload="none" class="audio-intro-player" aria-label="تمهيد صوتي للبرنامج">
+            <source src="../assets/audio/tamhid.mp3" type="audio/mpeg">
+          </audio>
+          <p class="audio-intro-missing field-hint" data-audio-missing hidden>لم يُضف التسجيل الصوتي إلى هذه النسخة بعد. النص المكتوب أدناه مكافئ له كاملًا.</p>
+          <details class="hint">
+            <summary><span>النص المكتوب للمقطع الصوتي</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <div class="hint-body prose">
+              <p>مرحبًا بك في حقيبة هرم بلوم الرقمية. ستطور هنا مهمة من دروسك عبر سبع وحدات، وتتعلم أن تحكم على المهمة بما يفعله المتعلم والدليل الذي يقدمه، لا باسم الأداة. يُحتسب العنصر حين تنفذ نشاطه، والاجتياز يتطلب شرطين معًا: استكمال ثمانين في المئة من العناصر، وستين من مئة فأكثر في الاختبار الختامي. يُحفظ عملك في هذا المتصفح، فصدّر نسخة احتياطية عند الحاجة. ابدأ الآن، واختر المهمة التي سترافقك.</p>
+            </div>
+          </details>
+          <p class="field-hint">صوت مولّد آليًا من النص المكتوب بأداة <bdi>HUMAIN Voice</bdi> · اختياري ولا يُحتسب في الاستكمال.</p>
         </figure>
         </div>
 
@@ -394,10 +403,56 @@
     <div class="lesson-body">
 
       <!-- Screen 05 -->
-      <section id="screen-05" class="screen" data-screen="05" aria-labelledby="screen-05-title">
+      <section id="screen-05" class="screen" data-screen="05" data-group="05" data-part="1" data-step-title="الفعل أهم من شكل المنتج" aria-labelledby="screen-05-title">
         <header class="screen-head">
-          <p class="screen-kicker">الشاشة 05 · ن1</p>
-          <h3 id="screen-05-title" class="screen-title" tabindex="-1">الفعل أهم من شكل المنتج</h3>
+          <p class="screen-kicker">الشاشة 05 أ · ن1</p>
+          <h3 id="screen-05-title" class="screen-title" tabindex="-1">قبل الدرس: مستويات التفكير الستة</h3>
+          <p class="screen-purpose">الغرض: تنشيط معرفتك بمستويات تصنيف بلوم المعدل قبل أن تحكم على المهام في هذه الوحدة.</p>
+          <p class="element-status element-status--none" data-no-element></p>
+        </header>
+        <div class="chunk" data-chunk>
+        <!-- Optional embedded video (moved here from screen 01 on 2026-10-25): the player loads only on "play"
+             (js/learning.js -> playVideo) and asks YouTube for Arabic captions. Source: a university learning center. -->
+        <figure class="video-embed" data-video="7gpkK54LZ3Q" data-video-title="Bloom's Revised Taxonomy of Cognition — UNC Learning Center (YouTube)">
+          <div class="video-frame">
+            <button type="button" class="video-play" data-action="play-video" aria-label="شغّل الفيديو: تصنيف بلوم المعدل لمستويات التفكير (YouTube، بالإنجليزية مع ترجمة عربية)">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              <span>شاهد قبل الدرس: مستويات التفكير في تصنيف بلوم المعدل</span>
+            </button>
+          </div>
+          <figcaption class="field-hint"><bdi>Bloom's Revised Taxonomy of Cognition</bdi> — مركز التعلم بجامعة نورث كارولاينا في تشابل هيل (<bdi>UNC Learning Center</bdi>) · ثلاث دقائق · بالإنجليزية، وتظهر الترجمة العربية تلقائيًا عند التشغيل (إن لم تظهر فاضغط زر الترجمة <bdi>CC</bdi>) · اختياري ولا يُحتسب في الاستكمال.</figcaption>
+        </figure>
+        <details class="hint video-summary">
+          <summary><span>ملخص الفيديو بالعربية</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
+          <div class="hint-body prose">
+            <ul>
+              <li>يعرض تصنيف بلوم المعدل مستويات للتفكير تبدأ بأبسطها، كالتذكر والفهم، وتنتهي بأعلاها، وهو إنتاج شيء جديد مما تعلمه المتعلم.</li>
+              <li>المستويات العليا تقوم على الدنيا: قدرة المتعلم على التفكير الناقد تعتمد جزئيًا على ما يتذكره ويفهمه.</li>
+              <li>لممارسة المستويات العليا يقترح الفيديو أن يتوقع المتعلم أسئلة الاختبار ويصوغها بنفسه على مستويات التصنيف كلها.</li>
+              <li>يعرّف الفيديو كل مستوى بما يطلبه السؤال: <strong>التذكر</strong> التعرف على الحقائق أو استرجاعها؛ <strong>الفهم</strong> شرح المفاهيم أو وصفها؛ <strong>التطبيق</strong> ربط ما تعلمه بأمثلة من الواقع؛ <strong>التحليل</strong> فحص مكونات المفهوم، ولا سيما مقارنته بمفهوم آخر؛ <strong>التقييم</strong> حكم يدعمه دليل؛ <strong>الإبداع</strong> توليد شيء جديد مما يعرفه.</li>
+              <li>جمهور الفيديو طلاب الجامعة، وأمثلته طريفة من عالم خيالي.</li>
+            </ul>
+            <p><strong>صلته بهذه الوحدة:</strong> يحدد الفيديو المستوى بما يطلبه السؤال من المتعلم لا بالوسيلة، وهذا ما ستطبقه في الشاشات 05–08 حين تحكم على المهمة بالدليل المطلوب.</p>
+          </div>
+        </details>
+        </div>
+
+        <div class="chunk" data-chunk>
+        <div class="display-text">
+          <p>في هذه الوحدة تحكم على المهمة بما يفعله المتعلم والدليل الذي يقدمه، وهذا ما فعله المقطع حين عرّف كل مستوى بما يطلبه السؤال.</p>
+        </div>
+        <h4 class="section-title">بعد المشاهدة</h4>
+        <ul class="rule-cards">
+          <li>بماذا عرّف المقطع كل مستوى: بالوسيلة المستخدمة، أم بما يطلبه السؤال من المتعلم؟</li>
+          <li>أي مثال فيه طلب حكمًا يدعمه دليل؟ ستحتاج هذا التمييز في الشاشة 05 ب.</li>
+        </ul>
+        </div>
+      </section>
+
+      <section id="screen-05-2" class="screen" data-screen="05-2" data-group="05" data-part="2" aria-labelledby="screen-05-2-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 05 ب · ن1</p>
+          <h3 id="screen-05-2-title" class="screen-title" tabindex="-1">الفعل أهم من شكل المنتج</h3>
           <p class="screen-purpose">الغرض: تمييز الطلب المعرفي عن الوسيط المستخدم.</p>
           <p class="element-status" data-element-status="t03"></p>
         </header>
@@ -873,6 +928,28 @@
         </div>
       </details>
     </div>
+      </section>
+
+      <section id="screen-08-4" class="screen" data-screen="08-4" data-group="08" data-part="4" aria-labelledby="screen-08-4-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 08 د · ن3</p>
+          <h3 id="screen-08-4-title" class="screen-title" tabindex="-1">إنفوجرافيك: الفعل قبل الأداة</h3>
+          <p class="screen-purpose">الغرض: جمع خطوات اختيار الوظيفة الرقمية في شكل واحد ترجع إليه حين تصمم مهمتك.</p>
+        </header>
+        <div class="chunk" data-chunk>
+        <figure class="media-figure media-figure--portrait media-figure--fit">
+          <a href="../assets/img/action-before-tool.png" target="_blank" rel="noopener" aria-label="افتح الشكل بحجمه الكامل في نافذة جديدة"><img src="../assets/img/action-before-tool.png" width="1350" height="1629" alt="إنفوجرافيك بعنوان الفعل قبل الأداة، فيه أربع خطوات: 1 ماذا سيقدم المتعلم؟ صف الاستجابة المطلوبة، ومثالها حكم على خطتين. 2 بأي معيار تحكم على الدليل؟ ومثاله وضوح المسؤوليات وقابلية التتبع. 3 أي وظيفة رقمية تسمح بإنتاجه وقراءته؟ ومثالها جدول مقارنة بالمعيارين والشواهد. 4 ما الوسيلة المتاحة وبديلها؟ ومثالها مستند نصي أو ورقة مطبوعة. وفي أسفله تنبيه: اسم الأداة لا يحدد مستوى بلوم." loading="lazy" decoding="async"></a>
+          <figcaption class="field-hint">إنفوجرافيك: الفعل قبل الأداة. إعداد بندر الأسمري، مستند إلى الشاشتين 07 ج و08؛ مثال مؤلف. اضغط الشكل لتكبيره.</figcaption>
+        </figure>
+        </div>
+
+        <div class="chunk" data-chunk>
+        <h4 class="section-title">طبّق الخطوات على مهمتك</h4>
+        <div class="display-text">
+          <p>عد إلى المهمة التي سجلتها في بطاقة حاجتك، وأجب ذهنيًا عن الأسئلة الأربعة بالترتيب. إذا بدأت باسم أداة قبل أن تحدد الدليل، فارجع إلى الخطوة الأولى.</p>
+        </div>
+        <p class="field-hint">ستكتب إجاباتك عن هذه الأسئلة في الهدف (الشاشة 09) وفي قالب المشروع (الشاشات 17–19).</p>
+        </div>
       </section>
     </div>
 
@@ -1392,6 +1469,22 @@
         <p class="result" data-result="t12" role="status"></p>
         <p class="field-hint">تُحفظ النسختان معًا؛ لا تُكتب الجديدة فوق الأولى.</p>
       </section>
+
+      <section id="screen-16-3" class="screen" data-screen="16-3" data-group="16" data-part="3" aria-labelledby="screen-16-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 16 ج · ن4</p>
+          <h3 id="screen-16-3-title" class="screen-title" tabindex="-1">قارن تفسيرك بمثال مصور</h3>
+          <p class="screen-purpose">الغرض: مقارنة تفسيرك لما تغير بمثال مؤلف يبين تغير الطلب المعرفي لا الوسيط.</p>
+        </header>
+        <div class="display-text">
+          <p>بعد أن فسرت التغيير في نسختيك، انظر إلى المثال: ما الذي تغير في المطلوب من المتعلم؟ وهل يظهر في تفسيرك الدليل الذي صار المتعلم يقدمه؟</p>
+        </div>
+        <figure class="media-figure">
+          <a href="../assets/img/task-before-after.png" target="_blank" rel="noopener" aria-label="افتح الشكل بحجمه الكامل في نافذة جديدة"><img src="../assets/img/task-before-after.png" width="1350" height="1211" alt="صورة توضيحية بعنوان مهمة واحدة قبل إعادة التصميم وبعدها. قبل: التعليمات «أعد كتابة وصف الخطتين»، وما يقدمه المتعلم وصف معاد للخطتين، ولا يظهر حكم ولا معيار. بعد: التعليمات «قارن الخطتين وفق وضوح المسؤوليات وقابلية التتبع، وبين قوة كل منهما ونقصها مستشهدًا بالنص»، والدليل المقبول مقارنة توضح تحقق كل معيار في كل خطة مع تعليل الاختيار، والعملية الغالبة التقييم. الخلاصة: ما تغير هو المطلوب من المتعلم والدليل الذي يقدمه، لا الوسيط." loading="lazy" decoding="async"></a>
+          <figcaption class="field-hint">صورة توضيحية: مهمة واحدة قبل إعادة التصميم وبعدها. إعداد بندر الأسمري، من المثال المشترك في الشاشتين 01 ج و13 أ؛ مثال مؤلف. اضغط الصورة لتكبيرها.</figcaption>
+        </figure>
+        <p class="note">إن اقتصر تفسيرك على تغيير الوسيلة أو شكل العرض، فعد إلى <a href="#screen-16-2" class="inline-link">الجزء ب</a> وراجع تصنيفك للتغيير.</p>
+      </section>
     </div>
 
     <a href="#template" class="next-lesson" data-next-lesson hidden>
@@ -1587,6 +1680,21 @@
         <p class="note">يفحص النظام وجود الحقول فقط، ولا يحكم على جودة المحك.</p>
         <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t15">سجّل عملي</button></div>
         <p class="result" data-result="t15" role="status"></p>
+      </section>
+
+      <section id="screen-19-3" class="screen" data-screen="19-3" data-group="19" data-part="3" aria-labelledby="screen-19-3-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 19 ج · ن2، ن5</p>
+          <h3 id="screen-19-3-title" class="screen-title" tabindex="-1">سلسلة المواءمة: من الهدف إلى المحك</h3>
+          <p class="screen-purpose">الغرض: فحص اتساق الهدف والمهمة والدليل والمحك في مشروعك قبل مراجعته في الشاشة 20.</p>
+        </header>
+        <div class="display-text">
+          <p>تتبع الحلقات الأربع في المثال، ثم في مشروعك: هل تطلب مهمتك ما يذكره هدفك؟ وهل يحكم محكك على الدليل نفسه؟</p>
+        </div>
+        <figure class="media-figure media-figure--portrait">
+          <a href="../assets/img/alignment-chain.png" target="_blank" rel="noopener" aria-label="افتح الشكل بحجمه الكامل في نافذة جديدة"><img src="../assets/img/alignment-chain.png" width="1350" height="1550" alt="صورة توضيحية بعنوان سلسلة المواءمة في مشروعك، أربع حلقات متتالية: الهدف: ما الأداء الذي تريد ملاحظته؟ يختار المتعلم الخطة الأنسب وفق وضوح المسؤوليات وقابلية التتبع ويستشهد بمعلومة من كل خطة. المهمة: ما التعليمات التي تطلب هذا الأداء؟ قارن الخطتين وفق المعيارين وبين قوة كل منهما ونقصها مستشهدًا بالنص. الدليل: ماذا سيقدم المتعلم؟ مقارنة توضح تحقق كل معيار في كل خطة مع تعليل الاختيار. المحك والتغذية الراجعة: المحك يطبق المعيارين على الخطتين ويستشهد بالنص، ورسالة العلاج «ذكرت معيارًا واحدًا؛ أضف الثاني وطبقه على الخطتين». الخلاصة: إذا لم تطلب المهمة ما يذكره الهدف أو لم يحكم المحك على الدليل نفسه فالسلسلة منقطعة مهما كانت الأداة." loading="lazy" decoding="async"></a>
+          <figcaption class="field-hint">صورة توضيحية: سلسلة المواءمة. إعداد بندر الأسمري، مستند إلى مثال المخرج في الشاشة 01 ج ومثال الشاشة 19 ب؛ مثال مؤلف. اضغط الصورة لتكبيرها.</figcaption>
+        </figure>
       </section>
 
       <!-- Screen 20: one rubric criterion per part, then saving the version -->
@@ -2152,6 +2260,46 @@
           <a href="#dashboard" class="btn btn-secondary">أفتح مواضع المراجعة في لوحتي</a>
         </div>
         <p class="field-hint">هذه الشاشة امتداد مستمر وليست شرط اجتياز. لا يستنتج النظام سببًا مؤكدًا أو أثرًا عامًا من ملاحظة واحدة، ولا ينشر عملك أو شواهدك.</p>
+      </section>
+
+      <!-- References (2026-10-25, owner's request): the scientific references and media sources at the end of
+           the learner path, in two parts by theme (length balance). The library appendices stay on trainer.html#library. -->
+      <section id="screen-28-4" class="screen" data-screen="28-4" data-group="28" data-part="4" aria-labelledby="screen-28-4-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 28 د · ن7</p>
+          <h3 id="screen-28-4-title" class="screen-title" tabindex="-1">المراجع (1 من 2): تصنيف بلوم ونسخته الرقمية</h3>
+          <p class="screen-purpose">الغرض: الرجوع إلى المراجع العلمية التي بُني عليها تصنيف المهام في البرنامج، موثقة بأسلوب APA 7.</p>
+        </header>
+        <span id="references"></span>
+        <ol class="ref-list" dir="ltr" lang="en">
+          <li>Amin, H., &amp; Mirza, M. S. (2020). Comparative study of knowledge and use of Bloom's digital taxonomy by teachers and students in virtual and conventional universities. <em>Asian Association of Open Universities Journal, 15</em>(2), 223–238. <a href="https://doi.org/10.1108/AAOUJ-04-2020-0023" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1108/AAOUJ-04-2020-0023</a></li>
+          <li>Anderson, L. W., &amp; Krathwohl, D. R. (Eds.). (2001). <em>A taxonomy for learning, teaching, and assessing: A revision of Bloom's taxonomy of educational objectives</em>. Longman.</li>
+          <li>Bloom, B. S. (Ed.). (1956). <em>Taxonomy of educational objectives: The classification of educational goals. Handbook 1: Cognitive domain</em>. David McKay.</li>
+          <li>Churches, A. (2008). <em>Bloom's digital taxonomy</em>. Educational Origami. <a href="https://www.researchgate.net/publication/228381038_Bloom's_Digital_Taxonomy" target="_blank" rel="noopener noreferrer" class="inline-link">https://www.researchgate.net/publication/228381038_Bloom's_Digital_Taxonomy</a></li>
+          <li>St-Hilaire, C. (2023). Using Bloom's digital taxonomy to map digital curriculum. <em>Journal of Digital Learning in Teacher Education, 39</em>(4), 238–250. <a href="https://doi.org/10.1080/21532974.2023.2205249" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1080/21532974.2023.2205249</a></li>
+        </ol>
+      </section>
+
+      <section id="screen-28-5" class="screen" data-screen="28-5" data-group="28" data-part="5" aria-labelledby="screen-28-5-title" hidden>
+        <header class="screen-head">
+          <p class="screen-kicker">الشاشة 28 هـ · ن7</p>
+          <h3 id="screen-28-5-title" class="screen-title" tabindex="-1">المراجع (2 من 2): التصميم التعليمي ومصادر الوسائط</h3>
+          <p class="screen-purpose">الغرض: الرجوع إلى نموذج التصميم الذي بُني عليه البرنامج، ومعرفة مصدر كل وسيطة فيه.</p>
+        </header>
+        <ol class="ref-list" dir="ltr" lang="en">
+          <li>Dick, W., Carey, L., &amp; Carey, J. O. (2009). <em>The systematic design of instruction</em> (7th ed.). Pearson Merrill.</li>
+          <li>Merrill, M. D. (2002). First principles of instruction. <em>Educational Technology Research and Development, 50</em>(3), 43–59. <a href="https://doi.org/10.1007/BF02505024" target="_blank" rel="noopener noreferrer" class="inline-link">https://doi.org/10.1007/BF02505024</a></li>
+          <li>UNC Learning Center. (2016, September 20). <em>Bloom's revised taxonomy of cognition</em> [Video]. YouTube. <a href="https://www.youtube.com/watch?v=7gpkK54LZ3Q" target="_blank" rel="noopener noreferrer" class="inline-link">https://www.youtube.com/watch?v=7gpkK54LZ3Q</a></li>
+        </ol>
+        <h4 class="section-title">مصادر الوسائط في البرنامج</h4>
+        <ul class="media-credits">
+          <li><a href="#screen-01" class="inline-link">مقطع صوتي: تمهيد للبرنامج (01 أ)</a> · نص بندر الأسمري، بصوت مولّد آليًا بأداة <bdi>HUMAIN Voice</bdi>، ونصه المكتوب في الشاشة نفسها.</li>
+          <li><a href="#screen-05" class="inline-link">فيديو: تصنيف بلوم المعدل (05 أ)</a> · مركز التعلم بجامعة نورث كارولاينا، مضمن من <bdi>YouTube</bdi> مع ملخص عربي.</li>
+          <li><a href="#screen-08-4" class="inline-link">إنفوجرافيك: الفعل قبل الأداة (08 د)</a> · إعداد بندر الأسمري، مثال مؤلف.</li>
+          <li><a href="#screen-16-3" class="inline-link">صورة: مهمة قبل إعادة التصميم وبعدها (16 ج)</a> · إعداد بندر الأسمري، مثال مؤلف.</li>
+          <li><a href="#screen-19-3" class="inline-link">صورة: سلسلة المواءمة (19 ج)</a> · إعداد بندر الأسمري، مثال مؤلف.</li>
+        </ul>
+        <p class="field-hint">سنة طبعة ديك وكاري وكاري مأخوذة من سطر الحقوق في مقتطف الناشر للطبعة السابعة. ملاحق النسخة الحضورية في مكتبة صفحة المدرب.</p>
       </section>
     </div>
 
