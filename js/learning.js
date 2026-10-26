@@ -220,9 +220,6 @@
         const front = card.querySelector('.flip-front');
         if (front) front.hidden = turned;
         if (back) back.hidden = !turned;
-        card.classList.remove('is-turning');
-        void card.offsetWidth;
-        card.classList.add('is-turning');
       });
     });
   }
@@ -300,11 +297,12 @@
     const st = store.status;
     if (indicator) {
       indicator.classList.toggle('is-failed', !st.ok);
-      if (!st.available) indicator.textContent = 'الحفظ غير متاح في هذا المتصفح';
-      else if (!st.ok) indicator.textContent = 'لم يُحفظ آخر تعديل';
-      else if (st.dirty) indicator.textContent = 'جارٍ الحفظ…';
-      else if (st.at) indicator.textContent = `حُفظ ${fmtTime(st.at)}`;
-      else indicator.textContent = 'لا يوجد عمل محفوظ بعد';
+      const text = !st.available ? 'الحفظ غير متاح في هذا المتصفح'
+        : !st.ok ? 'لم يُحفظ آخر تعديل'
+        : st.dirty ? 'جار الحفظ…'
+        : st.at ? `حُفظ ${fmtTime(st.at)}` : 'لا يوجد عمل محفوظ بعد';
+      if (indicator.textContent !== text) indicator.textContent = text;
+      indicator.title = text;
     }
     if (alertBox) {
       const failed = !st.ok;
@@ -505,6 +503,7 @@
     wrap.classList.add('has-error');
     if (!wrap.querySelector('.field-error')) {
       const errorId = `err-${path.replace('.', '-')}`;
+      if (!first.id) first.id = `field-${path.replace('.', '-')}`;
       const message = first.dataset.requiredMsg || (wrap.matches('.review-q') ? 'اختر وصفًا لمراجعتك.' : 'هذا الحقل مطلوب لتسجيل الإنجاز.');
       wrap.append(h('p', { class: 'field-error', id: errorId }, message));
       controls.forEach((c) => {
@@ -576,6 +575,7 @@
       if (silent) return false;
       let focusTarget = null;
       const notes = [];
+      const fields = new Map();
       missing.forEach((key) => {
         if (key.startsWith('check:')) {
           notes.push('أجب عن سؤال التحقق حتى تصل إلى الإجابة الصحيحة.');
@@ -591,6 +591,11 @@
         }
         const control = markFieldMissing(key);
         noteElsewhere(control);
+        if (control?.id) {
+          const wrap = control.closest('.field, .review-q, [data-field-wrap]');
+          const label = wrap?.querySelector('.label, legend, label')?.textContent.trim() || 'الحقل المطلوب';
+          fields.set(control.id, label);
+        }
         if (control && control.closest('[data-screen]') === screen) focusTarget = focusTarget || control;
       });
       if (result) {
@@ -599,6 +604,8 @@
         if (elsewhere.size) {
           result.append(' ما زال ناقصًا في: ', ...[...elsewhere].flatMap((key, k) => [k ? '، ' : '', h('a', { href: screenHref(key), class: 'inline-link' }, `الشاشة ${screenLabel(key)}`)]), '.');
         }
+        if (fields.size) result.append(h('ul', { class: 'missing-fields' },
+          [...fields].map(([field, label]) => h('li', {}, h('a', { href: `#${field}`, class: 'inline-link' }, label)))));
       }
       // The field may sit in an earlier chunk of this screen: open it first (main.js).
       focusTarget?.dispatchEvent(new CustomEvent('bloom:reveal', { bubbles: true }));
@@ -811,11 +818,11 @@
       // The save actions sit on a small second line so the row stays one line on phones.
       const nav = h('nav', { class: 'screen-nav', 'aria-label': `التنقل من الشاشة ${screenLabel(n)}` }, [
         h('div', { class: 'screen-nav-back' }, [
-          prev ? h('a', { href: screenHref(prev), class: 'btn btn-ghost', rel: 'prev' }, `السابق: ${screenLabel(prev)}`) : h('span'),
+          prev ? h('a', { href: screenHref(prev), class: 'btn btn-ghost', rel: 'prev', 'aria-label': `السابق: ${screenTitle(prev)}` }, 'السابق') : h('span'),
           h('button', { type: 'button', class: 'btn btn-ghost', hidden: true, dataset: { chunkPrev: '' } }, 'السابق'),
         ]),
         h('span', { class: 'chunk-dots', hidden: true, dataset: { chunkDots: '' } }),
-        next ? h('a', { href: screenHref(next), class: 'btn btn-primary', rel: 'next' }, `التالي: ${screenLabel(next)}`) : h('a', { href: '#dashboard', class: 'btn btn-primary' }, 'لوحتي'),
+        next ? h('a', { href: screenHref(next), class: 'btn btn-primary', rel: 'next', 'aria-label': `التالي: ${screenTitle(next)}` }, 'التالي') : h('a', { href: '#dashboard', class: 'btn btn-primary' }, 'لوحتي'),
       ]);
       const save = h('div', { class: 'screen-nav-save' }, [
         h('button', { type: 'button', class: 'btn-mini', dataset: { action: 'save-draft' } }, 'احفظ المسودة'),
@@ -828,7 +835,7 @@
 
   /** @param {string} n Screen number. */
   function saveAndStop(n) {
-    const ok = flushSave() && store.update((st) => { st.position = { screen: n, at: nowIso() }; });
+    const ok = rememberPosition(n);
     const panel = document.querySelector(`[data-stop-panel="${n}"]`);
     if (!panel) return;
     panel.hidden = false;
@@ -1322,7 +1329,7 @@
 
   /** Items per page in generated lists (keeps screens of comparable length). */
   // Phones show one diagnostic item per page so the page fits one chunk of screen 02 (tests/e2e/chunks.py).
-  const PAGE_SIZE = { diagnostic: window.matchMedia('(max-width: 639px)').matches ? 1 : 2, diagnosticReport: 2, test: 2, testReport: 3 };
+  const PAGE_SIZE = { diagnostic: window.matchMedia('(max-width: 639px)').matches ? 1 : 2, diagnosticReport: 2, test: 2, testReport: 2 };
   /** @type {ReturnType<typeof paginate>|null} */
   let diagPager = null;
   /** @type {ReturnType<typeof paginate>|null} */
@@ -1899,6 +1906,7 @@
       const closing = h('div', { class: 'actions' }, h('a', { href: '#screen-24', class: 'btn btn-primary' }, 'التالي: من النتيجة إلى خطوة تعلم'));
       explain.replaceChildren(
         h('h4', { class: 'section-title' }, `تفسير الإجابات — النموذج ${last.form === 'A' ? 'أ' : 'ب'}`),
+        h('p', { class: 'field-hint' }, 'قارن اختيارك بالإجابة الصحيحة، ثم استخدم «موضع المراجعة» للعودة إلى المفهوم الذي تحتاجه.'),
         list,
         closing,
       );
@@ -2406,6 +2414,16 @@
     renderRubric(screen);
     renderDiagnostic(screen);
     $$('[data-check]', screen).forEach(renderCheck);
+    $$('[data-action="complete"]', screen).forEach((button) => {
+      const def = elementDef(button.dataset.element);
+      if (!def) return;
+      const conditionId = `${button.dataset.element}-condition`;
+      button.setAttribute('aria-describedby', conditionId);
+      button.after(h('details', { class: 'completion-help', 'data-print-open': '' }, [
+        h('summary', {}, 'شروط التسجيل'),
+        h('p', { id: conditionId }, def.condition),
+      ]));
+    });
     buildScreenFooters(screen);
     restoreFields(screen);
     refreshConditionals();
@@ -2432,16 +2450,33 @@
       if (id === 'start') return 'screen-01';
       return null;
     },
+    /** Stable chunk to restore on reload or continue; main.js validates its DOM owner. */
+    resumeChunk(screen) {
+      const pos = store.state.position;
+      return pos?.screen === screen ? pos.chunk : null;
+    },
     /** Extension point for screen modules in this file. */
     store,
   });
 
-  document.addEventListener('bloom:screen', (event) => {
+  /** Saves navigation with pending answers, without completing an activity. */
+  function rememberPosition(n) {
+    const screen = screenEl(n);
+    if (!screen) return false;
+    const chunk = screen.querySelector(':scope > [data-chunk]:not([hidden])');
+    store.stage((st) => {
+      st.position = {
+        ...st.position, screen: n, chunk: chunk?.id || null,
+        title: screen.querySelector('.screen-title')?.textContent.trim() || screenTitle(n), at: nowIso(),
+      };
+    });
+    return flushSave();
+  }
+
+  ['bloom:screen', 'bloom:chunk'].forEach((name) => document.addEventListener(name, (event) => {
     const n = /** @type {CustomEvent} */ (event).detail.screen;
-    if (!n) return;
-    store.stage((st) => { st.position = { screen: n, at: nowIso() }; });
-    flushSave();
-  });
+    if (n) rememberPosition(n);
+  }));
 
   document.addEventListener('click', (event) => {
     const target = /** @type {HTMLElement} */ (event.target);

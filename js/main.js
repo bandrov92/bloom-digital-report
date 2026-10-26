@@ -35,8 +35,8 @@
     'content-res-challenges', 'content-res-further-learning', 'content-foundation',
   ]);
 
-  /** Large-screen breakpoint (Tailwind lg). The drawer is a sidebar from here up. */
-  const desktopQuery = window.matchMedia('(min-width: 1024px)');
+  /** Dock only when both side gutters can fit a drawer without moving the lesson. */
+  const desktopQuery = window.matchMedia('(min-width: 90rem)');
 
   /** Every routable view: the seven units plus the learner dashboard. */
   const views = /** @type {HTMLElement[]} */ ([...document.querySelectorAll('[data-view]')]);
@@ -152,15 +152,18 @@
    * is completed by moving between them (CLAUDE.md: no completion by visiting).
    * @param {HTMLElement} screen
    * @param {number} index
-   * @param {{focus?: boolean}} [options]
+   * @param {{focus?: boolean, notify?: boolean}} [options]
    */
-  function showChunk(screen, index, { focus = false } = {}) {
+  function showChunk(screen, index, { focus = false, notify = true } = {}) {
     const chunks = chunksOf(screen);
     if (!chunks.length) return;
     const i = Math.min(Math.max(index, 0), chunks.length - 1);
     chunks.forEach((chunk, k) => { chunk.hidden = k !== i; });
     screen.dataset.chunkIndex = String(i);
     updateChunkNav(screen);
+    if (notify) document.dispatchEvent(new CustomEvent('bloom:chunk', {
+      detail: { screen: screen.dataset.screen },
+    }));
     if (focus) {
       const chunk = chunks[i];
       const heading = /** @type {HTMLElement|null} */ (chunk.querySelector('h4, h5, legend, .display-text p, p'));
@@ -186,7 +189,9 @@
     const primary = /** @type {HTMLElement|null} */ (nav.querySelector('.btn-primary'));
     if (primary) {
       if (!primary.dataset.label) primary.dataset.label = primary.textContent || '';
-      primary.textContent = last ? primary.dataset.label : 'متابعة';
+      if (!primary.dataset.ariaLabel) primary.dataset.ariaLabel = primary.getAttribute('aria-label') || primary.textContent || '';
+      primary.textContent = last ? primary.dataset.label : 'التالي';
+      primary.setAttribute('aria-label', last ? primary.dataset.ariaLabel : `الجزئية التالية: ${i + 2} من ${chunks.length}`);
       primary.toggleAttribute('data-chunk-next', !last);
     }
     const back = /** @type {HTMLElement|null} */ (nav.querySelector('[data-chunk-prev]'));
@@ -196,16 +201,19 @@
     const dots = /** @type {HTMLElement|null} */ (nav.querySelector('[data-chunk-dots]'));
     if (dots) {
       dots.hidden = chunks.length < 2;
-      dots.replaceChildren(...chunks.map((_, k) => {
+      const markers = document.createElement('span');
+      markers.className = 'chunk-markers';
+      markers.setAttribute('aria-hidden', 'true');
+      markers.append(...chunks.map((_, k) => {
         const dot = document.createElement('span');
         dot.className = `chunk-dot${k === i ? ' is-current' : ''}${k < i ? ' is-seen' : ''}`;
         dot.setAttribute('aria-hidden', 'true');
         return dot;
       }));
       const label = document.createElement('span');
-      label.className = 'sr-only';
+      label.className = 'chunk-label';
       label.textContent = `الجزئية ${i + 1} من ${chunks.length}`;
-      dots.append(label);
+      dots.replaceChildren(markers, label);
     }
   }
 
@@ -267,7 +275,10 @@
       details.open = true;
       details = details.parentElement?.closest('details') || null;
     }
-    requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ block: 'start' });
+      if (target.matches('input, select, textarea, button, [tabindex]')) target.focus({ preventScroll: true });
+    });
   }
 
   /**
@@ -276,7 +287,7 @@
    * @param {HTMLElement|null} screen null = the unit's last active (or first) screen.
    * @returns {HTMLElement|null} The screen shown.
    */
-  function activateScreen(view, screen) {
+  function activateScreen(view, screen, chunkId = null) {
     const screens = [...view.querySelectorAll('[data-screen]')];
     if (!screens.length) return null;
     const remembered = view.dataset.activeScreen && byId(view.dataset.activeScreen);
@@ -295,7 +306,12 @@
       if (/** @type {HTMLElement} */ (link).dataset.partLink === chosen.id) link.setAttribute('aria-current', 'step');
       else link.removeAttribute('aria-current');
     });
-    if (changed || enterAtEnd) showChunk(chosen, enterAtEnd ? chunksOf(chosen).length - 1 : 0);
+    const chunks = chunksOf(chosen);
+    if (chunkId || changed || enterAtEnd) {
+      const index = chunkId ? Math.max(0, chunks.findIndex((chunk) => chunk.id === chunkId))
+        : enterAtEnd ? chunks.length - 1 : 0;
+      showChunk(chosen, index, { notify: false });
+    }
     enterAtEnd = false;
     // The bar to the next unit only appears on the unit's last screen.
     const bar = view.querySelector('[data-next-lesson]');
@@ -308,23 +324,16 @@
    * drawer, counter, document title and focus.
    * @param {HTMLElement} view
    * @param {HTMLElement|null} screen
-   * @param {{focus?: boolean}} [options]
+   * @param {{focus?: boolean, chunkId?: string|null}} [options]
    */
-  function showView(view, screen, { focus = false } = {}) {
+  function showView(view, screen, { focus = false, chunkId = null } = {}) {
     const viewChanged = view !== currentView;
     if (viewChanged) {
-      const firstView = currentView === null;
       views.forEach((item) => { item.hidden = item !== view; });
-      if (!firstView) {
-        // Restarting the entrance animation forces a synchronous layout; skip it on page load.
-        view.classList.remove('is-entering');
-        void view.offsetWidth;
-        view.classList.add('is-entering');
-      }
       currentView = view;
     }
     if (!view.hasAttribute('data-lesson')) document.querySelectorAll('[data-steps-for]').forEach((list) => { /** @type {HTMLElement} */ (list).hidden = true; });
-    const shown = activateScreen(view, screen);
+    const shown = activateScreen(view, screen, chunkId);
     const screenChanged = shown !== currentScreen;
     currentScreen = shown;
     if (viewChanged || screenChanged) window.scrollTo({ top: 0, behavior: 'instant' });
@@ -356,7 +365,12 @@
    */
   function route({ initial = false } = {}) {
     const { view, screen, target } = resolveHash(window.location.hash);
-    if (view) showView(view, screen, { focus: !initial && !target });
+    const resume = !target && (initial || !window.location.hash || window.location.hash === '#continue')
+      && window.location.hash !== '#start';
+    const chunkId = resume ? window.BloomLearning?.resumeChunk?.(screen?.dataset.screen) : null;
+    // Release the inert background before moving focus into the selected screen.
+    if (!desktopQuery.matches) setDrawer(false, { restoreFocus: false });
+    if (view) showView(view, screen, { focus: !initial && !target, chunkId });
     if (target) revealTarget(target);
     // The browser's own jump to #screen-NN would hide the unit banner: a screen
     // opens from the top of the page (a deep link to an inner element still scrolls to it).
@@ -365,33 +379,43 @@
       requestAnimationFrame(top);
       window.addEventListener('load', top, { once: true });
     }
-    if (!desktopQuery.matches) setDrawer(false);
   }
 
   /** @returns {boolean} Whether the drawer is currently visible. */
   function isDrawerVisible() {
-    return desktopQuery.matches
-      ? !document.body.classList.contains('drawer-collapsed')
-      : document.body.classList.contains('drawer-open');
+    return document.body.classList.contains('drawer-open');
   }
 
   /**
-   * Opens or closes the drawer. Below lg it is an overlay; from lg a sidebar.
+   * The drawer never changes the content width. It is modal until side gutters fit it.
    * @param {boolean} [open] true to open, false to close, omitted to toggle.
+   * @param {{restoreFocus?: boolean}} [options]
    */
-  function setDrawer(open) {
+  function setDrawer(open, { restoreFocus = true } = {}) {
     const show = typeof open === 'boolean' ? open : !isDrawerVisible();
-    if (desktopQuery.matches) {
-      document.body.classList.toggle('drawer-collapsed', !show);
-      document.body.classList.remove('drawer-open');
-    } else {
-      document.body.classList.toggle('drawer-open', show);
+    const drawer = byId('course-drawer');
+    const hadFocus = drawer?.contains(document.activeElement);
+    const modal = show && !desktopQuery.matches;
+    document.body.classList.toggle('drawer-open', show);
+    document.body.classList.toggle('drawer-modal', modal);
+    const main = document.querySelector('.player-main');
+    if (main) main.inert = modal;
+    if (drawer) {
+      drawer.inert = !show;
+      if (modal) {
+        drawer.setAttribute('role', 'dialog');
+        drawer.setAttribute('aria-modal', 'true');
+      } else {
+        drawer.removeAttribute('role');
+        drawer.removeAttribute('aria-modal');
+      }
     }
     const backdrop = byId('drawer-backdrop');
-    if (backdrop) backdrop.hidden = !(show && !desktopQuery.matches);
+    if (backdrop) backdrop.hidden = !modal;
     const toggle = byId('drawer-toggle');
     toggle?.setAttribute('aria-expanded', String(show));
     toggle?.setAttribute('aria-label', show ? 'إخفاء قائمة الوحدات' : 'قائمة الوحدات');
+    if (!show && hadFocus && restoreFocus) toggle?.focus({ preventScroll: true });
   }
 
   /** Wires the drawer and the router. Interaction budget: unit = 2 actions, screen = +1. */
@@ -419,12 +443,16 @@
     });
     byId('drawer-backdrop')?.addEventListener('click', () => setDrawer(false));
 
-    // Picking the view already on screen does not fire hashchange: close and go to top.
+    // A repeated hash does not fire hashchange: close the drawer and restore focus.
     document.querySelectorAll('.drawer a[href^="#"]').forEach((link) => {
       link.addEventListener('click', () => {
-        if (currentView && /** @type {HTMLAnchorElement} */ (link).hash === `#${currentView.id}`) {
-          if (!desktopQuery.matches) setDrawer(false);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+        const hash = /** @type {HTMLAnchorElement} */ (link).hash;
+        if (currentView && (hash === `#${currentView.id}` || hash === window.location.hash)) {
+          if (!desktopQuery.matches) {
+            setDrawer(false, { restoreFocus: false });
+            (currentScreen?.querySelector('.screen-title') || currentView.querySelector('.lesson-title'))?.focus({ preventScroll: true });
+          }
+          window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
         }
       });
     });
@@ -457,13 +485,22 @@
   // Wiring
   // ---------------------------------------------------------------------------
 
-  // Escape closes the overlay drawer (phones/tablets) when no dialog is open.
+  // Keep keyboard focus inside a modal drawer; Escape also closes a docked drawer.
   document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape' || desktopQuery.matches) return;
     if (document.querySelector('dialog[open]')) return;
-    if (!document.body.classList.contains('drawer-open')) return;
-    setDrawer(false);
-    byId('drawer-toggle')?.focus();
+    if (!isDrawerVisible()) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setDrawer(false);
+      byId('drawer-toggle')?.focus({ preventScroll: true });
+    } else if (event.key === 'Tab' && !desktopQuery.matches) {
+      const items = [...byId('course-drawer').querySelectorAll('a[href], button:not([disabled])')]
+        .filter((el) => el.getClientRects().length);
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
   });
 
   initPlayer();

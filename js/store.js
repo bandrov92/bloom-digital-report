@@ -20,7 +20,7 @@
 })(typeof self !== 'undefined' ? self : this, () => {
   /** Current record key and schema. A new schema gets a new upgrade step, not a new key. */
   const STORAGE_KEY = 'bloomLearning.v1';
-  const SCHEMA = 1;
+  const SCHEMA = 2;
   /** A copy of a record that could not be read, or that an import replaced. */
   const BACKUP_KEY = 'bloomLearning.backup';
 
@@ -44,7 +44,7 @@
       schema: SCHEMA,
       createdAt: now,
       updatedAt: now,
-      position: null, // { screen: '05', at }
+      position: null, // { screen: '05', chunk: 'chunk-05-1' | null, title, at }
       drafts: {}, // sNN -> { field: value }
       checks: {}, // check id -> { attempts: [{answers, correct, at}], solvedAt }
       diagnostic: { attempts: [] },
@@ -73,6 +73,13 @@
     const base = createEmptyState(now);
     if (!isObject(raw)) return base;
     const state = { ...base, ...raw };
+    // Schema 2 adds an optional stable chunk id and a readable resume title.
+    // Older positions still open at the start of their screen. Preserve extra fields.
+    if (isObject(state.position)) {
+      state.position = { chunk: null, title: '', ...state.position };
+      if (typeof state.position.chunk !== 'string') state.position.chunk = null;
+      if (typeof state.position.title !== 'string') state.position.title = '';
+    } else state.position = null;
     state.schema = SCHEMA;
     ['drafts', 'checks', 'elements'].forEach((k) => { if (!isObject(state[k])) state[k] = {}; });
     if (!isObject(state.diagnostic) || !Array.isArray(state.diagnostic.attempts)) state.diagnostic = { attempts: [] };

@@ -79,6 +79,38 @@ test('partial or older records are completed, unknown fields kept', () => {
   assert.equal(store.state.extra, 1);
 });
 
+test('schema 1 position upgrades without losing answers, attempts or unknown position fields', () => {
+  const attempt = { submittedAt: '2026-10-23', total: 70, answers: { q1: 'a' } };
+  const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify({
+    schema: 1, position: { screen: '03', at: 'old', custom: 'preserve' },
+    drafts: { s03: { current: 'عمل سابق' } }, test: { attempts: [attempt] },
+  }) });
+  const store = createStore({ storage, now: clock });
+  store.load();
+  assert.equal(store.state.schema, 2);
+  assert.deepEqual(store.state.position, { screen: '03', chunk: null, title: '', at: 'old', custom: 'preserve' });
+  assert.deepEqual(store.state.test.attempts, [attempt]);
+  assert.equal(store.state.drafts.s03.current, 'عمل سابق');
+});
+
+test('precise position survives reload and export/import without granting completion', () => {
+  const storage = memoryStorage();
+  const store = createStore({ storage, now: clock });
+  store.load();
+  const position = { screen: '03', chunk: 'chunk-03-2', title: 'بطاقة حاجتي', at: 'now' };
+  store.update((s) => { s.position = position; });
+  const reloaded = createStore({ storage, now: clock });
+  reloaded.load();
+  assert.deepEqual(reloaded.state.position, position);
+  const imported = createStore({ storage: memoryStorage(), now: clock });
+  imported.load();
+  const parsed = imported.parseImport(reloaded.exportData());
+  assert.equal(parsed.ok, true);
+  assert.equal(imported.applyImport(parsed.data), true);
+  assert.deepEqual(imported.state.position, position);
+  assert.deepEqual(imported.state.elements, {});
+});
+
 test('migration copies legacy data, pre-fills only empty unambiguous fields and leaves old keys untouched', () => {
   const lessonDraft = { 'lt-teacher-name': 'معلم', 'lt-subject': 'العلوم', 'lt-lesson-title': 'الدورة المائية', 'lt-original-goal': 'أن يفهم' };
   const reflections = { 'reflection-ws1': 'تأمل' };

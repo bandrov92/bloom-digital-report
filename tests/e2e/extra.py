@@ -56,7 +56,7 @@ with sync_playwright() as p:
     # 2 export / import
     pg.goto(SITE + '#dashboard'); pg.wait_for_timeout(300)
     with pg.expect_download() as dl: pg.click('[data-action="export"]')
-    path = dl.value.path(); data = json.load(open(path))
+    path = dl.value.path(); data = json.loads(pathlib.Path(path).read_text(encoding='utf-8'))
     check(data['app'] == 'bloom-digital-learning' and data['data']['drafts']['s09']['performance'] == 'نص لم يُحفظ', 'export contains the saved work')
     c2 = b.new_context(); q = c2.new_page(); q.on('dialog', lambda d: d.accept())
     q.goto(SITE + '#dashboard'); q.wait_for_timeout(300)

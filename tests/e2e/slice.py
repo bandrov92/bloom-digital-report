@@ -124,6 +124,8 @@ with sync_playwright() as p:
     check(pg.is_visible('#screen-08-3') and pg.evaluate("document.getElementById('level-apply').open"), 'deep link #level-apply opens screen 08 ج and the level')
     # keyboard: focus the drawer step link and Enter
     pg.goto(SITE + '#screen-05'); pg.wait_for_timeout(100)
+    if pg.get_attribute('#drawer-toggle', 'aria-expanded') != 'true':
+        pg.click('#drawer-toggle')
     pg.focus('[data-steps-for="map"] [data-step-link="06"]'); pg.keyboard.press('Enter'); pg.wait_for_timeout(200)
     check(pg.is_visible('#screen-06') and pg.evaluate("document.activeElement.id") == 'screen-06-title', 'keyboard step link moves focus to screen title')
     # dashboard

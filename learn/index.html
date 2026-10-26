@@ -33,7 +33,7 @@
 
 <a href="#main-content" class="skip-link">تخطَّ إلى المحتوى</a>
 
-<!-- Drawer: fixed sidebar from lg, off-canvas panel below lg (js/main.js). -->
+<!-- Drawer overlays the centered lesson; docks only when the side gutters fit it. -->
 <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
 <nav id="course-drawer" class="drawer" aria-labelledby="drawer-title">
   <div class="drawer-head">
@@ -73,7 +73,8 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <p class="topbar-title">حقيبة هرم بلوم الرقمية</p>
-    <p id="save-indicator" class="save-indicator" role="status" aria-live="polite"></p>
+    <!-- Explicit save confirmations use app-status; failures use save-alert. Avoid announcing every keystroke. -->
+    <p id="save-indicator" class="save-indicator" aria-live="off"></p>
     <a href="#dashboard" class="topbar-dash">لوحتي</a>
     <p class="topbar-counter"><span id="lesson-counter">الوحدة 1 من 7</span></p>
     <div id="topbar-progress" class="topbar-progress" aria-hidden="true"><span id="topbar-progress-fill"></span></div>
@@ -112,7 +113,7 @@
           <p class="element-status element-status--none" data-no-element></p>
         </header>
         <!-- Chunks (2026-10-25): each <div data-chunk> is one view; js/main.js shows one at a time. -->
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-1">
         <!-- Audio introduction (2026-10-25): local file, loads only when played (preload="none").
              The written text below is its full equivalent; js/learning.js shows a note if the file is missing. -->
         <figure class="audio-intro" data-audio>
@@ -134,7 +135,7 @@
         </figure>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-2">
         <h4 class="section-title">كيف يعمل البرنامج</h4>
         <div class="prose">
           <ul class="rule-cards">
@@ -145,7 +146,7 @@
         </div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-3">
         <h4 class="section-title">حفظ عملك ووقتك</h4>
         <div class="prose">
           <ul class="rule-cards" style="counter-reset: rule 3">
@@ -162,7 +163,7 @@
           <h3 id="screen-01-2-title" class="screen-title" tabindex="-1">ما ستتعلمه: الأهداف الثلاثة</h3>
           <p class="screen-purpose">الغرض: معرفة الغاية التي يقودك إليها البرنامج قبل تفصيلها في نواتجه السبعة.</p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-2-1">
         <article class="goals-card" aria-labelledby="goals-card-title">
           <header class="goals-card-head">
             <p class="goals-card-eyebrow">أهداف البرنامج</p>
@@ -194,7 +195,7 @@
         </article>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-2-2">
         <h4 class="section-title">كيف تعرف أنك حققت كل هدف</h4>
         <p>لكل هدف دليل تنتجه بنفسك في البرنامج، وتراجعه بمحك معلن قبل أن تنتقل:</p>
         <ul class="outcome-list">
@@ -202,6 +203,9 @@
           <li><span class="outcome-code">الهدف 2</span> مهمتك المعاد تصميمها في قالب المشروع (17–20) بهدفها ودليلها ومحكها، ومراجعتك لها بسلم المراجعة الذاتية.</li>
           <li><span class="outcome-code">الهدف 3</span> سجل التجربة أو المحاكاة (28)، والتعديل الذي تقرره بناءً على شواهده.</li>
         </ul>
+        </div>
+        <div class="chunk" data-chunk id="chunk-01-2-test">
+        <h4 class="section-title">دور الاختبار الختامي</h4>
         <p class="field-hint">الاختبار الختامي (21–24) يقيس فهمك لقرارات التصميم في الأهداف الثلاثة معًا.</p>
         </div>
       </section>
@@ -212,7 +216,7 @@
           <h3 id="screen-01-3-title" class="screen-title" tabindex="-1">ما ستتعلمه: نواتج البرنامج</h3>
           <p class="screen-purpose">الغرض: معرفة ما ستستطيع أداءه في نهاية البرنامج، وربط كل شاشة بالناتج الذي تخدمه.</p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-3-1">
         <div class="display-text">
           <p>ستطور مهمة تعلم، وتحدد كيف تلاحظ جودة استجابة طلابك، ثم تراجع تصميمك.</p>
         </div>
@@ -225,7 +229,7 @@
         </ol>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-3-2">
         <h4 class="section-title">النواتج من ن4 إلى ن7</h4>
         <ol class="outcome-list" start="4">
           <li><span class="outcome-code">ن4</span> تعيد تصميم مهمة لتناسب هدفًا معرفيًا معلنًا، دون الاكتفاء بتغيير الوسيط.</li>
@@ -243,7 +247,7 @@
           <h3 id="screen-01-4-title" class="screen-title" tabindex="-1">المهمة التي ستطورها</h3>
           <p class="screen-purpose">الغرض: توضيح المخرج واختيار سياق واقعي دون فرض تخصص.</p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-4-1">
         <div class="display-text">
           <p>تستطيع استخدام مهمة من دروسك أو المثال التدريبي المحايد.</p>
         </div>
@@ -268,7 +272,7 @@
 
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-01-4-2">
         <h4 class="section-title">مثال المخرج الذي ستصل إليه</h4>
         <div class="example">
           <span class="example-label">مثال مؤلف</span>
@@ -291,18 +295,18 @@
           <p class="screen-purpose">الغرض: تشخيص أولي لفهمك قبل التعلم.</p>
           <p class="element-status" data-element-status="t01"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-02-1">
         <div class="display-text">
           <p>أجب وفق فهمك الحالي. لن تؤثر هذه المحاولة في درجة اجتيازك، وستساعدك على تحديد ما تحتاج إلى مراجعته.</p>
         </div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-02-2">
         <div data-diagnostic></div>
         <div id="diagnostic-report" class="diag-report" tabindex="-1" hidden></div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-02-3">
         <details class="hint">
           <summary><span>فحص تقني اختياري: هل يحفظ متصفحك عملك؟</span><svg class="hint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></summary>
           <div class="hint-body">
@@ -326,7 +330,7 @@
           <p class="screen-purpose">الغرض: تحديد نقطة بداية وربط التعلم بخبرتك.</p>
           <p class="element-status" data-element-status="t02"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-03-1">
         <div class="display-text">
           <p>ما المهمة التي تريد تحسينها؟ اكتب ما يفعله المتعلم فيها الآن، وما الدليل الذي تتمنى ملاحظته بعد التعديل. إن لم تنفذ المهمة سابقًا فاذكر ذلك.</p>
         </div>
@@ -336,7 +340,7 @@
         </div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-03-2">
         <fieldset class="plain" data-field-wrap>
           <legend>حالة خبرتك بالمهمة</legend>
           <div class="choice-list">
@@ -359,7 +363,7 @@
           <p class="screen-purpose">الغرض: تحديد ما تريد تحسينه وما ستلاحظه بعد التعديل، ثم حفظ البطاقة.</p>
           <p class="element-status" data-element-status="t02"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-03-2-1">
         <div class="field">
           <label class="field-label" for="s03-need">ما الذي تحتاج إلى تحسينه</label>
           <textarea id="s03-need" class="input" data-field="s03.need" required></textarea>
@@ -370,7 +374,7 @@
         </div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-03-2-2">
         <div class="field-row field-row--2">
           <div class="field">
             <label class="field-label" for="s03-stage">المرحلة الدراسية <span class="field-optional">(اختياري)</span></label>
@@ -392,9 +396,9 @@
         </details>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-03-2-3">
         <div class="legacy-panel" data-legacy-panel hidden></div>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t02">سجّل البطاقة</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t02">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t02" role="status"></p>
         <p class="field-hint">تُحفظ البطاقة نسخةً مرجعية، ويمكنك تعديلها لاحقًا مع حفظ أثر التعديل. تُستخدم معلوماتها في المشروع حتى لا تعيد إدخالها.</p>
         <div data-history="needCard"></div>
@@ -409,7 +413,7 @@
           <p class="screen-purpose">الغرض: أن تتحكم في ترتيب تعلمك دون أن تخفى عليك متطلبات الاجتياز.</p>
           <p class="element-status element-status--none" data-no-element></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-04-1">
         <div class="display-text">
           <p>اقترحنا هذه الخطوة التالية بناءً على إجاباتك. يمكنك تغيير ترتيب التعلم. الاجتياز يتطلب استكمال 80% من عناصر المحتوى المطلوبة و60 من 100 فأكثر في الاختبار الختامي.</p>
         </div>
@@ -417,7 +421,7 @@
         <ul id="s04-review" class="dash-list prose"></ul>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-04-2">
         <h4 class="section-title">اختر خطوتك التالية</h4>
         <div class="actions">
           <a href="#screen-09" class="btn btn-primary" data-path-choice="plan">أبدأ خطتي</a>
@@ -427,7 +431,7 @@
         <p class="field-hint">المسار المقترح: الخطة الأولية (09 و10) ثم مستويات بلوم (05–08) ثم الورش والقالب والاختبار والعودة للممارسة. لا تُقفل أي وحدة.</p>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-04-3">
         <h4 class="section-title">خريطة البرنامج</h4>
         <ol id="program-map" class="dash-list prose program-map"></ol>
         </div>
@@ -460,7 +464,7 @@
           <p class="screen-purpose">الغرض: تنشيط معرفتك بمستويات تصنيف بلوم المعدل قبل أن تحكم على المهام في هذه الوحدة.</p>
           <p class="element-status element-status--none" data-no-element></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-05-1">
         <!-- Optional embedded video (moved here from screen 01 on 2026-10-25): the player loads only on "play"
              (js/learning.js -> playVideo) and asks YouTube for Arabic captions. Source: a university learning center. -->
         <figure class="video-embed" data-video="7gpkK54LZ3Q" data-video-title="Bloom's Revised Taxonomy of Cognition — UNC Learning Center (YouTube)">
@@ -487,7 +491,7 @@
         </details>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-05-2">
         <div class="display-text">
           <p>في هذه الوحدة تحكم على المهمة بما يفعله المتعلم والدليل الذي يقدمه، وهذا ما فعله المقطع حين عرّف كل مستوى بما يطلبه السؤال.</p>
         </div>
@@ -506,14 +510,14 @@
           <p class="screen-purpose">الغرض: تمييز الطلب المعرفي عن الوسيط المستخدم.</p>
           <p class="element-status" data-element-status="t03"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-05-2-1">
         <div class="display-text">
           <p>مهمتان تستخدمان ملصقًا رقميًا: الأولى تنقل تعريفات جاهزة، والثانية تبني اقتراحًا جديدًا وفق قيود مع توضيح مبرراته. هل يكفي شكل الملصق للحكم بأن المهمتين إبداع؟</p>
         </div>
         <p>اختر «نعم» أو «لا»، ثم حدد سبب حكمك.</p>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-05-2-2">
         <div data-check="s05"></div>
         </div>
       </section>
@@ -526,14 +530,14 @@
           <p class="screen-purpose">الغرض: تمييز العمليات في حالات محددة الشروط.</p>
           <p class="element-status" data-element-status="t04"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-06-1">
         <div class="display-text">
           <p>صنف المهمات الثلاث: استرجاع قواعد عمل سبق تعلمها؛ شرح القواعد بكلماتك مع مثال؛ استخدام إجراء توزيع أدوار سبق تعلمه لتنظيم مهمة مشابهة.</p>
         </div>
         <p>اختر من القائمة مستوى لكل مهمة، ثم اضغط «تحقق». إذا اختلف تصنيف بند يُعاد فتحه وحده مع مثال مساعد.</p>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-06-2">
         <div data-check="s06"></div>
         </div>
       </section>
@@ -546,17 +550,17 @@
           <p class="screen-purpose">الغرض: تمييز العمليات الأعلى من خلال نوع الدليل.</p>
           <p class="element-status" data-element-status="t05"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-1">
         <div class="display-text">
           <p>رتب الوصف تحت عمليته: بيان العلاقة بين أجزاء سجل؛ الحكم على بديلين وفق محكات؛ إنتاج خطة جديدة تستجيب لقيود.</p>
         </div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-2">
         <div data-check="s07"></div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-3">
         <h4 class="section-title">قبل أن تكمل</h4>
         <p class="note">أمثلة مؤلفة للتدريب. ليست المستويات مراتب لقيمة المعلم أو خطوات واجبة في كل درس. يتغير التصنيف إذا تغيرت التعليمات والدعم والدليل المطلوب؛ ويعبر كل مثال عن العملية الغالبة في الصياغة المعروضة.</p>
         </div>
@@ -568,7 +572,7 @@
           <h3 id="screen-07-2-title" class="screen-title" tabindex="-1">أمثلة: التذكر والفهم والتطبيق</h3>
           <p class="screen-purpose">الغرض: ملاحظة كيف يتحدد الطلب المعرفي من الدليل المطلوب، وتصحيح مفاهيم شائعة.</p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-2-1">
         <p class="field-hint">السياق: «تنظيم عمل فريق». فكر في الدليل الذي تتوقعه لكل مهمة، ثم اقلب البطاقة لتقارن.</p>
         <ul class="flip-list">
           <li><button type="button" class="flip-card" data-flip>
@@ -586,7 +590,7 @@
         </ul>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-2-2">
         <div class="note">
           <p><strong>تصحيح مفاهيم شائعة:</strong> كتابة فعل مثل «صمم» في الهدف لا تثبت وحدها مستوى الإبداع، كما أن استخدام اختبار رقمي لا يقصر المهمة على التذكر. يتحدد الحكم من التعليمات وطبيعة الاستجابة المطلوبة. في المهام المركبة يحدد المصمم العملية المستهدفة ويصرح بالعمليات المساندة بدل إعطاء تصنيف قطعي ملتبس.</p>
         </div>
@@ -599,7 +603,7 @@
           <h3 id="screen-07-3-title" class="screen-title" tabindex="-1">أمثلة: التحليل والتقييم والإبداع ومثال محلول</h3>
           <p class="screen-purpose">الغرض: تمييز العمليات العليا بالدليل في السياق نفسه، ومتابعة تفكير معلن في مثال محلول.</p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-3-1">
         <p class="field-hint">السياق: «تنظيم عمل فريق». فكر في الدليل الذي تتوقعه لكل مهمة، ثم اقلب البطاقة لتقارن.</p>
         <ul class="flip-list">
           <li><button type="button" class="flip-card" data-flip>
@@ -617,7 +621,7 @@
         </ul>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-3-2">
         <div class="example">
           <span class="example-label">تفكير معلن في مثال محلول</span>
           <p>«سأبدأ بما سيقدمه المتعلم. إذا كان المطلوب حكمًا على بديلين، فإني أبحث عن معيار وشاهد يفسران الحكم. كتابة أسماء البديلين لا تكفي. ثم أختار وسيلة تسمح بعرض المقارنة والتعليل، مثل مستند نصي أو جدول بسيط. اختياري للوسيلة يأتي بعد تحديد الدليل».</p>
@@ -632,7 +636,7 @@
           <p class="screen-purpose">الغرض: تطبيق التمييز بين العمليات على مهمة تختارها، ثم مراجعة وصفك بأسئلة معلنة.</p>
           <p class="element-status" data-element-status="t05"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-4-1">
         <p class="field-hint">قبل أن تكتب، جرّب الوصف على مهمة من سياق آخر: صف ما يفعله المتعلم ودليله، ثم اقلب البطاقة لتقارن.</p>
         <ul class="flip-list">
           <li><button type="button" class="flip-card" data-flip>
@@ -642,7 +646,7 @@
         </ul>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-4-2">
         <div class="field">
           <label class="field-label" for="s07-paraphrase">اختر مهمة من أمثلة الجزأين ب وج أو من عملك، وصف ما يفعله المتعلم فيها والدليل الذي يقدمه</label>
           <p class="field-hint" id="s07-paraphrase-hint">لا يصحح النظام هذا النص آليًا؛ راجعه بالأسئلة التالية.</p>
@@ -650,14 +654,14 @@
         </div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-07-4-3">
         <div class="review-block">
           <h5 class="review-block-title">قائمة مراجعة إعادة الصياغة</h5>
           <div data-review="s07.rv1">هل وصفت ما يفعله المتعلم، لا اسم الأداة؟</div>
           <div data-review="s07.rv2">هل يظهر في وصفك الدليل الذي سيقدمه المتعلم؟</div>
           <div data-review="s07.rv3">هل حددت العملية الغالبة، وصرحت بالعمليات المساندة إن وجدت؟</div>
         </div>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t05">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t05">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t05" role="status"></p>
         </div>
       </section>
@@ -670,14 +674,14 @@
           <p class="screen-purpose">الغرض: اختيار وظيفة رقمية تخدم المهمة، دون ربط اسم الأداة بمستوى ثابت.</p>
           <p class="element-status" data-element-status="t06"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-08-1">
         <div class="display-text">
           <p>تريد أن يقارن المتعلم بديلين ويبرر حكمه. أي وظيفة تخدم المهمة أكثر: تزيين العنوان فقط، أم عرض البديلين مع معايير المقارنة وشواهد الحكم؟</p>
         </div>
         <div data-check="s08"></div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-08-2">
         <h4 class="section-title">هرم بلوم: الوظيفة قبل الأداة</h4>
         <p class="field-hint">أمثلة أدوات لكل مستوى: اختر مستوى لتفتح أمثلة أدوات قد تخدم مهامه في الجزء ج.</p>
         <nav class="pyramid-nav" aria-label="هرم بلوم: افتح أمثلة مستوى">
@@ -701,7 +705,7 @@
           <p class="screen-purpose">الغرض: اختيار وسيلة متاحة لك تحقق الوظيفة التي اخترتها، وبديل يحافظ عليها عند التعذر.</p>
           <p class="element-status" data-element-status="t06"></p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-08-2-1">
         <div class="display-text">
           <p>الوظيفة التي اخترتها في الجزء أ تحتاج وسيلة تملكها أنت ومتعلموك. سجّل وسيلة متاحة وبديلًا عند تعذرها، ثم راجع اختيارك.</p>
         </div>
@@ -719,13 +723,13 @@
         </div>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-08-2-2">
         <div class="review-block">
           <h5 class="review-block-title">راجع اختيارك</h5>
           <div data-review="s08.rv1">هل الوسيلة متاحة لك ولمتعلميك؟</div>
           <div data-review="s08.rv2">هل تسمح بإنتاج الدليل وقراءته؟</div>
         </div>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t06">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t06">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t06" role="status"></p>
         </div>
       </section>
@@ -736,7 +740,7 @@
           <h3 id="screen-08-3-title" class="screen-title" tabindex="-1">أمثلة أدوات لكل مستوى</h3>
           <p class="screen-purpose">الغرض: استكشاف وظائف رقمية ممكنة في كل مستوى، والحكم عليها بما يفعله المتعلم لا باسم الأداة.</p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-08-3-1">
         <span id="tools-reference"></span>
         <div class="note">
           <p>هذه القائمة من النسخة السابقة للحقيبة، وتُعرض أمثلةً على وظائف ممكنة. <strong>اسم الأداة لا يحدد مستوى بلوم</strong>: الأداة الواحدة قد تخدم مهام في مستويات مختلفة بحسب ما يفعله المتعلم والدليل المطلوب. تاريخ الاطلاع على صفحاتها الرسمية: 23 أكتوبر 2026. صفحات Google Classroom وDocs وSites وMicrosoft 365 تفتح على تسجيل الدخول، ولم يمكن فتح صفحتي Google Forms وGoogle Sheets آليًا في التاريخ نفسه. لم تُراجع شروط الاستخدام والأسعار؛ راجعها قبل الاعتماد على أي أداة، ولا يتطلب البرنامج أي حساب مدفوع.</p>
@@ -996,14 +1000,14 @@
           <h3 id="screen-08-4-title" class="screen-title" tabindex="-1">إنفوجرافيك: الفعل قبل الأداة</h3>
           <p class="screen-purpose">الغرض: جمع خطوات اختيار الوظيفة الرقمية في شكل واحد ترجع إليه حين تصمم مهمتك.</p>
         </header>
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-08-4-1">
         <figure class="media-figure media-figure--portrait media-figure--fit">
           <a href="../assets/img/action-before-tool.png" target="_blank" rel="noopener" aria-label="افتح الشكل بحجمه الكامل في نافذة جديدة"><img src="../assets/img/action-before-tool.png" width="1350" height="1629" alt="إنفوجرافيك بعنوان الفعل قبل الأداة، فيه أربع خطوات: 1 ماذا سيقدم المتعلم؟ صف الاستجابة المطلوبة، ومثالها حكم على خطتين. 2 بأي معيار تحكم على الدليل؟ ومثاله وضوح المسؤوليات وقابلية التتبع. 3 أي وظيفة رقمية تسمح بإنتاجه وقراءته؟ ومثالها جدول مقارنة بالمعيارين والشواهد. 4 ما الوسيلة المتاحة وبديلها؟ ومثالها مستند نصي أو ورقة مطبوعة. وفي أسفله تنبيه: اسم الأداة لا يحدد مستوى بلوم." loading="lazy" decoding="async"></a>
           <figcaption class="field-hint">إنفوجرافيك: الفعل قبل الأداة. إعداد بندر الأسمري، مستند إلى الشاشتين 07 ج و08؛ مثال مؤلف. اضغط الشكل لتكبيره.</figcaption>
         </figure>
         </div>
 
-        <div class="chunk" data-chunk>
+        <div class="chunk" data-chunk id="chunk-08-4-2">
         <h4 class="section-title">طبّق الخطوات على مهمتك</h4>
         <div class="display-text">
           <p>عد إلى المهمة التي سجلتها في بطاقة حاجتك، وأجب ذهنيًا عن الأسئلة الأربعة بالترتيب. إذا بدأت باسم أداة قبل أن تحدد الدليل، فارجع إلى الخطوة الأولى.</p>
@@ -1088,6 +1092,7 @@
           <p class="element-status" data-element-status="t07"></p>
         </header>
         <p class="note">لا يحكم النظام على صحة الهدف من وجود فعل معين فيه؛ راجعه أنت بالأسئلة التالية.</p>
+        <p class="field-hint"><a href="#s09-statement" class="inline-link">راجع صياغة هدفك</a> ثم سجل حكمك على كل محك.</p>
         <div class="review-block">
           <h5 class="review-block-title">راجع هدفك بالمحكات</h5>
           <div data-review="s09.rv1">هل يذكر هدفي أداءً يمكن ملاحظته؟</div>
@@ -1095,7 +1100,7 @@
           <div data-review="s09.rv3">هل حددت ما سأبحث عنه للحكم على الاستجابة؟</div>
           <div data-review="s09.rv4">هل يمكن بناء تقويم لهدفي؟</div>
         </div>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t07">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t07">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t07" role="status"></p>
         <p class="field-hint">يُحفظ الهدف في مشروعك، ويمكنك تحسينه في الشاشة 17.</p>
       </section>
@@ -1152,7 +1157,7 @@
             <p><strong>المدة:</strong> أحددها بعد تجربة المهمة؛ لا توجد مدة مفترضة في المثال.</p>
           </div>
         </details>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t08">سجّل خطتي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t08">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t08" role="status"></p>
       </section>
 
@@ -1411,7 +1416,7 @@
               <label class="field-label" for="s14-keepReason">أو: سبب إبقاء النقص للمراجعة لاحقًا</label>
               <textarea id="s14-keepReason" class="input" data-field="s14.keepReason"></textarea>
             </div>
-            <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t10">سجّل عملي</button></div>
+            <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t10">سجّل استكمال النشاط</button></div>
             <p class="result" data-result="t10" role="status"></p>
             <p class="field-hint">يُحفظ نصك قبل المقارنة وبعدها، ولا يُكتب فوق المحاولة الأولى.</p>
           </div>
@@ -1480,7 +1485,7 @@
               <textarea id="s15-changed" class="input" data-field="s15.changed" required></textarea>
             </div>
           </div>
-          <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t11">سجّل عملي</button></div>
+          <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t11">سجّل استكمال النشاط</button></div>
           <p class="result" data-result="t11" role="status"></p>
         </div>
       </section>
@@ -1532,7 +1537,7 @@
         <h4 class="section-title">محك يحتاج تحسينًا في عملي <span class="field-optional">(اختياري)</span></h4>
         <p class="field-hint">اختر ما تراه في عملك؛ تظهر لك رسالة وخطوة تالية. لا يستنتج النظام النقص من كلمات نصك.</p>
         <div class="choice-list" data-deficits></div>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t12">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t12">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t12" role="status"></p>
         <p class="field-hint">تُحفظ النسختان معًا؛ لا تُكتب الجديدة فوق الأولى.</p>
       </section>
@@ -1631,7 +1636,7 @@
         </fieldset>
         <p class="feedback is-wrong" data-show-when="s17.goalReview=improve|absent" hidden>اكتب ما ستشاهده في استجابة المتعلم، ثم راجع صياغتك. تستطيع المتابعة بمسودة تحتاج تحسينًا؛ سيظهر وضعها في مراجعة المشروع.</p>
         <div class="legacy-panel" data-legacy-panel hidden></div>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t13">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t13">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t13" role="status"></p>
         <p class="field-hint">هذه مسودة مشروع؛ لا توصف بأنها جاهزة للتطبيق الفعلي.</p>
       </section>
@@ -1705,7 +1710,7 @@
           <label class="choice"><input type="checkbox" data-field="s18.previewChecked" data-required-msg="اقرأ المعاينة ثم ضع العلامة."><span>قرأت المعاينة كما سيقرؤها المتعلم، وحددت ما يحتاج توضيحًا.</span></label>
         </fieldset>
         <p class="note">لا يحكم النظام على ملاءمة المحتوى التخصصي من اكتمال النص.</p>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t14">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t14">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t14" role="status"></p>
       </section>
 
@@ -1745,7 +1750,7 @@
           <label class="choice"><input type="checkbox" data-field="s19.compared" data-required-msg="قارن رسائلك بالمثالين ثم ضع العلامة."><span>قارنت رسائلي بالمثالين، وعدلت ما يحتاج إعادة صياغة (حدده في كل محك).</span></label>
         </fieldset>
         <p class="note">يفحص النظام وجود الحقول فقط، ولا يحكم على جودة المحك.</p>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t15">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t15">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t15" role="status"></p>
       </section>
 
@@ -1999,7 +2004,7 @@
           <textarea id="s24-step" class="input" data-field="s24.step" required></textarea>
         </div>
         <p class="field-hint">يمكنك <a href="#screen-17" class="inline-link">تعديل مشروعك</a>؛ تبقى نسخه السابقة محفوظة. كتابة التأمل لا تمنح درجة جديدة، وللاختبار محاولة واحدة تبقى نتيجتها كما هي.</p>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t17">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t17">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t17" role="status"></p>
       </section>
     </div>
@@ -2169,7 +2174,7 @@
           <label class="choice"><input type="checkbox" data-field="s26.reviewed" data-required-msg="راجع الاستخدام وحده ثم ضع العلامة."><span>راجعت أن الاستخدام لا ينقل استنتاج المصدر إلى سياقي دون تحقق.</span></label>
         </fieldset>
         <p class="note">لا يحكم النظام آليًا على جودة تلخيص دراسة.</p>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t19">سجّل عملي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t19">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t19" role="status"></p>
       </section>
 
@@ -2246,7 +2251,7 @@
           </div>
         </details>
         <p class="note">سجّل ما لم يتحدد بعد بدل افتراضه. وثّق الشواهد بلا أسماء أو بيانات تعريفية للطلاب. حفظ الخطة لا يعني أن التطبيق حدث.</p>
-        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t20">سجّل خطتي</button></div>
+        <div class="actions"><button type="button" class="btn btn-primary" data-action="complete" data-element="t20">سجّل استكمال النشاط</button></div>
         <p class="result" data-result="t20" role="status"></p>
       </section>
 

@@ -26,6 +26,9 @@
   --topbar-h: 3.5rem;
   --column: 46rem;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --radius-control: 0.875rem;
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.03);
   /* Same stacks as tailwind.config.js (font-display / font-sans). */
   --font-display: "Thmanyah Serif Display", "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
   --font-sans: "Thmanyah Serif Text", "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
@@ -34,6 +37,7 @@
 /* --- Base ---------------------------------------------------------------- */
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable both-edges;
 }
 
 /* Font families live in tailwind.config.js (font-sans / font-display) and the
@@ -48,6 +52,11 @@ html {
   outline: 3px solid #0ea5e9; /* sky-500 */
   outline-offset: 2px;
 }
+
+.portal-wrap h1, .portal-path-title, .screen-title, .block-title,
+.trainer-section-title, .rc-title { text-wrap: balance; }
+.portal-path-text, .portal-wrap > header > p { text-wrap: pretty; }
+.portal-resume, .drawer-progress-label, .pager-status, .test-count { font-variant-numeric: tabular-nums; }
 
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -89,7 +98,7 @@ a.inline-link:focus-visible {
   overflow-x: hidden;
 }
 
-/* --- Drawer: off-canvas below lg, fixed sidebar from lg ------------------- */
+/* --- Drawer: overlay, docked only when the centered column has room -------- */
 .drawer {
   position: fixed;
   inset-block: 0;
@@ -103,7 +112,7 @@ a.inline-link:focus-visible {
   /* inline-start is the right edge in RTL, so +100% slides the panel off-screen there. */
   transform: translateX(100%);
   visibility: hidden;
-  transition: transform 0.28s var(--ease), visibility 0.28s;
+  transition: transform 0.22s var(--ease), visibility 0s 0.22s;
 }
 [dir="ltr"] .drawer {
   transform: translateX(-100%);
@@ -111,6 +120,7 @@ a.inline-link:focus-visible {
 .drawer-open .drawer {
   transform: none;
   visibility: visible;
+  transition-delay: 0s;
   box-shadow: 0 0 40px rgba(11, 31, 82, 0.25);
 }
 .drawer-backdrop {
@@ -122,6 +132,7 @@ a.inline-link:focus-visible {
 .drawer-backdrop[hidden] {
   display: none;
 }
+.drawer-modal { overflow: hidden; }
 
 .drawer-head {
   padding: 1.25rem 1.25rem 1.1rem;
@@ -155,8 +166,8 @@ a.inline-link:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   margin-inline-start: auto;
   flex-shrink: 0;
   border: 0;
@@ -272,10 +283,12 @@ a.inline-link:focus-visible {
   flex-direction: column;
   min-height: 100vh;
   background: var(--surface);
-  transition: margin 0.28s var(--ease);
 }
 .player-main > main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-block-size: calc(100dvh - var(--topbar-h));
 }
 .player-main > main:focus {
   outline: none;
@@ -284,30 +297,9 @@ a.inline-link:focus-visible {
   margin-top: 0;
 }
 
-@media (min-width: 1024px) {
-  .drawer {
-    width: var(--drawer-w);
-    transform: none;
-    visibility: visible;
+@media (min-width: 90rem) {
+  .drawer-open .drawer {
     box-shadow: none;
-  }
-  .drawer-close,
-  .drawer-backdrop {
-    display: none !important;
-  }
-  .player-main {
-    margin-inline-start: var(--drawer-w);
-  }
-  /* The menu button collapses the sidebar on large screens. */
-  .drawer-collapsed .drawer {
-    transform: translateX(100%);
-    visibility: hidden;
-  }
-  [dir="ltr"] .drawer-collapsed .drawer {
-    transform: translateX(-100%);
-  }
-  .drawer-collapsed .player-main {
-    margin-inline-start: 0;
   }
 }
 
@@ -320,7 +312,7 @@ a.inline-link:focus-visible {
   align-items: center;
   gap: 0.75rem;
   height: var(--topbar-h);
-  padding-inline: 0.5rem 1rem;
+  padding-inline: max(0.5rem, calc((100% - var(--column)) / 2 + 1.25rem));
   background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid var(--line);
   backdrop-filter: saturate(1.4) blur(6px);
@@ -378,62 +370,64 @@ a.inline-link:focus-visible {
 }
 
 /* --- Lesson ------------------------------------------------------------------ */
+.lesson {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 .lesson[hidden] {
   display: none;
 }
-.lesson.is-entering {
-  animation: lesson-in 0.38s var(--ease) both;
-}
-@keyframes lesson-in {
-  from { opacity: 0; transform: translateY(0.75rem); }
-  to { opacity: 1; transform: none; }
-}
 
 .lesson-banner {
-  padding: 3rem 1.25rem 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  padding: 0.7rem 1.25rem;
   color: #fff;
   background:
     radial-gradient(40rem 18rem at 100% -10%, rgba(34, 211, 238, 0.32), transparent 65%),
     linear-gradient(120deg, var(--navy-900) 0%, #0e3b6e 48%, var(--teal-700) 100%);
 }
-.lesson-banner > * {
-  max-width: var(--column);
-  margin-inline: auto;
+.lesson-banner > * { margin-inline: 0; }
+.lesson-kicker { order: 0; margin: 0; font-size: 0.75rem; font-weight: 700; color: #a5f3fc; }
+.lesson-title { order: 1; flex: 1 1 auto; min-width: 0; font-size: 1.05rem; line-height: 1.6; }
+.lesson-title:focus { outline: none; }
+.lesson-banner .lesson-sub {
+  order: 2;
+  flex-basis: 100%;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #cbeef7;
 }
-.lesson-kicker {
-  margin-bottom: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #a5f3fc;
-}
-.lesson-title {
-  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.6rem);
-  line-height: 1.35;
-}
-.lesson-title:focus {
-  outline: none;
-}
-.lesson-rule {
-  display: block;
-  width: 4.5rem;
-  height: 3px;
-  margin-top: 1.25rem;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.85);
-}
-@media (min-width: 640px) {
-  .lesson-banner { padding: 4rem 2rem 3rem; }
-}
-
+.lesson-rule { display: none; }
+/* The screen/part navigation lives in the drawer. */
+.stepper { display: none; }
 .lesson-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  inline-size: 100%;
   max-width: var(--column);
   margin-inline: auto;
-  padding: 2.5rem 1.25rem 1rem;
+  padding: 1rem 1.25rem 1rem;
   color: var(--body);
   line-height: 1.9;
 }
 @media (min-width: 640px) {
+  .lesson-banner { padding: 0.75rem max(2rem, calc((100% - var(--column)) / 2 + 2rem)); }
   .lesson-body { padding-inline: 2rem; }
+}
+@media (max-width: 639px) {
+  .lesson-banner { flex-wrap: nowrap; padding-block: 0.55rem; }
+  .lesson-banner .lesson-sub { display: none; }
+  .lesson-kicker { flex-shrink: 0; }
+  .lesson-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 0.95rem; }
 }
 /* Vertical gap between sections (named to avoid Tailwind's `block` utility). */
 .section-gap {
@@ -676,28 +670,45 @@ a.inline-link:focus-visible {
 
 /* --- Top bar additions ------------------------------------------------------ */
 .topbar-dash {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 2.75rem;
   flex-shrink: 0;
   padding: 0.35rem 0.75rem;
   border-radius: 9999px;
   background: #ecfeff;
   color: var(--teal-700);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 700;
   text-decoration: none;
 }
 .topbar-dash:hover { background: #cffafe; }
 .save-indicator {
   flex-shrink: 0;
-  max-width: 9rem;
+  inline-size: 9rem;
   margin: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 0.75rem;
   color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 .save-indicator.is-failed { color: #b91c1c; font-weight: 700; }
-@media (max-width: 479px) {
+@media (max-width: 63.99rem) {
+  .topbar {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+    gap: 0 0.5rem;
+    height: auto;
+    min-block-size: var(--topbar-h);
+    padding-block: 0.375rem;
+  }
+  .topbar-toggle { grid-column: 1; grid-row: 1 / span 2; }
+  .topbar-title { grid-column: 2; grid-row: 1; line-height: 1.5; }
+  .save-indicator { grid-column: 2; grid-row: 2; inline-size: auto; max-inline-size: 100%; line-height: 1.5; }
+  .topbar-dash { grid-column: 3; grid-row: 1 / span 2; }
   .topbar-counter { display: none; }
 }
 
@@ -721,14 +732,22 @@ a.inline-link:focus-visible {
 }
 .save-alert p { margin: 0; flex: 1 1 16rem; font-weight: 700; line-height: 1.7; }
 .app-status {
-  max-width: var(--column);
-  margin: 0 auto;
-  padding: 0 1.25rem;
+  position: fixed;
+  inset-block-start: calc(var(--topbar-h) + 0.5rem);
+  inset-inline: 0;
+  z-index: 45;
+  inline-size: min(var(--column), calc(100% - 2rem));
+  margin-inline: auto;
+  padding: 0.65rem 1rem;
+  border: 1px solid #99f6e4;
+  border-radius: 0.75rem;
+  background: #f0fdfa;
+  box-shadow: 0 4px 16px rgba(11, 31, 82, 0.1);
+  pointer-events: none;
   font-size: 0.875rem;
   color: var(--teal-700);
 }
 .app-status:empty { display: none; }
-.app-status:not(:empty) { padding-top: 0.75rem; }
 
 /* --- Unit banner subtitle and step list ------------------------------------- */
 .lesson-sub {
@@ -737,71 +756,8 @@ a.inline-link:focus-visible {
   line-height: 1.8;
   color: #e0f2fe;
 }
-.stepper {
-  max-width: var(--column);
-  margin: 1.5rem auto 0;
-  padding-inline: 1.25rem;
-}
-@media (min-width: 640px) { .stepper { padding-inline: 2rem; } }
-.stepper-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-@media (min-width: 640px) {
-  .stepper-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-.stepper-link {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  height: 100%;
-  padding: 0.6rem 0.7rem;
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
-  background: #fff;
-  color: var(--ink);
-  text-decoration: none;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-.stepper-link:hover { border-color: var(--teal-600); }
-.stepper-n {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.75rem;
-  height: 1.75rem;
-  flex-shrink: 0;
-  border: 2px solid #d1d5db;
-  border-radius: 9999px;
-  font-weight: 700;
-  font-size: 0.75rem;
-  color: var(--muted);
-  background: #fff center / 0.9rem no-repeat;
-  font-variant-numeric: tabular-nums;
-}
-.stepper-link[data-done] .stepper-n {
-  border-color: var(--teal-600);
-  background-color: var(--teal-600);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
-  color: transparent;
-}
-.stepper-link[aria-current="step"] {
-  border-color: var(--navy-900);
-  background: var(--navy-900);
-  color: #fff;
-}
-.stepper-link[aria-current="step"]:not([data-done]) .stepper-n { border-color: #a5f3fc; color: #fff; background-color: transparent; }
-.stepper-title { min-width: 0; font-weight: 700; }
-
 /* --- Screen ------------------------------------------------------------------ */
 .screen[hidden] { display: none; }
-.screen-head { margin-bottom: 1.5rem; }
 .screen-kicker {
   margin: 0 0 0.25rem;
   font-size: 0.8125rem;
@@ -896,7 +852,7 @@ mark {
   color: var(--ink);
 }
 .field-optional { font-weight: 400; color: var(--muted); font-size: 0.8125rem; }
-.field-hint { margin: 0 0 0.4rem; font-size: 0.8125rem; line-height: 1.7; color: var(--muted); }
+.field-hint { margin: 0 0 0.4rem; font-size: 0.875rem; line-height: 1.7; color: var(--muted); }
 .input {
   display: block;
   width: 100%;
@@ -1026,6 +982,10 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 
 /* Buttons */
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 1.25rem; }
+.completion-help { font-size: 0.8125rem; color: var(--body); max-inline-size: 100%; }
+.completion-help > summary { display: flex; align-items: center; min-block-size: 2.75rem; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.completion-help[open] { flex-basis: 100%; }
+.completion-help > p { margin: 0; padding: 0.5rem 0.75rem; border-inline-start: 3px solid var(--teal-700); background: #f0fdfa; }
 .btn {
   display: inline-flex;
   align-items: center;
@@ -1034,7 +994,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   min-height: 2.75rem;
   padding: 0.5rem 1.15rem;
   border: 1px solid transparent;
-  border-radius: 9999px;
+  border-radius: var(--radius-control);
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 700;
@@ -1058,22 +1018,10 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 .result:empty { display: none; }
 .result.is-done { color: var(--teal-700); }
 .result.is-missing { color: #92400e; }
+.missing-fields { margin: 0.5rem 0 0; padding-inline-start: 1.25rem; list-style: disc; font-weight: 400; }
 
 /* --- Screen footer and save-and-stop ------------------------------------------ */
 .screen-foot { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
-.screen-nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-.screen-nav-save { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-@media (max-width: 559px) {
-  .screen-nav { display: grid; grid-template-columns: 1fr 1fr; }
-  .screen-nav-save { grid-column: 1 / -1; order: 3; }
-  .screen-nav-save .btn { flex: 1; }
-}
 .stop-panel {
   margin-top: 1rem;
   padding: 1rem 1.1rem;
@@ -1487,6 +1435,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 .portal-wrap {
   width: 100%;
   max-width: 60rem;
+  margin-inline: auto;
 }
 .portal-paths {
   display: grid;
@@ -1534,6 +1483,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   flex: none;
 }
 .portal-path-text {
+  font-size: 1.0625rem;
   line-height: 1.8;
   color: var(--body);
 }
@@ -1560,7 +1510,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   justify-content: center;
   min-height: 3.25rem;
   padding: 0.75rem 1.25rem;
-  border-radius: 0.875rem;
+  border-radius: var(--radius-control);
   font-weight: 700;
   font-size: 1.0625rem;
   text-decoration: none;
@@ -1607,6 +1557,8 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 }
 .portal-copy {
   flex: none;
+  inline-size: 5rem;
+  min-block-size: 2.75rem;
   padding: 0.375rem 0.875rem;
   border: 1px solid var(--navy-900);
   border-radius: 0.625rem;
@@ -1615,10 +1567,14 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   font-weight: 700;
   font-size: 0.875rem;
   cursor: pointer;
+  transition: color 0.15s var(--ease), background-color 0.15s var(--ease), border-color 0.15s var(--ease);
 }
 .portal-copy:hover { background: var(--navy-900); color: #ffffff; }
+.portal-copy[data-copied] { background: #f0fdfa; color: var(--teal-700); border-color: var(--teal-700); }
 .portal-link-note {
   margin-top: 0.5rem;
+  min-block-size: 3.4em;
+  line-height: 1.7;
   font-size: 0.8125rem;
   color: var(--muted);
 }
@@ -1756,43 +1712,6 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
    fits the visible area, with "متابعة" between chunks (js/main.js).
    ========================================================================= */
 
-/* --- Slim unit banner -------------------------------------------------------- */
-.lesson-banner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: 0.75rem;
-  padding: 0.7rem 1.25rem;
-}
-.lesson-banner > * { max-width: none; margin-inline: 0; }
-.lesson-banner .lesson-kicker { order: 0; margin: 0; font-size: 0.75rem; }
-.lesson-banner .lesson-title { order: 1; flex: 1 1 auto; min-width: 0; font-size: 1.05rem; line-height: 1.6; }
-.lesson-banner .lesson-sub {
-  order: 2;
-  flex-basis: 100%;
-  margin: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 0.8125rem;
-  line-height: 1.6;
-  color: #cbeef7;
-}
-.lesson-banner .lesson-rule { display: none; }
-@media (min-width: 640px) {
-  .lesson-banner { padding: 0.75rem max(2rem, calc((100% - var(--column)) / 2 + 2rem)); }
-}
-@media (max-width: 639px) {
-  .lesson-banner { flex-wrap: nowrap; padding-block: 0.55rem; }
-  .lesson-banner .lesson-sub { display: none; }
-  .lesson-banner .lesson-kicker { flex-shrink: 0; }
-  .lesson-banner .lesson-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 0.95rem; }
-  .lesson-body { padding-top: 0.9rem; }
-}
-/* The step cards above each screen are replaced by the drawer step list. */
-.stepper { display: none; }
-.lesson-body { padding-top: 1.25rem; }
-
 /* --- Drawer: screens and parts of the current unit --------------------------- */
 .drawer-steps {
   margin: 0.15rem 0 0.6rem;
@@ -1877,6 +1796,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 .screen-head > .screen-title { order: 1; flex-basis: 100%; }
 .screen-head > .screen-about[open] { order: 2; flex-basis: 100%; margin-inline-start: 0; }
 @media (max-width: 639px) {
+  .screen-head { margin-bottom: 0.5rem; }
   .screen-head > .screen-title { font-size: 1.25rem; line-height: 1.5; }
 }
 .screen-about > summary {
@@ -1920,24 +1840,29 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 .screen-nav-back > span:empty { display: none; }
 .screen-nav-save {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
   padding: 0.25rem 0 0.75rem;
 }
 .btn-mini {
-  padding: 0.25rem 0.4rem;
+  min-block-size: 2.75rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-control);
   border: 0;
   background: none;
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: var(--muted);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.btn-mini:hover { color: var(--teal-700); }
-.chunk-dots { display: inline-flex; align-items: center; gap: 0.35rem; }
+.btn-mini:hover { color: var(--teal-700); background: #f0fdfa; }
+.chunk-dots { display: inline-flex; flex-direction: column; align-items: center; gap: 0.2rem; }
 .chunk-dots[hidden] { display: none; }
+.chunk-markers { display: inline-flex; align-items: center; gap: 0.35rem; }
+.chunk-label { color: var(--muted); font-size: 0.75rem; line-height: 1.5; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .chunk-dot {
   width: 0.5rem;
   height: 0.5rem;
@@ -1957,24 +1882,18 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 .screen[data-chunked]:not([hidden]) {
   display: flex;
   flex-direction: column;
-  min-height: calc(100dvh - var(--topbar-h) - 4.25rem);
+  flex: 1;
+  min-block-size: 0;
 }
 .screen[data-chunked] > .screen-foot {
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
   margin-top: auto;
   padding: 0.6rem 0 0.4rem;
   background: rgba(255, 255, 255, 0.97);
 }
 [data-chunk][hidden] { display: none; }
-[data-chunk]:not([hidden]) { animation: chunk-in 0.32s var(--ease) both; padding-bottom: 1.25rem; }
+[data-chunk]:not([hidden]) { padding-bottom: 0.75rem; }
 [data-chunk]:focus { outline: none; }
 [data-chunk] > :first-child { margin-top: 0; }
-@keyframes chunk-in {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: none; }
-}
 
 /* --- Rule cards (screen 01 أ) ------------------------------------------------ */
 .prose ul.rule-cards {
@@ -2026,22 +1945,17 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   min-height: 6rem;
   padding: 0.65rem 0.9rem;
   border: 1px solid var(--line);
-  border-radius: 0.9rem;
+  border-radius: var(--radius-card);
   background: #fff;
   color: var(--ink);
   font: inherit;
   text-align: start;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.16s var(--ease), box-shadow 0.16s var(--ease), background-color 0.16s var(--ease);
 }
 .flip-card:hover { border-color: var(--teal-600); box-shadow: 0 4px 14px rgba(13, 148, 136, 0.12); }
 .flip-card[aria-pressed="true"] { border-color: #99f6e4; background: #f0fdfa; }
-.flip-card.is-turning { animation: flip-turn 0.35s var(--ease); }
-@keyframes flip-turn {
-  from { transform: perspective(40rem) rotateY(70deg); opacity: 0.4; }
-  to { transform: none; opacity: 1; }
-}
 .flip-face { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.75rem; row-gap: 0.15rem; height: 100%; }
 .flip-text { flex-basis: 100%; }
 .flip-face[hidden] { display: none; }
@@ -2058,6 +1972,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
   margin-bottom: 0.75rem;
 }
 .tab {
+  min-block-size: 2.75rem;
   padding: 0.3rem 0.8rem;
   border: 1px solid #bae6fd;
   border-radius: 9999px;
@@ -2084,6 +1999,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 
 @media print {
   .screen-nav-save { display: none !important; }
+  .player-main > main, .lesson, .lesson-body { display: block; min-block-size: 0; }
   [data-chunk][hidden], .tabs [role="tabpanel"][hidden] { display: block !important; }
   .flip-face[hidden] { display: flex !important; }
   .flip-cue, .tab-list, .chunk-dots { display: none !important; }
@@ -2093,6 +2009,8 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 
 /* Compact pyramid on phones so it fits one chunk. */
 @media (max-width: 639px) {
+  [data-chunk]:not([hidden]) { padding-bottom: 0.5rem; }
+  .screen[data-chunked] > .screen-foot { padding: 0.5rem 0 0.25rem; }
   [data-chunk] .pyramid-tier { padding-block: 0.35rem; font-size: 0.875rem; }
   [data-chunk] .pyramid li:nth-child(4) { margin-top: 0.35rem; }
   [data-chunk] .pyramid-legend { margin-top: 0.5rem; font-size: 0.75rem; }
@@ -2100,7 +2018,7 @@ fieldset.plain > legend { margin-bottom: 0.5rem; font-weight: 700; font-size: 0.
 
 /* Paged lists inside a chunk: one compact row (السابق · الصفحة · التالي). */
 [data-chunk] .pager { flex-wrap: nowrap; gap: 0.5rem; }
-[data-chunk] .pager .pager-btn { min-height: 2.25rem; padding: 0.3rem 0.8rem; font-size: 0.8125rem; }
+[data-chunk] .pager .pager-btn { min-height: 2.75rem; padding: 0.3rem 0.8rem; font-size: 0.875rem; }
 [data-chunk] .pager-status { flex: 1; text-align: center; font-size: 0.75rem; }
 @media (max-width: 639px) {
   [data-chunk] .program-map li { padding-block: 0; font-size: 0.875rem; line-height: 1.7; }

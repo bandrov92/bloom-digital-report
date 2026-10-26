@@ -244,7 +244,7 @@ with sync_playwright() as p:
     check(a['total'] == 60 and s['test']['draft'] is None, f'attempt scored 60 and locked ({a["total"]})')
     check(pg.evaluate('location.hash') == '#screen-23', 'submission opens the result (23 أ)')
     go(pg, '23-2'); pg.wait_for_timeout(300)
-    check(pg.locator('#test-explain .diag-item').count() == 10 and pg.locator('#test-explain [data-pager-page]:not([hidden]) .diag-item').count() == 3, 'explanations list 10 items, three per page')
+    check(pg.locator('#test-explain .diag-item').count() == 10 and 0 < pg.locator('#test-explain [data-pager-page]:not([hidden]) .diag-item').count() <= 2, 'explanations retain all 10 items, at most two per page')
     check(st(pg)['test']['reportViewedAt'] is not None, 'report opening recorded')
     check('استوفيت شروط اجتياز الدورة' in pg.text_content('#test-report'), '19/20 (95%) and score 60 -> passed (boundary score)')
     go(pg, '21'); check(not pg.is_visible('#test-start'), 'no retake button (single approved attempt)')

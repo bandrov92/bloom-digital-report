@@ -48,11 +48,25 @@
   const learnUrl = new URL('learn/', window.location.href).href;
   if (urlEl) urlEl.textContent = learnUrl;
   if (copyBtn && urlEl && copyStatus) {
+    let feedbackTimer = 0;
+    let request = 0;
     copyBtn.addEventListener('click', async () => {
+      const current = ++request;
+      clearTimeout(feedbackTimer);
+      copyBtn.textContent = 'نسخ';
+      copyBtn.removeAttribute('data-copied');
       try {
         await navigator.clipboard.writeText(learnUrl);
+        if (current !== request) return;
+        copyBtn.textContent = 'تم النسخ';
+        copyBtn.setAttribute('data-copied', '');
         copyStatus.textContent = 'نُسخ الرابط. أرسله للمتدرب ليدخل مساره مباشرة.';
+        feedbackTimer = window.setTimeout(() => {
+          copyBtn.textContent = 'نسخ';
+          copyBtn.removeAttribute('data-copied');
+        }, 3000);
       } catch {
+        if (current !== request) return;
         const range = document.createRange();
         range.selectNodeContents(urlEl);
         const sel = window.getSelection();
@@ -78,8 +92,17 @@
     const letters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح', 'ط', 'ي'];
     const [group, part] = String(screen || '').split('-');
     const label = part ? `${group} ${letters[Number(part) - 1] || part}` : group;
+    const title = typeof record?.position?.title === 'string' ? record.position.title : '';
+    const start = document.querySelector('[data-portal-start]');
+    const follow = document.querySelector('[data-portal-continue]');
+    if (screen && start && follow) {
+      start.className = 'portal-btn portal-btn--light';
+      follow.className = 'portal-btn portal-btn--primary';
+      start.textContent = 'من البداية';
+      start.title = 'يفتح بداية البرنامج مع الاحتفاظ بعملك المحفوظ';
+    }
     resume.textContent = screen
-      ? `في هذا المتصفح عمل محفوظ. آخر موضع: الشاشة ${label}. العناصر المكتملة: ${done} من 20.`
+      ? `تابع من: ${title || `الشاشة ${label}`} (الشاشة ${label}). العناصر المكتملة: ${done} من 20. فتح البداية يبقي عملك محفوظًا.`
       : 'لا يوجد عمل محفوظ في هذا المتصفح بعد. يُحفظ عملك على هذا الجهاز فقط.';
   } catch {
     resume.textContent = 'هذا المتصفح يمنع الحفظ المحلي الآن؛ اقرأ «كيف أحفظ عملي» قبل البدء.';
